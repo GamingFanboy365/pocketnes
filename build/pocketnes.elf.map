@@ -1,0 +1,2225 @@
+Archive member included to satisfy reference by file (symbol)
+
+/opt/devkitpro/libgba/lib/libgba.a(Compression.o)
+                              pocketnes_text.o (LZ77UnCompVram)
+/opt/devkitpro/libgba/lib/libgba.a(interrupt.o)
+                              interrupt.o (IntrTable)
+/opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_thumb1_case_uqi.o)
+                              sram.o (__gnu_thumb1_case_uqi)
+/opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_thumb1_case_shi.o)
+                              new_speed_hack.o (__gnu_thumb1_case_shi)
+/opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_udivsi3.o)
+                              minilzo.o (__aeabi_uidiv)
+/opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_divsi3.o)
+                              rommenu.o (__aeabi_idiv)
+/opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_dvmd_tls.o)
+                              /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_udivsi3.o) (__aeabi_idiv0)
+/opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_aeabi_uldivmod.o)
+                              new_speed_hack.o (__aeabi_uldivmod)
+/opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_udivmoddi4.o)
+                              /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_aeabi_uldivmod.o) (__udivmoddi4)
+/opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_clzdi2.o)
+                              /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_udivmoddi4.o) (__clzdi2)
+/opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_clzsi2.o)
+                              /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_clzdi2.o) (__clzsi2)
+/opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libg.a(libc_a-strcat.o)
+                              cheat.o (strcat)
+/opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libg.a(libc_a-memcpy-stub.o)
+                              cheat.o (memcpy)
+/opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libg.a(libc_a-strlen.o)
+                              main.o (strlen)
+/opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libg.a(libc_a-memcmp.o)
+                              minilzo.o (memcmp)
+/opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libg.a(libc_a-strcpy.o)
+                              cheat.o (strcpy)
+/opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libg.a(libc_a-memset.o)
+                              minilzo.o (memset)
+/opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libg.a(libc_a-init.o)
+                              gba_crt0_my.o (__libc_init_array)
+/opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libg.a(libc_a-memchr-stub.o)
+                              new_speed_hack.o (memchr)
+/opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libg.a(libc_a-memmove.o)
+                              minilzo.o (memmove)
+/opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libsysbase.a(libsysbase_libsysbase_a-malloc_vars.o)
+                              gba_crt0_my.o (fake_heap_end)
+
+There are no discarded input sections
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+rom              0x08000000         0x02000000
+iwram            0x03000000         0x00008000
+ewram            0x02000000         0x00040000
+vram1            0x06003000         0x00001000
+*default*        0x00000000         0xffffffff
+
+Linker script and memory map
+
+LOAD cache.o
+LOAD cheat.o
+LOAD crash.o
+LOAD disasm.o
+LOAD interrupt.o
+LOAD loadcart.o
+LOAD main.o
+LOAD mbclient.o
+LOAD minilzo.o
+LOAD new_speed_hack.o
+LOAD pocketnes_text.o
+LOAD rommenu.o
+LOAD savestate2.o
+LOAD spritecache.o
+LOAD sram.o
+LOAD ui.o
+LOAD 6502.o
+LOAD apack.o
+LOAD bindata.o
+LOAD cart.o
+LOAD cf.o
+LOAD division.o
+LOAD interruptdispatcher.o
+LOAD io.o
+LOAD link.o
+LOAD memcopy.o
+LOAD memory.o
+LOAD mem.o
+LOAD ppu.o
+LOAD sound.o
+LOAD speedhack_asm.o
+LOAD timeout.o
+LOAD visoly.o
+LOAD konami.o
+LOAD map023771.o
+LOAD map105.o
+LOAD map1166.o
+LOAD map151.o
+LOAD map15.o
+LOAD map163.o
+LOAD map16.o
+LOAD map17.o
+LOAD map184.o
+LOAD map18.o
+LOAD map19.o
+LOAD map1.o
+LOAD map2125.o
+LOAD map228.o
+LOAD map22.o
+LOAD map232.o
+LOAD map23.o
+LOAD map2426.o
+LOAD map30.o
+LOAD map32.o
+LOAD map33.o
+LOAD map34.o
+LOAD map40.o
+LOAD map42.o
+LOAD map4.o
+LOAD map5.o
+LOAD map64.o
+LOAD map65.o
+LOAD map67.o
+LOAD map68.o
+LOAD map69.o
+LOAD map70152.o
+LOAD map72.o
+LOAD map73.o
+LOAD map75.o
+LOAD map76.o
+LOAD map77.o
+LOAD map78.o
+LOAD map79.o
+LOAD map80.o
+LOAD map82.o
+LOAD map85.o
+LOAD map86.o
+LOAD map87.o
+LOAD map88.o
+LOAD map92.o
+LOAD map93.o
+LOAD map94.o
+LOAD map97.o
+LOAD map99.o
+LOAD map9.o
+LOAD gba_crt0_my.o
+LOAD /opt/devkitpro/libgba/lib/libgba.a
+START GROUP
+LOAD /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a
+LOAD /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libg.a
+LOAD /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libc.a
+LOAD /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libsysbase.a
+END GROUP
+                0x08000000                        __text_start = ORIGIN (rom)
+                0x02040000                        __eheap_end = (ORIGIN (ewram) + LENGTH (ewram))
+                0x03000000                        __iwram_start = ORIGIN (iwram)
+                0x03008000                        __iwram_top = (ORIGIN (iwram) + LENGTH (iwram))
+                0x03007fa0                        __sp_irq = (__iwram_top - 0x60)
+                0x03007f00                        __sp_usr = (__sp_irq - 0xa0)
+                0x03007ff8                        __irq_flags = 0x3007ff8
+                0x08000000                        . = __text_start
+
+.init           0x08000000      0x218
+ *(.init)
+ .init          0x08000000      0x218 gba_crt0_my.o
+                0x08000000                _start
+                0x080000c4                __boot_method
+                0x080000c5                __slave_number
+                0x080000e0                start_vector
+                0x08000218                        . = ALIGN (0x4)
+
+.plt            0x08000218        0x0
+ *(.plt)
+                0x08000218                        . = ALIGN (0x4)
+
+.text           0x08000218     0xd708
+ *(EXCLUDE_FILE(*.iwram*) .text)
+ .text          0x08000218      0x25c cache.o
+                0x08000218                memcpy_if_okay
+                0x08000238                simpleswap_if_okay
+                0x08000250                assign_chr_pages
+                0x08000270                assign_prg_pages
+                0x08000290                assign_prg_pages2
+                0x080002a2                assign_chr_pages2
+                0x080002b4                swap_prg_pages
+                0x080002fc                make_contiguous
+                0x08000370                get_rom_map
+                0x08000434                get_vram_map
+                0x08000464                rebankswitch
+ .text          0x08000474      0xa04 cheat.o
+                0x08000474                print_cheatfinder_line_func
+                0x080004c4                print_cheatfinder_line_newold_func
+                0x0800050c                drawui5
+                0x0800064c                update_cheatfinder_tally
+                0x080006a0                reset_cheatfinder
+                0x080006bc                cheat_memcopy
+                0x080006dc                write_byte
+                0x080006fa                add_cheat
+                0x08000784                real_address
+                0x080007a6                do_cheats
+                0x080007ec                do_cheat_test
+                0x08000802                cf_equal
+                0x08000810                cf_notequal
+                0x0800081e                cf_greater
+                0x0800082c                cf_less
+                0x0800083a                cf_greaterequal
+                0x08000848                cf_lessequal
+                0x08000856                cf_comparewith
+                0x08000870                cf_update
+                0x0800089c                cf_newsearch
+                0x080008d4                ui5
+                0x0800090c                cf_next_result
+                0x08000940                cf_result
+                0x0800095e                cf_drawresults
+                0x08000a2c                cf_drawedit
+                0x08000b64                edit_cheat
+                0x08000c60                cf_results
+                0x08000d00                delete_cheat
+                0x08000d8c                cf_editcheats
+ .text          0x08000e78      0x1b4 crash.o
+                0x08000e78                crash
+ .text          0x0800102c        0x0 disasm.o
+ .text          0x0800102c      0x138 interrupt.o
+                0x0800102c                dummy
+                0x0800102e                irqInit
+                0x08001058                InitInterrupt
+                0x08001064                irqSet
+                0x0800109c                SetInterrupt
+                0x080010a8                irqEnable
+                0x080010fc                EnableInterrupt
+                0x08001108                irqDisable
+                0x08001158                DisableInterrupt
+ .text          0x08001164      0xbc4 loadcart.o
+                0x08001164                get_end_of_cache
+                0x080011c8                setup_cheatfinder
+                0x08001224                stop_dma_interrupts
+                0x0800126c                resume_interrupts
+                0x08001278                swapmem
+                0x080012a2                init_cache
+                0x08001a28                redecompress
+                0x08001a60                loadcart
+ .text          0x08001d28      0x404 main.o
+                0x08001d28                _init
+                0x08001d2a                splash
+                0x08001db4                strstr_
+                0x08001df6                C_entry
+ .text          0x0800212c        0x0 mbclient.o
+ .text          0x0800212c      0x9f8 minilzo.o
+                0x0800212c                __lzo_ptr_linear
+                0x0800212e                __lzo_align_gap
+                0x08002146                lzo_assert
+                0x0800214c                lzo_copyright
+                0x08002154                lzo_version
+                0x0800215c                lzo_version_string
+                0x08002164                lzo_version_date
+                0x0800216c                _lzo_version_string
+                0x08002174                _lzo_version_date
+                0x0800217c                lzo_adler32
+                0x080022c4                lzo_memcmp
+                0x080022d0                lzo_memcpy
+                0x080022dc                lzo_memmove
+                0x080022e8                lzo_memset
+                0x080022f4                _lzo_config_check
+                0x08002374                __lzo_init2
+                0x080023fc                lzo1x_1_compress
+                0x080026d4                lzo1x_decompress
+                0x08002894                lzo1x_decompress_safe
+ .text          0x08002b24      0x420 new_speed_hack.o
+                0x08002b24                quickhackfinder
+                0x08002d98                konami_match
+                0x08002e24                game_specific_hack
+                0x08002ed4                speedhack_manager
+ .text          0x08002f44      0x390 pocketnes_text.o
+                0x08002f44                lookup_character
+                0x08002f68                swap_column
+                0x08002fd4                move_ui
+                0x08003048                loadfont
+                0x08003060                loadfontpal
+                0x0800307c                clearoldkey
+                0x08003090                getmenuinput
+                0x0800310c                cls
+                0x08003188                drawtext
+                0x08003244                setdarknessgs
+                0x08003270                get_ready_to_display_text
+                0x0800329c                setbrightnessall
+                0x080032b4                waitkey
+ .text          0x080032d4      0x3a8 rommenu.o
+                0x080032d4                find_nes_header
+                0x080032fc                findrom
+                0x08003334                drawmenu
+                0x08003414                rommenu
+                0x08003514                getinput
+                0x0800356c                rommenu_frame
+ .text          0x0800367c      0x610 savestate2.o
+                0x0800395c                loadstate
+                0x08003c18                savestate
+ .text          0x08003c8c      0x1f4 spritecache.o
+                0x08003c8c                init_sprite_cache
+                0x08003cf8                add_if_needed
+                0x08003d18                recache_sprites
+ .text          0x08003e80      0xf68 sram.o
+                0x08003e80                sram_matches
+                0x08003ebc                bytecopy
+                0x08003ed0                flush_end_sram
+                0x08003f0c                probe_sram_size
+                0x08003fc4                getsram
+                0x08004020                writeerror
+                0x0800406c                twodigits
+                0x08004094                getstatetimeandsize
+                0x08004110                drawstates
+                0x080042b0                findstate
+                0x08004304                get_sram_owner
+                0x08004310                findconfig
+                0x08004340                updatestates
+                0x0800444c                managesram
+                0x080044c8                deletemenu
+                0x08004538                writeconfig
+                0x08004650                no_sram_owner
+                0x0800466c                readconfig
+                0x08004718                checksum
+                0x08004778                compressstate
+                0x080047ec                savestatemenu
+                0x08004880                save_new_sram
+                0x080048c0                can_quickload
+                0x080048e0                find_rom_number_by_checksum
+                0x08004914                backup_nes_sram
+                0x08004a14                cheatload
+                0x08004a9c                cheatsave
+                0x08004b2c                quicksave
+                0x08004ba4                register_sram_owner
+                0x08004bc4                get_saved_sram
+                0x08004c3c                setup_sram_after_loadstate
+                0x08004c84                uncompressstate
+                0x08004cc8                loadstatemenu
+                0x08004d98                quickload
+                0x08004dd8                using_flashcart
+ .text          0x08004de8      0xd2c ui.o
+                0x08004de8                autoAset
+                0x08004e38                autoBset
+                0x08004e88                vblset
+                0x08004ea0                fpsset
+                0x08004eb0                swapAB
+                0x08004ec4                autostateset
+                0x08004ed4                autostateset2
+                0x08004ee4                followramtoggle
+                0x08004ef4                controller
+                0x08004f1c                brightset
+                0x08004f40                display
+                0x08004f68                sleepset
+                0x08004fbc                flickset
+                0x08004fe4                strmerge_str
+                0x08005010                text1_str
+                0x08005048                print_1_func
+                0x08005058                text2_str
+                0x08005080                print_2_func
+                0x08005090                GetRegion
+                0x080050b0                drawui2
+                0x0800517c                SetRegion
+                0x080051b0                nextregion
+                0x080051c6                text
+                0x080051f8                text2
+                0x08005218                strmerge
+                0x08005234                drawui1
+                0x0800531c                strmerge3
+                0x08005342                strmerge4
+                0x08005370                hexn
+                0x080053b8                drawui3
+                0x08005478                drawclock
+                0x080054e0                ui
+                0x0800566c                fadetowhite
+                0x08005696                exit_
+                0x080056e0                sleep_
+                0x0800570c                scrolll
+                0x0800573c                restart
+                0x0800575c                scrollr
+                0x08005788                subui
+                0x08005828                ui2
+                0x08005836                ui3
+                0x08005844                ui4
+                0x08005852                cpuhacktoggle
+                0x0800586c                ppuhacktoggle
+                0x08005888                draw_input_text
+                0x080058dc                inputhex
+                0x080059a0                selectfollowaddress
+                0x080059f0                inputtext
+                0x08005ab4                number_at
+                0x08005afa                number
+ .text          0x08005b14      0x48c 6502.o
+                0x08005f00                CPU_reset
+ .text          0x08005fa0       0x1c apack.o
+                0x08005fa0                depack
+ .text          0x08005fbc        0x0 bindata.o
+ .text          0x08005fbc      0x764 cart.o
+                0x08006130                loadcart_asm
+                0x080062d4                hardreset
+                0x080062f0                tags
+                0x08006330                loadstate_gfx
+                0x08006584                reset_all
+                0x080066c4                reset_buffers
+ .text          0x08006720       0xa8 cf.o
+                0x08006720                cheat_test
+ .text          0x080067c8        0x0 division.o
+ .text          0x080067c8        0xc interruptdispatcher.o
+ .text          0x080067d4      0x2a4 io.o
+                0x080067d4                breakpoint
+                0x080067dc                vbaprint
+                0x080067e4                waitframe
+                0x080067f4                CheckGBAVersion
+                0x08006848                IO_reset
+                0x08006894                spriteinit
+                0x08006900                suspend
+                0x08006948                gettime
+                0x08006a08                doReset
+ .text          0x08006a78      0x310 link.o
+                0x08006a78                serialinterrupt
+                0x08006c34                resetSIO
+                0x08006c8c                link_multi
+ .text          0x08006d88       0x24 memcopy.o
+                0x08006d88                memset8
+                0x08006d94                memset32_
+                0x08006d98                memset16_
+                0x08006d9c                memcpy32_
+ .text          0x08006dac        0x0 memory.o
+ .text          0x08006dac        0x0 mem.o
+ .text          0x08006dac     0x1494 ppu.o
+                0x08006fac                remap_pal
+                0x08007108                paletteinit
+                0x08007184                build_chr_decode
+                0x080071e8                PPU_reset
+                0x08007bfc                sprite_zero_handler_3
+                0x08007c1c                turn_screen_on
+                0x08007d14                catchups
+                0x08007d28                turn_screen_off
+                0x08007f90                newframe_set0
+                0x0800808c                dma_W
+                0x080081bc                set_bg_cache_available
+                0x080081d8                set_bg_cache_produce_limit_consume_begin
+ .text          0x08008240      0xd78 sound.o
+                0x08008240                frame_sequencer_handler
+                0x08008588                want_to_do_frame_irq
+                0x080085a0                frame_irq_handler
+                0x080085b0                _4000w
+                0x08008638                _4001w
+                0x08008648                _4002w
+                0x08008650                update_sq1_period
+                0x080086a0                _4003w
+                0x080086fc                _4004w
+                0x08008784                _4005w
+                0x08008794                _4006w
+                0x0800879c                update_sq2_period
+                0x080087ec                _4007w
+                0x08008828                _4008w
+                0x08008830                _400Aw
+                0x08008838                update_tri_period
+                0x0800886c                _400Bw
+                0x080088ac                _400Cw
+                0x080088f4                _400Ew
+                0x0800892c                _400Fw
+                0x08008954                _4010w
+                0x080089d8                _4011w
+                0x080089ec                _4012w
+                0x08008a04                _4013w
+                0x08008afc                _4015w
+                0x08008c30                _4017w
+                0x08008ca0                _4015r
+                0x08008e2c                dmc_handler
+                0x08008e38                Sound_hardware_reset
+                0x08008efc                sound_reset
+                0x08008f28                reset_sound_after_loadstate
+ .text          0x08008fb8       0xa4 speedhack_asm.o
+                0x08009000                cpuhack_reset
+ .text          0x0800905c      0x900 timeout.o
+                0x0800905c                run
+                0x080094d8                nmi_handler
+                0x08009564                ntsc_pal_reset
+                0x0800963c                timeout_reset
+                0x080096ac                encode_timeouts
+                0x0800971c                decode_timeouts
+                0x08009830                HandlersTable
+ .text          0x0800995c      0x1bc visoly.o
+                0x0800995c                VISOLY_START
+                0x08009b18                VISOLY_END
+ .text          0x08009b18        0x0 konami.o
+ .text          0x08009b18       0x78 map023771.o
+                0x08009b18                mapper0init
+                0x08009b2c                mapper2init
+                0x08009b40                mapper3init
+                0x08009b54                mapper7init
+                0x08009b68                mapper71init
+                0x08009b7c                mapper180init
+ .text          0x08009b90      0x164 map105.o
+                0x08009b90                mapper105init
+ .text          0x08009cf4       0x74 map1166.o
+                0x08009cf4                mapper11init
+                0x08009d08                mapper66init
+ .text          0x08009d68       0x64 map151.o
+                0x08009d68                mapper151init
+ .text          0x08009dcc      0x180 map15.o
+                0x08009dcc                mapper15init
+ .text          0x08009f4c      0x1f4 map163.o
+                0x08009f4c                mapper163init
+                0x0800a08c                Mapper163HalfScreenHandler
+ .text          0x0800a140      0x1b8 map16.o
+                0x0800a140                mapper16init
+                0x0800a168                map16_handler
+ .text          0x0800a2f8      0x100 map17.o
+                0x0800a2f8                mapper17init
+                0x0800a3bc                mapper_17_hook
+ .text          0x0800a3f8       0x3c map184.o
+                0x0800a3f8                mapper184init
+ .text          0x0800a434      0x270 map18.o
+                0x0800a434                mapper18init
+                0x0800a450                map18_handler
+ .text          0x0800a6a4      0x240 map19.o
+                0x0800a6a4                mapper210init
+                0x0800a6b8                mapper19init
+                0x0800a6dc                map19_irq_handler
+                0x0800a6fc                map19_handler
+ .text          0x0800a8e4       0x44 map1.o
+                0x0800a8e4                mapper1init
+ .text          0x0800a928      0x10c map2125.o
+                0x0800a928                mapper25init
+                0x0800a928                mapper21init
+ .text          0x0800aa34       0xac map228.o
+                0x0800aa34                mapper228init
+ .text          0x0800aae0       0x84 map22.o
+                0x0800aae0                mapper22init
+ .text          0x0800ab64       0x64 map232.o
+                0x0800ab64                mapper232init
+ .text          0x0800abc8       0xd0 map23.o
+                0x0800abc8                mapper23init
+ .text          0x0800ac98       0xb4 map2426.o
+                0x0800ac98                mapper24init
+                0x0800acac                mapper26init
+ .text          0x0800ad4c       0x5c map30.o
+                0x0800ad4c                mapper30init
+ .text          0x0800ada8       0x60 map32.o
+                0x0800ada8                mapper32init
+ .text          0x0800ae08       0xa0 map33.o
+                0x0800ae08                mapper33init
+ .text          0x0800aea8       0x5c map34.o
+                0x0800aea8                mapper34init
+ .text          0x0800af04       0x70 map40.o
+                0x0800af04                mapper40init
+ .text          0x0800af74       0x8c map42.o
+                0x0800af74                mapper42init
+ .text          0x0800b000      0x3a4 map4.o
+                0x0800b000                mapper74init
+                0x0800b000                mapper118init
+                0x0800b000                mapper249init
+                0x0800b000                mapper245init
+                0x0800b000                mapper119init
+                0x0800b000                mapper4init
+                0x0800b07c                mapper206init
+                0x0800b214                mmc3_ntsc_pal_reset
+ .text          0x0800b3a4      0x54c map5.o
+                0x0800b3a4                mapper5init
+                0x0800b7a4                mmc5_handler_2
+                0x0800b7b8                mmc5_handler
+ .text          0x0800b8f0      0x310 map64.o
+                0x0800b938                mapper64init
+ .text          0x0800bc00      0x1d4 map65.o
+                0x0800bc00                mapper65init
+                0x0800bc14                map65_handler
+ .text          0x0800bdd4      0x1a8 map67.o
+                0x0800bdd4                mapper67init
+                0x0800bde8                map67_handler
+ .text          0x0800bf7c       0x64 map68.o
+                0x0800bf7c                mapper68init
+ .text          0x0800bfe0      0x200 map69.o
+                0x0800bfe0                mapper69init
+                0x0800bff4                map69_handler
+ .text          0x0800c1e0       0x48 map70152.o
+                0x0800c1e0                mapper152init
+                0x0800c1e0                mapper70init
+ .text          0x0800c228       0x3c map72.o
+                0x0800c228                mapper72init
+ .text          0x0800c264       0x94 map73.o
+                0x0800c264                mapper73init
+ .text          0x0800c2f8       0xc0 map75.o
+                0x0800c2f8                mapper75init
+ .text          0x0800c3b8       0x68 map76.o
+                0x0800c3b8                mapper76init
+ .text          0x0800c420       0x50 map77.o
+                0x0800c420                mapper77init
+ .text          0x0800c470       0x54 map78.o
+                0x0800c470                mapper78init
+ .text          0x0800c4c4       0x58 map79.o
+                0x0800c4c4                mapper79init
+ .text          0x0800c51c      0x104 map80.o
+                0x0800c51c                mapper80init
+ .text          0x0800c620       0x70 map82.o
+                0x0800c620                mapper82init
+ .text          0x0800c690       0x74 map85.o
+                0x0800c690                mapper85init
+ .text          0x0800c704       0x54 map86.o
+                0x0800c704                mapper86init
+ .text          0x0800c758       0x20 map87.o
+                0x0800c758                mapper87init
+ .text          0x0800c778       0x84 map88.o
+                0x0800c778                mapper88init
+ .text          0x0800c7fc       0x5c map92.o
+                0x0800c7fc                mapper92init
+ .text          0x0800c858       0x38 map93.o
+                0x0800c858                mapper93init
+ .text          0x0800c890       0x20 map94.o
+                0x0800c890                mapper94init
+ .text          0x0800c8b0       0x3c map97.o
+                0x0800c8b0                mapper97init
+ .text          0x0800c8ec       0x54 map99.o
+                0x0800c8ec                mapper99init
+ .text          0x0800c940       0xbc map9.o
+                0x0800c940                mapper9init
+                0x0800c964                mapper10init
+                0x0800c9c4                mapper9BGcheck
+ .text          0x0800c9fc        0x0 gba_crt0_my.o
+ .text          0x0800c9fc       0x24 /opt/devkitpro/libgba/lib/libgba.a(Compression.o)
+                0x0800c9fc                BitUnPack
+                0x0800ca00                LZ77UnCompWram
+                0x0800ca04                LZ77UnCompVram
+                0x0800ca08                HuffUnComp
+                0x0800ca0c                RLUnCompWram
+                0x0800ca10                RLUnCompVram
+                0x0800ca14                Diff8bitUnFilterWram
+                0x0800ca18                Diff8bitUnFilterVram
+                0x0800ca1c                Diff16bitUnFilter
+ .text          0x0800ca20      0x3c4 /opt/devkitpro/libgba/lib/libgba.a(interrupt.o)
+ .text          0x0800cde4       0x14 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_thumb1_case_uqi.o)
+                0x0800cde4                __gnu_thumb1_case_uqi
+ .text          0x0800cdf8       0x14 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_thumb1_case_shi.o)
+                0x0800cdf8                __gnu_thumb1_case_shi
+ .text          0x0800ce0c      0x11c /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_udivsi3.o)
+                0x0800ce0c                __udivsi3
+                0x0800ce0c                __aeabi_uidiv
+                0x0800cf08                __aeabi_uidivmod
+ .text          0x0800cf28      0x150 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_divsi3.o)
+                0x0800cf28                __aeabi_idiv
+                0x0800cf28                __divsi3
+                0x0800d058                __aeabi_idivmod
+ .text          0x0800d078        0x4 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_dvmd_tls.o)
+                0x0800d078                __aeabi_ldiv0
+                0x0800d078                __aeabi_idiv0
+ .text          0x0800d07c       0x3c /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_aeabi_uldivmod.o)
+                0x0800d07c                __aeabi_uldivmod
+ .text          0x0800d0b8        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_udivmoddi4.o)
+ .text          0x0800d0b8       0x28 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_clzdi2.o)
+                0x0800d0b8                __clzdi2
+ .text          0x0800d0e0       0x48 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_clzsi2.o)
+                0x0800d0e0                __clzsi2
+ .text          0x0800d128        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libg.a(libc_a-strcat.o)
+ .text          0x0800d128        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libg.a(libc_a-memcpy-stub.o)
+ .text          0x0800d128        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libg.a(libc_a-strlen.o)
+ .text          0x0800d128        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libg.a(libc_a-memcmp.o)
+ .text          0x0800d128        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libg.a(libc_a-strcpy.o)
+ .text          0x0800d128        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libg.a(libc_a-memset.o)
+ .text          0x0800d128        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libg.a(libc_a-init.o)
+ .text          0x0800d128        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libg.a(libc_a-memchr-stub.o)
+ .text          0x0800d128        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libg.a(libc_a-memmove.o)
+ .text          0x0800d128        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libsysbase.a(libsysbase_libsysbase_a-malloc_vars.o)
+ *(.text .stub SORT_BY_NAME(.text.*) .gnu.linkonce.t.*)
+ .text.__libc_init_array
+                0x0800d128       0x54 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libg.a(libc_a-init.o)
+                0x0800d128                __libc_init_array
+ .text.__udivmoddi4
+                0x0800d17c      0x194 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_udivmoddi4.o)
+                0x0800d17c                __udivmoddi4
+ .text.memchr   0x0800d310       0x74 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libg.a(libc_a-memchr-stub.o)
+                0x0800d310                memchr
+ .text.memcmp   0x0800d384       0x48 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libg.a(libc_a-memcmp.o)
+                0x0800d384                memcmp
+ .text.memcpy   0x0800d3cc       0xac /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libg.a(libc_a-memcpy-stub.o)
+                0x0800d3cc                memcpy
+ .text.memmove  0x0800d478      0x108 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libg.a(libc_a-memmove.o)
+                0x0800d478                memmove
+ .text.memset   0x0800d580       0x8c /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libg.a(libc_a-memset.o)
+                0x0800d580                memset
+ .text.startup  0x0800d60c       0x44 main.o
+                0x0800d60c                main
+ .text.strcat   0x0800d650       0x70 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libg.a(libc_a-strcat.o)
+                0x0800d650                strcat
+ .text.strcpy   0x0800d6c0       0x10 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libg.a(libc_a-strcpy.o)
+                0x0800d6c0                strcpy
+ .text.strlen   0x0800d6d0       0x60 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libg.a(libc_a-strlen.o)
+                0x0800d6d0                strlen
+ .text.strlen.__stub
+                0x0800d730      0x1d0 linker stubs
+ *(.text.*personality*)
+ *(.gnu.warning)
+ *(.glue_7t)
+ .glue_7t       0x0800d900        0x0 linker stubs
+ *(.glue_7)
+ .glue_7        0x0800d900        0x0 linker stubs
+ *(.vfp11_veneer)
+ .vfp11_veneer  0x0800d900        0x0 linker stubs
+                0x0800d900                        . = ALIGN (0x4)
+                0x0800d920                        __text_end = .
+
+.v4_bx          0x0800d920        0x0
+ .v4_bx         0x0800d920        0x0 linker stubs
+
+.iplt           0x0800d920        0x0
+ .iplt          0x0800d920        0x0 cache.o
+
+.append         0x0800d920      0x6fc
+ .append        0x0800d920      0x6fc bindata.o
+                0x0800d920                font
+                0x0800dfdc                fontpal
+
+.fini           0x0800e01c        0x0
+ *(.fini)
+                0x0800e01c                        . = ALIGN (0x4)
+
+.rodata         0x0800e01c      0xafc
+ *(.rodata)
+ .rodata        0x0800e01c       0x74 crash.o
+                0x0800e01c                regtxt3
+                0x0800e034                reg3offsets
+                0x0800e03c                regtxt
+                0x0800e068                regtxt2
+ .rodata        0x0800e090        0x4 main.o
+                0x0800e090                ne
+ .rodata        0x0800e094        0x5 minilzo.o
+                0x0800e094                __lzo_copyright
+ *fill*         0x0800e099        0x3 ff
+ .rodata        0x0800e09c      0x18d new_speed_hack.o
+                0x0800e09c                konami_speedhack_sizes
+                0x0800e0a8                konami_speedhacks
+                0x0800e0cc                capcom_speedhack
+                0x0800e0df                konami_speedhack_cycles
+                0x0800e0e8                quickhackfinder_ins_table
+                0x0800e1e8                konami_speedhack_8
+                0x0800e1ee                konami_speedhack_7
+                0x0800e1f4                konami_speedhack_6
+                0x0800e1fc                konami_speedhack_5
+                0x0800e204                konami_speedhack_4
+                0x0800e20b                konami_speedhack_3
+                0x0800e212                konami_speedhack_2
+                0x0800e219                konami_speedhack_1
+                0x0800e220                konami_speedhack_0
+ .rodata        0x0800e229        0xb pocketnes_text.o
+ .rodata        0x0800e234       0xef savestate2.o
+                0x0800e234                sizes
+                0x0800e274                addresses
+                0x0800e2b4                load_functions
+                0x0800e2d4                save_function_numbers
+                0x0800e2e4                save_functions
+                0x0800e304                saveversion
+ *fill*         0x0800e323        0x1 ff
+ .rodata        0x0800e324       0x30 sram.o
+                0x0800e324                configtemplate
+ .rodata        0x0800e354      0x18c ui.o
+                0x0800e354                vsynctxt
+                0x0800e360                autotxt
+                0x0800e36c                sleeptxt
+                0x0800e37c                cntrtxt
+                0x0800e38c                hostname
+                0x0800e3a0                ctrltxt
+                0x0800e3b8                disptxt
+                0x0800e3c8                flicktxt
+                0x0800e3d0                brightxt
+                0x0800e3e4                followtxt
+                0x0800e3ec                followtxt2
+                0x0800e3f4                MENUXITEMS
+                0x0800e3fc                fnlistX
+                0x0800e414                drawuiX
+                0x0800e42c                fnlist5
+                0x0800e458                fnlistdummy
+                0x0800e45c                fnlist3
+                0x0800e470                fnlist2
+                0x0800e48c                fnlist1
+                0x0800e4bc                multifnlist
+ *all.rodata*(*)
+ *(.roda)
+ *(.rodata.*)
+ .rodata.str1.1
+                0x0800e4e0      0x637 cheat.o
+                                0x134 (size before relaxing)
+ .rodata.str1.1
+                0x0800eb17        0x0 crash.o
+                                0x103 (size before relaxing)
+ .rodata.str1.1
+                0x0800eb17        0x0 main.o
+                                 0x7f (size before relaxing)
+ .rodata.str1.1
+                0x0800eb17        0x0 minilzo.o
+                                 0x11 (size before relaxing)
+ .rodata.str1.1
+                0x0800eb17        0x0 sram.o
+                                 0xfb (size before relaxing)
+ .rodata.str1.1
+                0x0800eb17        0x0 ui.o
+                                0x2a6 (size before relaxing)
+ *(.gnu.linkonce.r*)
+                0x0800eb18                        . = ALIGN (0x4)
+ *fill*         0x0800eb17        0x1 ff
+
+.ARM.extab
+ *(.ARM.extab* .gnu.linkonce.armextab.*)
+                0x0800eb18                        __exidx_start = .
+
+.ARM.exidx
+ *(.ARM.exidx* .gnu.linkonce.armexidx.*)
+                0x0800eb18                        __exidx_end = .
+
+.ctors          0x0800eb18        0x0
+ *crtbegin.o(.ctors)
+ *(EXCLUDE_FILE(*crtend.o) .ctors)
+ *(SORT_BY_NAME(.ctors.*))
+ *(.ctors)
+                0x0800eb18                        . = ALIGN (0x4)
+
+.dtors          0x0800eb18        0x0
+ *crtbegin.o(.dtors)
+ *(EXCLUDE_FILE(*crtend.o) .dtors)
+ *(SORT_BY_NAME(.dtors.*))
+ *(.dtors)
+                0x0800eb18                        . = ALIGN (0x4)
+
+.eh_frame       0x0800eb18        0x0
+ *(.eh_frame)
+                0x0800eb18                        . = ALIGN (0x4)
+
+.gcc_except_table
+                0x0800eb18        0x0
+ *(.gcc_except_table)
+                0x0800eb18                        . = ALIGN (0x4)
+                0x0800eb18                        __iwram_lma = .
+
+.bss_prefix     0x03000000     0x2800
+                0x03000000                        __bss_prefix_start__ = ABSOLUTE (.)
+ *(.bss_prefix)
+ .bss_prefix    0x03000000     0x2800 mem.o
+                0x03000000                NES_RAM
+                0x03000800                NES_SRAM
+ *(SORT_BY_NAME(.bss_prefix.*))
+ *(.bss_prefix*)
+                0x03002800                        . = ALIGN (0x4)
+                0x03002800                        __bss_prefix_end__ = ABSOLUTE (.)
+
+.iwram          0x03002800     0x45c8 load address 0x0800eb18
+                0x03002800                        __iwram_start__ = ABSOLUTE (.)
+ *(.iwram)
+ .iwram         0x03002800     0x1d30 6502.o
+                0x03002980                _10
+                0x030029b0                _10y
+                0x030029c4                branchhack_back
+                0x03002d38                _30
+                0x03002d68                _30y
+                0x03003010                _4Cy
+                0x0300301c                _4C
+                0x030030c0                _50
+                0x030030f0                _50y
+                0x0300347c                _70
+                0x030034ac                _70y
+                0x030037dc                _90
+                0x0300380c                _90y
+                0x03003b08                _B0
+                0x03003b38                _B0y
+                0x03003ec4                _D0
+                0x03003ef4                _D0y
+                0x03004238                _F0
+                0x03004268                _F0y
+                0x0300447c                check_irq
+                0x03004488                _GO
+                0x03004498                CheckI
+                0x030044a0                irq6502
+                0x030044b8                Vec6502
+ .iwram         0x03004530      0x170 apack.o
+ .iwram         0x030046a0      0x88c cart.o
+                0x030046a0                mirrorKonami_
+                0x030046ac                mirror1_
+                0x030046b8                mirror2V_
+                0x030046c4                mirror2H_
+                0x030046d0                mirror4_
+                0x03004734                map67_
+                0x03004754                map89_
+                0x03004774                mapAB_
+                0x03004794                mapCD_
+                0x030047b4                mapEF_
+                0x030047d4                map89AB_rshift_
+                0x030047d8                map89AB_
+                0x03004820                mapCDEF_rshift_
+                0x03004824                mapCDEF_
+                0x03004854                map89ABCDEF_rshift_
+                0x03004858                map89ABCDEF_
+                0x0300489c                writeCHRTBL
+                0x030048bc                chr0_
+                0x030048d8                chr1_
+                0x030048f4                chr2_
+                0x03004910                chr3_
+                0x0300492c                chr4_
+                0x03004948                chr5_
+                0x03004964                chr6_
+                0x03004980                chr7_
+                0x0300499c                chr01_rshift_
+                0x030049a0                chr01_
+                0x030049d0                chr23_rshift_
+                0x030049d4                chr23_
+                0x03004a04                chr45_rshift_
+                0x03004a08                chr45_
+                0x03004a38                chr67_rshift_
+                0x03004a3c                chr67_
+                0x03004a6c                chr0123_
+                0x03004ab0                chr01234567_rshift_
+                0x03004ab4                chr01234567_
+                0x03004b08                chr4567_
+                0x03004b48                updateBGCHR_
+                0x03004c10                chrfinish2
+                0x03004c20                chr_req_
+                0x03004d2c                im_lazy
+                0x03004e30                render_tiles_2
+ .iwram         0x03004f2c       0x48 cf.o
+ .iwram         0x03004f74      0x110 interruptdispatcher.o
+                0x03004f74                IntrMain
+ .iwram         0x03005084       0xa0 io.o
+                0x03005084                thumbcall_r1
+                0x03005088                IO_R
+                0x030050ac                empty_io_r_hook
+                0x030050b0                IO_W
+                0x03005118                joypad_write_ptr
+                0x03005120                empty_io_w_hook
+ .iwram         0x03005124      0x194 memcopy.o
+                0x03005124                memset32
+                0x0300512c                memset16
+                0x030051c0                memcpy32
+                0x03005220                memmove32
+                0x0300526c                simpleswap32
+ .iwram         0x030052b8       0x90 memory.o
+                0x030052b8                empty_R
+                0x030052bc                void
+                0x030052c0                empty_W
+                0x030052c4                ram_R
+                0x030052d0                ram_W
+                0x030052dc                sram_R
+                0x030052e8                sram_W
+                0x030052f4                sram_W2
+                0x03005300                sram_W2_modify
+                0x0300530c                rom_R60
+                0x03005318                rom_R80
+                0x03005324                rom_RA0
+                0x03005330                rom_RC0
+                0x0300533c                rom_RE0
+ .iwram         0x03005348     0x1228 ppu.o
+                0x03005440                vblankinterrupt
+                0x03005824                PPU_R
+                0x03005830                PPU_read_tbl
+                0x03005850                PPU_W
+                0x03005884                ctrl0_W
+                0x0300591c                ctrl1_W
+                0x0300592c                ctrl1_W_force
+                0x030059c0                stat_R_simple
+                0x030059c4                ppustat_
+                0x030059cc                stat_R_clearvbl
+                0x03005a84                newX
+                0x03005aac                newX2
+                0x03005ba0                UpdateXYScroll_V_equals_T
+                0x03005c50                newY
+                0x03005d18                vramaddrinc_modify2
+                0x03005d50                vramaddrinc_modify1
+                0x03005d5c                vram_write_direct
+                0x03005d64                vram_write_modify
+                0x03005d68                VRAM_chr
+                0x03005d84                VRAM_chr3
+                0x03005db0                VRAM_name0
+                0x03005db8                writeBG
+                0x03005df0                VRAM_name1
+                0x03005dfc                VRAM_name2
+                0x03005e08                VRAM_name3
+                0x03005ec4                fpsenabled
+                0x03005ec6                gammavalue
+                0x030061a0                display_bg
+                0x030063b4                fine_x_handler
+                0x030063cc                update_bankbuffer
+ .iwram         0x03006570      0x110 sound.o
+ .iwram         0x03006680      0x1f4 timeout.o
+                0x030066a0                replace_timeout_2
+                0x030066ac                install_timeout_2
+                0x0300672c                remove_timeout
+                0x030067ac                get_scanline_2
+                0x030067dc                timeout_handler_branch_taken
+                0x03006814                timeout_handler
+                0x03006838                addcycles
+                0x03006860                sleeptime
+ .iwram         0x03006874      0x21c konami.o
+                0x03006874                konami_handler
+                0x0300699c                KoLatch
+                0x030069a4                KoLatchLo
+                0x030069b8                KoLatchHi
+                0x030069c8                KoCounter
+                0x03006a2c                KoIRQen
+ .iwram         0x03006a90       0x28 map023771.o
+ .iwram         0x03006ab8      0x154 map1.o
+ .iwram         0x03006c0c      0x19c map4.o
+                0x03006c0c                mmc3_timeout_handler
+                0x03006c18                run_mmc3
+                0x03006cf8                mmc3_set_next_timeout
+                0x03006d90                mapper_irq_handler
+ .iwram         0x03006da8       0x20 map9.o
+ *iwram.*(.text)
+ *(SORT_BY_NAME(.iwram.*))
+                0x03006dc8                        . = ALIGN (0x4)
+                0x03006dc8                        __iwram_end__ = ABSOLUTE (.)
+                0x080130e0                        __data_lma = (__iwram_lma + SIZEOF (.iwram))
+
+.data           0x03006dc8      0x89c load address 0x080130e0
+                0x03006dc8                        __data_start__ = ABSOLUTE (.)
+ *(.data)
+ .data          0x03006dc8        0x0 cache.o
+ .data          0x03006dc8        0x0 cheat.o
+ .data          0x03006dc8        0x0 crash.o
+ .data          0x03006dc8        0x0 disasm.o
+ .data          0x03006dc8        0x0 interrupt.o
+ .data          0x03006dc8        0x0 loadcart.o
+ .data          0x03006dc8        0x0 main.o
+ .data          0x03006dc8        0x0 mbclient.o
+ .data          0x03006dc8        0x0 minilzo.o
+ .data          0x03006dc8        0x0 new_speed_hack.o
+ .data          0x03006dc8        0x0 pocketnes_text.o
+ .data          0x03006dc8        0x0 rommenu.o
+ .data          0x03006dc8        0x0 savestate2.o
+ .data          0x03006dc8        0x0 spritecache.o
+ .data          0x03006dc8        0x0 sram.o
+ .data          0x03006dc8        0x0 ui.o
+ .data          0x03006dc8        0x0 6502.o
+ .data          0x03006dc8        0x0 apack.o
+ .data          0x03006dc8        0x0 bindata.o
+ .data          0x03006dc8        0x0 cart.o
+ .data          0x03006dc8        0x0 cf.o
+ .data          0x03006dc8        0x0 division.o
+ .data          0x03006dc8        0x0 interruptdispatcher.o
+ .data          0x03006dc8        0x0 io.o
+ .data          0x03006dc8        0x0 link.o
+ .data          0x03006dc8        0x0 memcopy.o
+ .data          0x03006dc8        0x0 memory.o
+ .data          0x03006dc8        0x0 mem.o
+ .data          0x03006dc8        0x0 ppu.o
+ .data          0x03006dc8        0x0 sound.o
+ .data          0x03006dc8        0x0 speedhack_asm.o
+ .data          0x03006dc8        0x0 timeout.o
+ .data          0x03006dc8        0x0 visoly.o
+ .data          0x03006dc8        0x0 konami.o
+ .data          0x03006dc8        0x0 map023771.o
+ .data          0x03006dc8        0x0 map105.o
+ .data          0x03006dc8        0x0 map1166.o
+ .data          0x03006dc8        0x0 map151.o
+ .data          0x03006dc8        0x0 map15.o
+ .data          0x03006dc8        0x0 map163.o
+ .data          0x03006dc8        0x0 map16.o
+ .data          0x03006dc8        0x0 map17.o
+ .data          0x03006dc8        0x0 map184.o
+ .data          0x03006dc8        0x0 map18.o
+ .data          0x03006dc8        0x0 map19.o
+ .data          0x03006dc8        0x0 map1.o
+ .data          0x03006dc8        0x0 map2125.o
+ .data          0x03006dc8        0x0 map228.o
+ .data          0x03006dc8        0x0 map22.o
+ .data          0x03006dc8        0x0 map232.o
+ .data          0x03006dc8        0x0 map23.o
+ .data          0x03006dc8        0x0 map2426.o
+ .data          0x03006dc8        0x0 map30.o
+ .data          0x03006dc8        0x0 map32.o
+ .data          0x03006dc8        0x0 map33.o
+ .data          0x03006dc8        0x0 map34.o
+ .data          0x03006dc8        0x0 map40.o
+ .data          0x03006dc8        0x0 map42.o
+ .data          0x03006dc8        0x0 map4.o
+ .data          0x03006dc8        0x0 map5.o
+ .data          0x03006dc8        0x0 map64.o
+ .data          0x03006dc8        0x0 map65.o
+ .data          0x03006dc8        0x0 map67.o
+ .data          0x03006dc8        0x0 map68.o
+ .data          0x03006dc8        0x0 map69.o
+ .data          0x03006dc8        0x0 map70152.o
+ .data          0x03006dc8        0x0 map72.o
+ .data          0x03006dc8        0x0 map73.o
+ .data          0x03006dc8        0x0 map75.o
+ .data          0x03006dc8        0x0 map76.o
+ .data          0x03006dc8        0x0 map77.o
+ .data          0x03006dc8        0x0 map78.o
+ .data          0x03006dc8        0x0 map79.o
+ .data          0x03006dc8        0x0 map80.o
+ .data          0x03006dc8        0x0 map82.o
+ .data          0x03006dc8        0x0 map85.o
+ .data          0x03006dc8        0x0 map86.o
+ .data          0x03006dc8        0x0 map87.o
+ .data          0x03006dc8        0x0 map88.o
+ .data          0x03006dc8        0x0 map92.o
+ .data          0x03006dc8        0x0 map93.o
+ .data          0x03006dc8        0x0 map94.o
+ .data          0x03006dc8        0x0 map97.o
+ .data          0x03006dc8        0x0 map99.o
+ .data          0x03006dc8        0x0 map9.o
+ .data          0x03006dc8        0x0 gba_crt0_my.o
+ .data          0x03006dc8        0x0 /opt/devkitpro/libgba/lib/libgba.a(Compression.o)
+ .data          0x03006dc8        0x0 /opt/devkitpro/libgba/lib/libgba.a(interrupt.o)
+ .data          0x03006dc8        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_thumb1_case_uqi.o)
+ .data          0x03006dc8        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_thumb1_case_shi.o)
+ .data          0x03006dc8        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_udivsi3.o)
+ .data          0x03006dc8        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_divsi3.o)
+ .data          0x03006dc8        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_dvmd_tls.o)
+ .data          0x03006dc8        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_aeabi_uldivmod.o)
+ .data          0x03006dc8        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_udivmoddi4.o)
+ .data          0x03006dc8        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_clzdi2.o)
+ .data          0x03006dc8        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_clzsi2.o)
+ .data          0x03006dc8        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libg.a(libc_a-strcat.o)
+ .data          0x03006dc8        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libg.a(libc_a-memcpy-stub.o)
+ .data          0x03006dc8        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libg.a(libc_a-strlen.o)
+ .data          0x03006dc8        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libg.a(libc_a-memcmp.o)
+ .data          0x03006dc8        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libg.a(libc_a-strcpy.o)
+ .data          0x03006dc8        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libg.a(libc_a-memset.o)
+ .data          0x03006dc8        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libg.a(libc_a-init.o)
+ .data          0x03006dc8        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libg.a(libc_a-memchr-stub.o)
+ .data          0x03006dc8        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libg.a(libc_a-memmove.o)
+ .data          0x03006dc8        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libsysbase.a(libsysbase_libsysbase_a-malloc_vars.o)
+ *(SORT_BY_NAME(.data.*))
+ *fill*         0x03006dc8        0x8 ff
+ .data.099      0x03006dd0        0x4 ppu.o
+                0x03006dd0                _vramaddr
+ .data.100      0x03006dd4      0x498 6502.o
+                0x03006de8                _writemem_6
+                0x03006df4                _writemem_tbl
+                0x03006df8                _memmap_tbl
+                0x03006e04                _memmap_6
+                0x03006e08                rommap
+                0x03006e18                _readmem_tbl_base
+                0x03006e2c                _readmem_6
+                0x03006e38                _readmem_tbl
+                0x03006e3c                op_table
+                0x03006e3c                GLOBAL_PTR_BASE
+                0x0300723c                cpustate
+                0x03007250                _cpu_cycles
+                0x03007254                _m6502_pc
+                0x03007258                _m6502_s
+                0x0300725c                _wantirq
+                0x03007260                frametotal
+                0x03007264                _lastbank
+ .data.101      0x0300726c       0x70 ppu.o
+                0x0300726c                FPSValue
+                0x03007270                AGBinput
+                0x03007274                EMUinput
+                0x03007278                ppustate
+                0x03007278                _vramaddr_dummy
+                0x03007280                _scrollX
+                0x03007292                ppustat_savestate
+                0x03007295                _ppuctrl0frame
+                0x03007298                _nextx
+                0x030072b1                _PAL60
+                0x030072b2                novblankwait
+                0x030072b3                wtop
+                0x030072b6                _has_vram
+                0x030072b7                _bankable_vrom
+                0x030072b8                _vram_page_mask
+                0x030072b9                _vram_page_base
+                0x030072bc                _recent_tiles
+                0x030072c0                _dmarecent_tiles
+                0x030072c4                _recent_tilenum
+                0x030072c8                _dmarecent_tilenum
+                0x030072d8                _bg_cache_full
+ .data.102      0x030072dc       0xa4 cart.o
+                0x030072dc                mapperstate
+                0x030072ff                _bank6
+                0x03007300                _bank8
+                0x03007304                _nes_chr_map
+                0x03007304                _Cbank0
+                0x03007340                _rombase
+                0x03007340                romstart
+                0x03007344                romnum
+                0x03007348                _emuflags
+                0x03007349                _scaling
+                0x0300734c                _BGmirror
+                0x03007350                _rommask
+                0x03007354                _vrombase
+                0x03007358                _vrommask
+                0x0300735c                _instant_prg_banks
+                0x03007360                _instant_chr_banks
+                0x03007364                _cartflags
+                0x03007365                _hackflags
+                0x03007366                _hackflags2
+                0x03007367                _mapper_number
+                0x03007368                _rompages
+                0x03007369                _vrompages
+                0x0300736a                _fourscreen
+                0x03007374                _twitch
+                0x03007375                _flicker
+ .data.103      0x03007380       0x8c sound.o
+                0x03007380                sound_state
+                0x03007394                _frame_mode
+                0x0300739c                _channel_enables
+                0x030073ac                _sq1_period
+                0x030073b8                _pcmctrl
+                0x030073c8                _pcmstart
+                0x030073cc                _pcmcurrentaddr
+                0x030073ec                _dmc_last_timestamp
+                0x030073f0                _dmc_tick_counter
+                0x030073f4                _dmc_period
+                0x030073f8                _dmc_period_reciprocal
+                0x030073fc                _dmc_length_counter
+                0x03007400                _dmc_remaining_bits
+ .data.104      0x0300740c       0x2c io.o
+                0x03007424                _joycfg
+ .data.105      0x03007438      0x110 ppu.o
+                0x0300743a                _frameready
+                0x0300743b                _firstframeready
+                0x0300743c                _vram_write_tbl
+                0x0300747c                _vram_map
+                0x030074bc                _nes_palette
+                0x030074dc                _scrollbuff
+                0x030074e0                _dmascrollbuff
+                0x030074e4                _nesoambuff
+                0x030074e8                _dmanesoambuff
+                0x030074ec                _bg0cntbuff
+                0x030074f0                _dmabg0cntbuff
+                0x030074f4                _dispcntbuff
+                0x030074f8                _dmadispcntbuff
+                0x030074fc                _dma0buff
+                0x03007500                _dma1buff
+                0x03007504                _dma3buff
+                0x03007508                _nes_vram
+                0x03007518                _dmabankbuffer
+                0x03007535                _okay_to_run_hdma
+ .data.106      0x03007548      0x10c timeout.o
+                0x03007548                TimeoutState
+                0x03007548                _cycles_to_run
+                0x0300754c                _timestamp
+                0x030075b0                _mapper_timeout
+                0x030075bc                _mapper_irq_timeout
+                0x030075c8                _dmc_timeout
+                0x03007650                dontstop
+                0x03007652                _crash_disabled
+ .data.107      0x03007654       0x10 speedhack_asm.o
+                0x03007660                _deadbeef
+ *(.gnu.linkonce.d*)
+                0x03007664                        . = ALIGN (0x4)
+                0x0801397c                        __preinit_lma = (__data_lma + SIZEOF (.data))
+
+.igot.plt       0x03007664        0x0 load address 0x0801397c
+ .igot.plt      0x03007664        0x0 cache.o
+
+.preinit_array  0x03007664        0x0 load address 0x0801397c
+                0x03007664                        __preinit_array_start = ABSOLUTE (.)
+ *(.preinit_array)
+                0x03007664                        __preinit_array_end = ABSOLUTE (.)
+                0x0801397c                        __init_lma = (__preinit_lma + SIZEOF (.preinit_array))
+
+.init_array     0x03007664        0x0 load address 0x0801397c
+                0x03007664                        __init_array_start = ABSOLUTE (.)
+ *(SORT_BY_NAME(.init_array.*))
+ *(.init_array)
+                0x03007664                        __init_array_end = ABSOLUTE (.)
+                0x0801397c                        __fini_lma = (__init_lma + SIZEOF (.init_array))
+
+.fini_array     0x03007664        0x0 load address 0x0801397c
+                0x03007664                        __fini_array_start = ABSOLUTE (.)
+ *(SORT_BY_NAME(.fini_array.*))
+ *(.fini_array)
+                0x03007664                        __fini_array_end = ABSOLUTE (.)
+                0x0801397c                        __jcr_lma = (__fini_lma + SIZEOF (.fini_array))
+
+.jcr
+ *(.jcr)
+                0x03007664                        __data_end__ = ABSOLUTE (.)
+
+.bss            0x03007664      0x620
+                0x03007664                        __bss_start = ABSOLUTE (.)
+                0x03007664                        __bss_start__ = ABSOLUTE (.)
+ *(.dynbss)
+ *(.gnu.linkonce.b*)
+ *(.bss)
+ .bss           0x03007664        0x0 cache.o
+ .bss           0x03007664        0x0 cheat.o
+ .bss           0x03007664        0x0 crash.o
+ .bss           0x03007664        0x0 disasm.o
+ .bss           0x03007664        0x0 interrupt.o
+ .bss           0x03007664        0x4 loadcart.o
+ .bss           0x03007668        0x0 main.o
+ .bss           0x03007668        0x0 mbclient.o
+ .bss           0x03007668       0x10 minilzo.o
+                0x03007674                __lzo_init_done
+ .bss           0x03007678        0x0 new_speed_hack.o
+ .bss           0x03007678        0x0 pocketnes_text.o
+ .bss           0x03007678        0x8 rommenu.o
+ .bss           0x03007680        0x0 savestate2.o
+ .bss           0x03007680        0x8 spritecache.o
+                0x03007680                sprite_cache_cursor
+                0x03007684                sprite_cache_size
+ .bss           0x03007688        0x0 sram.o
+ .bss           0x03007688       0x15 ui.o
+ .bss           0x0300769d        0x0 6502.o
+ .bss           0x0300769d        0x0 apack.o
+ .bss           0x0300769d        0x0 bindata.o
+ .bss           0x0300769d        0x0 cart.o
+ .bss           0x0300769d        0x0 cf.o
+ .bss           0x0300769d        0x0 division.o
+ .bss           0x0300769d        0x0 interruptdispatcher.o
+ .bss           0x0300769d        0x0 io.o
+ .bss           0x0300769d        0x0 link.o
+ .bss           0x0300769d        0x0 memcopy.o
+ .bss           0x0300769d        0x0 memory.o
+ .bss           0x0300769d        0x0 mem.o
+ .bss           0x0300769d        0x0 ppu.o
+ .bss           0x0300769d        0x0 sound.o
+ .bss           0x0300769d        0x0 speedhack_asm.o
+ .bss           0x0300769d        0x0 timeout.o
+ .bss           0x0300769d        0x0 visoly.o
+ .bss           0x0300769d        0x0 konami.o
+ .bss           0x0300769d        0x0 map023771.o
+ .bss           0x0300769d        0x0 map105.o
+ .bss           0x0300769d        0x0 map1166.o
+ .bss           0x0300769d        0x0 map151.o
+ .bss           0x0300769d        0x0 map15.o
+ .bss           0x0300769d        0x0 map163.o
+ .bss           0x0300769d        0x0 map16.o
+ .bss           0x0300769d        0x0 map17.o
+ .bss           0x0300769d        0x0 map184.o
+ .bss           0x0300769d        0x0 map18.o
+ .bss           0x0300769d        0x0 map19.o
+ .bss           0x0300769d        0x0 map1.o
+ .bss           0x0300769d        0x0 map2125.o
+ .bss           0x0300769d        0x0 map228.o
+ .bss           0x0300769d        0x0 map22.o
+ .bss           0x0300769d        0x0 map232.o
+ .bss           0x0300769d        0x0 map23.o
+ .bss           0x0300769d        0x0 map2426.o
+ .bss           0x0300769d        0x0 map30.o
+ .bss           0x0300769d        0x0 map32.o
+ .bss           0x0300769d        0x0 map33.o
+ .bss           0x0300769d        0x0 map34.o
+ .bss           0x0300769d        0x0 map40.o
+ .bss           0x0300769d        0x0 map42.o
+ .bss           0x0300769d        0x0 map4.o
+ .bss           0x0300769d        0x0 map5.o
+ .bss           0x0300769d        0x0 map64.o
+ .bss           0x0300769d        0x0 map65.o
+ .bss           0x0300769d        0x0 map67.o
+ .bss           0x0300769d        0x0 map68.o
+ .bss           0x0300769d        0x0 map69.o
+ .bss           0x0300769d        0x0 map70152.o
+ .bss           0x0300769d        0x0 map72.o
+ .bss           0x0300769d        0x0 map73.o
+ .bss           0x0300769d        0x0 map75.o
+ .bss           0x0300769d        0x0 map76.o
+ .bss           0x0300769d        0x0 map77.o
+ .bss           0x0300769d        0x0 map78.o
+ .bss           0x0300769d        0x0 map79.o
+ .bss           0x0300769d        0x0 map80.o
+ .bss           0x0300769d        0x0 map82.o
+ .bss           0x0300769d        0x0 map85.o
+ .bss           0x0300769d        0x0 map86.o
+ .bss           0x0300769d        0x0 map87.o
+ .bss           0x0300769d        0x0 map88.o
+ .bss           0x0300769d        0x0 map92.o
+ .bss           0x0300769d        0x0 map93.o
+ .bss           0x0300769d        0x0 map94.o
+ .bss           0x0300769d        0x0 map97.o
+ .bss           0x0300769d        0x0 map99.o
+ .bss           0x0300769d        0x0 map9.o
+ .bss           0x0300769d        0x0 gba_crt0_my.o
+ .bss           0x0300769d        0x0 /opt/devkitpro/libgba/lib/libgba.a(Compression.o)
+ *fill*         0x0300769d        0x3 
+ .bss           0x030076a0       0x78 /opt/devkitpro/libgba/lib/libgba.a(interrupt.o)
+                0x030076a0                IntrTable
+ .bss           0x03007718        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_thumb1_case_uqi.o)
+ .bss           0x03007718        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_thumb1_case_shi.o)
+ .bss           0x03007718        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_udivsi3.o)
+ .bss           0x03007718        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_divsi3.o)
+ .bss           0x03007718        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_dvmd_tls.o)
+ .bss           0x03007718        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_aeabi_uldivmod.o)
+ .bss           0x03007718        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_udivmoddi4.o)
+ .bss           0x03007718        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_clzdi2.o)
+ .bss           0x03007718        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_clzsi2.o)
+ .bss           0x03007718        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libg.a(libc_a-strcat.o)
+ .bss           0x03007718        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libg.a(libc_a-memcpy-stub.o)
+ .bss           0x03007718        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libg.a(libc_a-strlen.o)
+ .bss           0x03007718        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libg.a(libc_a-memcmp.o)
+ .bss           0x03007718        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libg.a(libc_a-strcpy.o)
+ .bss           0x03007718        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libg.a(libc_a-memset.o)
+ .bss           0x03007718        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libg.a(libc_a-init.o)
+ .bss           0x03007718        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libg.a(libc_a-memchr-stub.o)
+ .bss           0x03007718        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libg.a(libc_a-memmove.o)
+ .bss           0x03007718        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libsysbase.a(libsysbase_libsysbase_a-malloc_vars.o)
+ *(COMMON)
+ COMMON         0x03007718        0x0 interrupt.o
+ *(SORT_BY_NAME(.bss.*))
+ .bss.end       0x03007718      0x564 mem.o
+                0x03007718                IWRAM_CANARY_0
+                0x0300771c                CHR_DECODE
+                0x03007b1c                IWRAM_CANARY_1
+                0x03007b20                YSCALE_EXRTA
+                0x03007b70                YSCALE_LOOKUP
+                0x03007c78                IWRAM_CANARY_2
+ .bss.fake_heap_end
+                0x03007c7c        0x4 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libsysbase.a(libsysbase_libsysbase_a-malloc_vars.o)
+                0x03007c7c                fake_heap_end
+ .bss.fake_heap_start
+                0x03007c80        0x4 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libsysbase.a(libsysbase_libsysbase_a-malloc_vars.o)
+                0x03007c80                fake_heap_start
+ *(.bss*)
+                0x03007c84                        . = ALIGN (0x4)
+                0x03007c84                        __bss_end__ = ABSOLUTE (.)
+                0x0801397c                        __iwram_overlay_lma = (__jcr_lma + SIZEOF (.jcr))
+                0x03007c84                        __iwram_overlay_start = .
+
+.iwram0         0x03007c84        0x0 load address 0x0801397c
+ *(.iwram0)
+                0x03007c84                        . = ALIGN (0x4)
+                0x0801397c                        PROVIDE (__load_start_iwram0 = LOADADDR (.iwram0))
+                0x0801397c                        PROVIDE (__load_stop_iwram0 = (LOADADDR (.iwram0) + SIZEOF (.iwram0)))
+
+.iwram1         0x03007c84        0x0
+ *(.iwram1)
+                0x03007c84                        . = ALIGN (0x4)
+                [!provide]                        PROVIDE (__load_start_iwram1 = LOADADDR (.iwram1))
+                [!provide]                        PROVIDE (__load_stop_iwram1 = (LOADADDR (.iwram1) + SIZEOF (.iwram1)))
+
+.iwram2         0x03007c84        0x0
+ *(.iwram2)
+                0x03007c84                        . = ALIGN (0x4)
+                [!provide]                        PROVIDE (__load_start_iwram2 = LOADADDR (.iwram2))
+                [!provide]                        PROVIDE (__load_stop_iwram2 = (LOADADDR (.iwram2) + SIZEOF (.iwram2)))
+
+.iwram3         0x03007c84        0x0
+ *(.iwram3)
+                0x03007c84                        . = ALIGN (0x4)
+                [!provide]                        PROVIDE (__load_start_iwram3 = LOADADDR (.iwram3))
+                [!provide]                        PROVIDE (__load_stop_iwram3 = (LOADADDR (.iwram3) + SIZEOF (.iwram3)))
+
+.iwram4         0x03007c84        0x0
+ *(.iwram4)
+                0x03007c84                        . = ALIGN (0x4)
+                [!provide]                        PROVIDE (__load_start_iwram4 = LOADADDR (.iwram4))
+                [!provide]                        PROVIDE (__load_stop_iwram4 = (LOADADDR (.iwram4) + SIZEOF (.iwram4)))
+
+.iwram5         0x03007c84        0x0
+ *(.iwram5)
+                0x03007c84                        . = ALIGN (0x4)
+                [!provide]                        PROVIDE (__load_start_iwram5 = LOADADDR (.iwram5))
+                [!provide]                        PROVIDE (__load_stop_iwram5 = (LOADADDR (.iwram5) + SIZEOF (.iwram5)))
+
+.iwram6         0x03007c84        0x0
+ *(.iwram6)
+                0x03007c84                        . = ALIGN (0x4)
+                [!provide]                        PROVIDE (__load_start_iwram6 = LOADADDR (.iwram6))
+                [!provide]                        PROVIDE (__load_stop_iwram6 = (LOADADDR (.iwram6) + SIZEOF (.iwram6)))
+
+.iwram7         0x03007c84        0x0
+ *(.iwram7)
+                0x03007c84                        . = ALIGN (0x4)
+                [!provide]                        PROVIDE (__load_start_iwram7 = LOADADDR (.iwram7))
+                [!provide]                        PROVIDE (__load_stop_iwram7 = (LOADADDR (.iwram7) + SIZEOF (.iwram7)))
+
+.iwram8         0x03007c84        0x0
+ *(.iwram8)
+                0x03007c84                        . = ALIGN (0x4)
+                [!provide]                        PROVIDE (__load_start_iwram8 = LOADADDR (.iwram8))
+                [!provide]                        PROVIDE (__load_stop_iwram8 = (LOADADDR (.iwram8) + SIZEOF (.iwram8)))
+
+.iwram9         0x03007c84        0x0
+ *(.iwram9)
+                0x03007c84                        . = ALIGN (0x4)
+                [!provide]                        PROVIDE (__load_start_iwram9 = LOADADDR (.iwram9))
+                [!provide]                        PROVIDE (__load_stop_iwram9 = (LOADADDR (.iwram9) + SIZEOF (.iwram9)))
+                0x03007c84                        __iwram_overlay_end = .
+                0x0801397c                        __ewram_lma = (__iwram_overlay_lma + (__iwram_overlay_end - __iwram_overlay_start))
+                0x03007c84                        __iheap_start = .
+                0x02000000                        __ewram_start = ORIGIN (ewram)
+
+.ewram          0x02000000        0x8 load address 0x0801397c
+ *(.ewram)
+ *(.ewram_data)
+ .ewram_data    0x02000000        0x8 sram.o
+                0x02000000                save_start
+                0x02000004                config_position
+ *(SORT_BY_NAME(.ewram.*))
+                0x02000008                        . = ALIGN (0x4)
+                0x02000008                        __ewram_end = ABSOLUTE (.)
+
+.sbss           0x02000008       0xd8
+                0x02000008                        __sbss_start__ = ABSOLUTE (.)
+ *(.sbss)
+ .sbss          0x02000008       0x28 cheat.o
+                0x02000008                found_for
+                0x02000018                cheatfinderstate
+                0x0200001c                compare_value
+                0x02000020                cheatfinder_bits
+                0x02000024                cheatfinder_values
+                0x02000028                num_cheats
+                0x0200002c                cheatfinder_cheats
+ .sbss          0x02000030        0x9 loadcart.o
+                0x02000030                do_not_decompress
+                0x02000031                rom_is_compressed
+                0x02000032                ewram_owner_is_sram
+                0x02000034                my_checksum
+                0x02000038                do_not_reset_all
+ *fill*         0x02000039        0x3 
+ .sbss          0x0200003c       0x40 main.o
+                0x0200003c                gameboyplayer
+                0x0200003d                gbaversion
+                0x0200003e                rtc
+                0x02000040                end_of_exram
+                0x02000044                pogoshell
+                0x02000048                ewram_start
+                0x0200004c                textstart
+                0x02000050                pogoshell_romname
+                0x02000070                copiedfromrom
+                0x02000074                max_multiboot_size
+                0x02000078                oldinput
+ .sbss          0x0200007c       0x14 pocketnes_text.o
+                0x0200007c                old_ui_x
+                0x02000080                ui_x
+                0x02000084                ui_y
+                0x02000088                oldkey
+                0x0200008c                selected
+ .sbss          0x02000090       0x10 rommenu.o
+                0x02000090                roms
+                0x02000094                rommenu_state
+                0x02000098                selectedrom
+                0x0200009c                selected_rom_options
+ .sbss          0x020000a0        0x4 savestate2.o
+                0x020000a0                blocks_loaded
+ .sbss          0x020000a4       0x14 sram.o
+                0x020000a4                BUFFER1
+                0x020000a8                BUFFER3
+                0x020000ac                totalstatesize
+                0x020000b0                BUFFER2
+                0x020000b4                sram_owner
+ .sbss          0x020000b8       0x28 ui.o
+                0x020000b8                autoA
+                0x020000b9                autoB
+                0x020000ba                autostate
+                0x020000bb                stime
+                0x020000bc                str
+                0x020000dc                mainmenuitems
+ *(SORT_BY_NAME(.sbss.*))
+                0x020000e0                        . = ALIGN (0x4)
+                0x020000e0                        __sbss_end__ = ABSOLUTE (.)
+                0x020000e0                        __end__ = ABSOLUTE (.)
+                0x020000e0                        __eheap_start = ABSOLUTE (.)
+                0x08013984                        __vram1_lma = (__ewram_lma + SIZEOF (.ewram))
+                0x06003000                        __vram1_start = ORIGIN (vram1)
+
+.vram1          0x06003000      0xf88 load address 0x08013984
+ *(.vram1)
+ .vram1         0x06003000      0x130 io.o
+                0x06003020                refreshNESjoypads
+                0x06003080                joy0_W
+ .vram1         0x06003130      0x64c ppu.o
+                0x06003130                nes_chr_update
+                0x060031a0                sprite_zero_handler_2
+                0x06003408                vcountinterrupt
+                0x0600347c                hblankinterrupt
+                0x06003508                newframe_nes_vblank
+ .vram1         0x0600377c      0x17c sound.o
+                0x0600377c                timer1interrupt
+                0x0600386c                write_square_1
+                0x06003870                timer_2_interrupt
+                0x0600388c                write_square_2
+                0x06003890                timer_3_interrupt
+                0x060038c0                tri_on
+                0x060038d4                tri_off
+ .vram1         0x060038f8      0x488 speedhack_asm.o
+                0x060038f8                call_quickhackfinder
+                0x06003988                set_cpu_hack
+                0x06003a38                dobnehack
+                0x06003b00                dobranchhackjmp
+                0x06003b14                dobranchhack2
+ .vram1         0x06003d80      0x208 map4.o
+                0x06003d80                mmc3_screen_on
+ *(SORT_BY_NAME(.vram1.*))
+                0x06003f88                        . = ALIGN (0x4)
+                0x06003f88                        __vram1_end = ABSOLUTE (.)
+                0x06003f88                        __vram1_end__ = ABSOLUTE (.)
+                0x0801490c                        __pad_lma = (__vram1_lma + SIZEOF (.vram1))
+
+.pad            0x06003f88        0x8 load address 0x0801490c
+                0x06003f88        0x4 LONG 0x52416b64
+                0x06003f8c        0x4 LONG 0x4d
+                0x06003f90                        . = ALIGN (0x4)
+                0x08014914                        __rom_end__ = (__pad_lma + SIZEOF (.pad))
+
+.rel.dyn        0x06003f90        0x0 load address 0x08014914
+ .rel.iplt      0x06003f90        0x0 cache.o
+
+.stab
+ *(.stab)
+
+.stabstr
+ *(.stabstr)
+
+.stab.excl
+ *(.stab.excl)
+
+.stab.exclstr
+ *(.stab.exclstr)
+
+.stab.index
+ *(.stab.index)
+
+.stab.indexstr
+ *(.stab.indexstr)
+
+.comment        0x00000000       0x3b
+ *(.comment)
+ .comment       0x00000000       0x3b cache.o
+                                 0x19 (size before relaxing)
+ .comment       0x0000003b        0x0 cheat.o
+                                 0x19 (size before relaxing)
+ .comment       0x0000003b        0x0 crash.o
+                                 0x19 (size before relaxing)
+ .comment       0x0000003b        0x0 disasm.o
+                                 0x19 (size before relaxing)
+ .comment       0x0000003b        0x0 interrupt.o
+                                 0x19 (size before relaxing)
+ .comment       0x0000003b        0x0 loadcart.o
+                                 0x19 (size before relaxing)
+ .comment       0x0000003b        0x0 main.o
+                                 0x19 (size before relaxing)
+ .comment       0x0000003b        0x0 mbclient.o
+                                 0x19 (size before relaxing)
+ .comment       0x0000003b        0x0 minilzo.o
+                                 0x19 (size before relaxing)
+ .comment       0x0000003b        0x0 new_speed_hack.o
+                                 0x19 (size before relaxing)
+ .comment       0x0000003b        0x0 pocketnes_text.o
+                                 0x19 (size before relaxing)
+ .comment       0x0000003b        0x0 rommenu.o
+                                 0x19 (size before relaxing)
+ .comment       0x0000003b        0x0 savestate2.o
+                                 0x19 (size before relaxing)
+ .comment       0x0000003b        0x0 spritecache.o
+                                 0x19 (size before relaxing)
+ .comment       0x0000003b        0x0 sram.o
+                                 0x19 (size before relaxing)
+ .comment       0x0000003b        0x0 ui.o
+                                 0x19 (size before relaxing)
+ .comment       0x0000003b        0x0 /opt/devkitpro/libgba/lib/libgba.a(Compression.o)
+                                 0x24 (size before relaxing)
+ .comment       0x0000003b        0x0 /opt/devkitpro/libgba/lib/libgba.a(interrupt.o)
+                                 0x24 (size before relaxing)
+ .comment       0x0000003b        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_udivmoddi4.o)
+                                 0x19 (size before relaxing)
+
+.debug
+ *(.debug)
+
+.line
+ *(.line)
+
+.debug_srcinfo
+ *(.debug_srcinfo)
+
+.debug_sfnames
+ *(.debug_sfnames)
+
+.debug_aranges  0x00000000      0x358
+ *(.debug_aranges)
+ .debug_aranges
+                0x00000000       0x20 cache.o
+ .debug_aranges
+                0x00000020       0x20 cheat.o
+ .debug_aranges
+                0x00000040       0x20 crash.o
+ .debug_aranges
+                0x00000060       0x18 disasm.o
+ .debug_aranges
+                0x00000078       0x20 interrupt.o
+ .debug_aranges
+                0x00000098       0x20 loadcart.o
+ .debug_aranges
+                0x000000b8       0x28 main.o
+ .debug_aranges
+                0x000000e0       0x18 mbclient.o
+ .debug_aranges
+                0x000000f8       0x20 minilzo.o
+ .debug_aranges
+                0x00000118       0x20 new_speed_hack.o
+ .debug_aranges
+                0x00000138       0x20 pocketnes_text.o
+ .debug_aranges
+                0x00000158       0x20 rommenu.o
+ .debug_aranges
+                0x00000178       0x20 savestate2.o
+ .debug_aranges
+                0x00000198       0x20 spritecache.o
+ .debug_aranges
+                0x000001b8       0x20 sram.o
+ .debug_aranges
+                0x000001d8       0x20 ui.o
+ .debug_aranges
+                0x000001f8       0x20 /opt/devkitpro/libgba/lib/libgba.a(Compression.o)
+ .debug_aranges
+                0x00000218       0x20 /opt/devkitpro/libgba/lib/libgba.a(interrupt.o)
+ .debug_aranges
+                0x00000238       0x20 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_thumb1_case_uqi.o)
+ .debug_aranges
+                0x00000258       0x20 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_thumb1_case_shi.o)
+ .debug_aranges
+                0x00000278       0x20 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_udivsi3.o)
+ .debug_aranges
+                0x00000298       0x20 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_divsi3.o)
+ .debug_aranges
+                0x000002b8       0x20 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_dvmd_tls.o)
+ .debug_aranges
+                0x000002d8       0x20 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_aeabi_uldivmod.o)
+ .debug_aranges
+                0x000002f8       0x20 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_udivmoddi4.o)
+ .debug_aranges
+                0x00000318       0x20 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_clzdi2.o)
+ .debug_aranges
+                0x00000338       0x20 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_clzsi2.o)
+
+.debug_pubnames
+ *(.debug_pubnames)
+
+.debug_info     0x00000000     0xe828
+ *(.debug_info)
+ .debug_info    0x00000000      0x880 cache.o
+ .debug_info    0x00000880     0x18b3 cheat.o
+ .debug_info    0x00002133      0x65c crash.o
+ .debug_info    0x0000278f       0x7e disasm.o
+ .debug_info    0x0000280d      0x3b6 interrupt.o
+ .debug_info    0x00002bc3     0x169b loadcart.o
+ .debug_info    0x0000425e      0xb6a main.o
+ .debug_info    0x00004dc8       0x7e mbclient.o
+ .debug_info    0x00004e46     0x11ac minilzo.o
+ .debug_info    0x00005ff2     0x100c new_speed_hack.o
+ .debug_info    0x00006ffe      0x7e4 pocketnes_text.o
+ .debug_info    0x000077e2      0x7d7 rommenu.o
+ .debug_info    0x00007fb9     0x17a1 savestate2.o
+ .debug_info    0x0000975a      0x522 spritecache.o
+ .debug_info    0x00009c7c     0x202e sram.o
+ .debug_info    0x0000bcaa     0x1eb5 ui.o
+ .debug_info    0x0000db5f      0x35b /opt/devkitpro/libgba/lib/libgba.a(Compression.o)
+ .debug_info    0x0000deba      0x418 /opt/devkitpro/libgba/lib/libgba.a(interrupt.o)
+ .debug_info    0x0000e2d2       0x31 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_thumb1_case_uqi.o)
+ .debug_info    0x0000e303       0x31 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_thumb1_case_shi.o)
+ .debug_info    0x0000e334       0x3e /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_udivsi3.o)
+ .debug_info    0x0000e372       0x3e /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_divsi3.o)
+ .debug_info    0x0000e3b0       0x3c /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_dvmd_tls.o)
+ .debug_info    0x0000e3ec       0x24 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_aeabi_uldivmod.o)
+ .debug_info    0x0000e410      0x3b6 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_udivmoddi4.o)
+ .debug_info    0x0000e7c6       0x31 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_clzdi2.o)
+ .debug_info    0x0000e7f7       0x31 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_clzsi2.o)
+
+.debug_abbrev   0x00000000     0x3595
+ *(.debug_abbrev)
+ .debug_abbrev  0x00000000      0x21b cache.o
+ .debug_abbrev  0x0000021b      0x436 cheat.o
+ .debug_abbrev  0x00000651      0x227 crash.o
+ .debug_abbrev  0x00000878       0x3e disasm.o
+ .debug_abbrev  0x000008b6      0x1ec interrupt.o
+ .debug_abbrev  0x00000aa2      0x4d3 loadcart.o
+ .debug_abbrev  0x00000f75      0x333 main.o
+ .debug_abbrev  0x000012a8       0x3e mbclient.o
+ .debug_abbrev  0x000012e6      0x3be minilzo.o
+ .debug_abbrev  0x000016a4      0x3a4 new_speed_hack.o
+ .debug_abbrev  0x00001a48      0x35b pocketnes_text.o
+ .debug_abbrev  0x00001da3      0x2a6 rommenu.o
+ .debug_abbrev  0x00002049      0x420 savestate2.o
+ .debug_abbrev  0x00002469      0x22b spritecache.o
+ .debug_abbrev  0x00002694      0x4af sram.o
+ .debug_abbrev  0x00002b43      0x508 ui.o
+ .debug_abbrev  0x0000304b       0xdb /opt/devkitpro/libgba/lib/libgba.a(Compression.o)
+ .debug_abbrev  0x00003126      0x21f /opt/devkitpro/libgba/lib/libgba.a(interrupt.o)
+ .debug_abbrev  0x00003345       0x28 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_thumb1_case_uqi.o)
+ .debug_abbrev  0x0000336d       0x28 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_thumb1_case_shi.o)
+ .debug_abbrev  0x00003395       0x28 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_udivsi3.o)
+ .debug_abbrev  0x000033bd       0x28 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_divsi3.o)
+ .debug_abbrev  0x000033e5       0x26 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_dvmd_tls.o)
+ .debug_abbrev  0x0000340b       0x14 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_aeabi_uldivmod.o)
+ .debug_abbrev  0x0000341f      0x126 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_udivmoddi4.o)
+ .debug_abbrev  0x00003545       0x28 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_clzdi2.o)
+ .debug_abbrev  0x0000356d       0x28 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_clzsi2.o)
+
+.debug_line     0x00000000     0x98c2
+ *(.debug_line)
+ .debug_line    0x00000000      0x4ba cache.o
+ .debug_line    0x000004ba      0xd34 cheat.o
+ .debug_line    0x000011ee      0x395 crash.o
+ .debug_line    0x00001583       0x3d disasm.o
+ .debug_line    0x000015c0      0x35c interrupt.o
+ .debug_line    0x0000191c      0xed1 loadcart.o
+ .debug_line    0x000027ed      0x6de main.o
+ .debug_line    0x00002ecb       0x3f mbclient.o
+ .debug_line    0x00002f0a     0x1270 minilzo.o
+ .debug_line    0x0000417a      0x8bf new_speed_hack.o
+ .debug_line    0x00004a39      0x68f pocketnes_text.o
+ .debug_line    0x000050c8      0x683 rommenu.o
+ .debug_line    0x0000574b      0x887 savestate2.o
+ .debug_line    0x00005fd2      0x40e spritecache.o
+ .debug_line    0x000063e0     0x145e sram.o
+ .debug_line    0x0000783e     0x10b4 ui.o
+ .debug_line    0x000088f2      0x1d7 /opt/devkitpro/libgba/lib/libgba.a(Compression.o)
+ .debug_line    0x00008ac9      0x950 /opt/devkitpro/libgba/lib/libgba.a(interrupt.o)
+ .debug_line    0x00009419       0x52 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_thumb1_case_uqi.o)
+ .debug_line    0x0000946b       0x53 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_thumb1_case_shi.o)
+ .debug_line    0x000094be       0x67 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_udivsi3.o)
+ .debug_line    0x00009525       0x73 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_divsi3.o)
+ .debug_line    0x00009598       0x4a /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_dvmd_tls.o)
+ .debug_line    0x000095e2       0x4e /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_aeabi_uldivmod.o)
+ .debug_line    0x00009630      0x1e7 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_udivmoddi4.o)
+ .debug_line    0x00009817       0x54 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_clzdi2.o)
+ .debug_line    0x0000986b       0x57 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_clzsi2.o)
+
+.debug_frame    0x00000000     0x1858
+ *(.debug_frame)
+ .debug_frame   0x00000000      0x140 cache.o
+ .debug_frame   0x00000140      0x320 cheat.o
+ .debug_frame   0x00000460       0x30 crash.o
+ .debug_frame   0x00000490       0xd0 interrupt.o
+ .debug_frame   0x00000560       0xd8 loadcart.o
+ .debug_frame   0x00000638       0x94 main.o
+ .debug_frame   0x000006cc      0x1cc minilzo.o
+ .debug_frame   0x00000898       0x94 new_speed_hack.o
+ .debug_frame   0x0000092c      0x154 pocketnes_text.o
+ .debug_frame   0x00000a80       0xb0 rommenu.o
+ .debug_frame   0x00000b30      0x1dc savestate2.o
+ .debug_frame   0x00000d0c       0x64 spritecache.o
+ .debug_frame   0x00000d70      0x410 sram.o
+ .debug_frame   0x00001180      0x4e0 ui.o
+ .debug_frame   0x00001660       0xa0 /opt/devkitpro/libgba/lib/libgba.a(Compression.o)
+ .debug_frame   0x00001700       0xb0 /opt/devkitpro/libgba/lib/libgba.a(interrupt.o)
+ .debug_frame   0x000017b0       0x20 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_udivsi3.o)
+ .debug_frame   0x000017d0       0x20 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_divsi3.o)
+ .debug_frame   0x000017f0       0x2c /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_aeabi_uldivmod.o)
+ .debug_frame   0x0000181c       0x3c /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_udivmoddi4.o)
+
+.debug_str      0x00000000     0x3241
+ *(.debug_str)
+ .debug_str     0x00000000     0x3241 cache.o
+                                0x414 (size before relaxing)
+ .debug_str     0x00003241        0x0 cheat.o
+                                0x547 (size before relaxing)
+ .debug_str     0x00003241        0x0 crash.o
+                                0x249 (size before relaxing)
+ .debug_str     0x00003241        0x0 disasm.o
+                                0x143 (size before relaxing)
+ .debug_str     0x00003241        0x0 interrupt.o
+                                0x2eb (size before relaxing)
+ .debug_str     0x00003241        0x0 loadcart.o
+                                0x84b (size before relaxing)
+ .debug_str     0x00003241        0x0 main.o
+                                0x5e7 (size before relaxing)
+ .debug_str     0x00003241        0x0 mbclient.o
+                                0x145 (size before relaxing)
+ .debug_str     0x00003241        0x0 minilzo.o
+                                0x56b (size before relaxing)
+ .debug_str     0x00003241        0x0 new_speed_hack.o
+                                0x5d6 (size before relaxing)
+ .debug_str     0x00003241        0x0 pocketnes_text.o
+                                0x36e (size before relaxing)
+ .debug_str     0x00003241        0x0 rommenu.o
+                                0x3a1 (size before relaxing)
+ .debug_str     0x00003241        0x0 savestate2.o
+                                0x818 (size before relaxing)
+ .debug_str     0x00003241        0x0 spritecache.o
+                                0x31f (size before relaxing)
+ .debug_str     0x00003241        0x0 sram.o
+                                0x7b0 (size before relaxing)
+ .debug_str     0x00003241        0x0 ui.o
+                                0x845 (size before relaxing)
+ .debug_str     0x00003241        0x0 /opt/devkitpro/libgba/lib/libgba.a(Compression.o)
+                                0x27c (size before relaxing)
+ .debug_str     0x00003241        0x0 /opt/devkitpro/libgba/lib/libgba.a(interrupt.o)
+                                0x334 (size before relaxing)
+ .debug_str     0x00003241        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_thumb1_case_uqi.o)
+                                 0xf1 (size before relaxing)
+ .debug_str     0x00003241        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_thumb1_case_shi.o)
+                                 0xf1 (size before relaxing)
+ .debug_str     0x00003241        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_udivsi3.o)
+                                 0xf6 (size before relaxing)
+ .debug_str     0x00003241        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_divsi3.o)
+                                 0xf4 (size before relaxing)
+ .debug_str     0x00003241        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_dvmd_tls.o)
+                                 0xf7 (size before relaxing)
+ .debug_str     0x00003241        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_aeabi_uldivmod.o)
+                                 0xd7 (size before relaxing)
+ .debug_str     0x00003241        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_udivmoddi4.o)
+                                0x6a5 (size before relaxing)
+ .debug_str     0x00003241        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_clzdi2.o)
+                                 0xe4 (size before relaxing)
+ .debug_str     0x00003241        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_clzsi2.o)
+                                 0xe4 (size before relaxing)
+
+.debug_loc
+ *(.debug_loc)
+
+.debug_macinfo
+ *(.debug_macinfo)
+
+.debug_weaknames
+ *(.debug_weaknames)
+
+.debug_funcnames
+ *(.debug_funcnames)
+
+.debug_typenames
+ *(.debug_typenames)
+
+.debug_varnames
+ *(.debug_varnames)
+
+.stack          0x00080000        0x0
+                0x00080000                        _stack = .
+ *(.stack)
+
+.note.gnu.arm.ident
+ *(.note.gnu.arm.ident)
+
+.ARM.attributes
+                0x00000000       0x28
+ *(.ARM.attributes)
+ .ARM.attributes
+                0x00000000       0x26 cache.o
+ .ARM.attributes
+                0x00000026       0x26 cheat.o
+ .ARM.attributes
+                0x0000004c       0x26 crash.o
+ .ARM.attributes
+                0x00000072       0x26 disasm.o
+ .ARM.attributes
+                0x00000098       0x26 interrupt.o
+ .ARM.attributes
+                0x000000be       0x26 loadcart.o
+ .ARM.attributes
+                0x000000e4       0x26 main.o
+ .ARM.attributes
+                0x0000010a       0x26 mbclient.o
+ .ARM.attributes
+                0x00000130       0x26 minilzo.o
+ .ARM.attributes
+                0x00000156       0x26 new_speed_hack.o
+ .ARM.attributes
+                0x0000017c       0x26 pocketnes_text.o
+ .ARM.attributes
+                0x000001a2       0x26 rommenu.o
+ .ARM.attributes
+                0x000001c8       0x26 savestate2.o
+ .ARM.attributes
+                0x000001ee       0x26 spritecache.o
+ .ARM.attributes
+                0x00000214       0x26 sram.o
+ .ARM.attributes
+                0x0000023a       0x26 ui.o
+ .ARM.attributes
+                0x00000260       0x1a 6502.o
+ .ARM.attributes
+                0x0000027a       0x1a apack.o
+ .ARM.attributes
+                0x00000294       0x1a bindata.o
+ .ARM.attributes
+                0x000002ae       0x1a cart.o
+ .ARM.attributes
+                0x000002c8       0x1a cf.o
+ .ARM.attributes
+                0x000002e2       0x1a division.o
+ .ARM.attributes
+                0x000002fc       0x1a interruptdispatcher.o
+ .ARM.attributes
+                0x00000316       0x1a io.o
+ .ARM.attributes
+                0x00000330       0x1a link.o
+ .ARM.attributes
+                0x0000034a       0x1a memcopy.o
+ .ARM.attributes
+                0x00000364       0x1a memory.o
+ .ARM.attributes
+                0x0000037e       0x1a mem.o
+ .ARM.attributes
+                0x00000398       0x1a ppu.o
+ .ARM.attributes
+                0x000003b2       0x1a sound.o
+ .ARM.attributes
+                0x000003cc       0x1a speedhack_asm.o
+ .ARM.attributes
+                0x000003e6       0x1a timeout.o
+ .ARM.attributes
+                0x00000400       0x1a visoly.o
+ .ARM.attributes
+                0x0000041a       0x1a konami.o
+ .ARM.attributes
+                0x00000434       0x1a map023771.o
+ .ARM.attributes
+                0x0000044e       0x1a map105.o
+ .ARM.attributes
+                0x00000468       0x1a map1166.o
+ .ARM.attributes
+                0x00000482       0x1a map151.o
+ .ARM.attributes
+                0x0000049c       0x1a map15.o
+ .ARM.attributes
+                0x000004b6       0x1a map163.o
+ .ARM.attributes
+                0x000004d0       0x1a map16.o
+ .ARM.attributes
+                0x000004ea       0x1a map17.o
+ .ARM.attributes
+                0x00000504       0x1a map184.o
+ .ARM.attributes
+                0x0000051e       0x1a map18.o
+ .ARM.attributes
+                0x00000538       0x1a map19.o
+ .ARM.attributes
+                0x00000552       0x1a map1.o
+ .ARM.attributes
+                0x0000056c       0x1a map2125.o
+ .ARM.attributes
+                0x00000586       0x1a map228.o
+ .ARM.attributes
+                0x000005a0       0x1a map22.o
+ .ARM.attributes
+                0x000005ba       0x1a map232.o
+ .ARM.attributes
+                0x000005d4       0x1a map23.o
+ .ARM.attributes
+                0x000005ee       0x1a map2426.o
+ .ARM.attributes
+                0x00000608       0x1a map30.o
+ .ARM.attributes
+                0x00000622       0x1a map32.o
+ .ARM.attributes
+                0x0000063c       0x1a map33.o
+ .ARM.attributes
+                0x00000656       0x1a map34.o
+ .ARM.attributes
+                0x00000670       0x1a map40.o
+ .ARM.attributes
+                0x0000068a       0x1a map42.o
+ .ARM.attributes
+                0x000006a4       0x1a map4.o
+ .ARM.attributes
+                0x000006be       0x1a map5.o
+ .ARM.attributes
+                0x000006d8       0x1a map64.o
+ .ARM.attributes
+                0x000006f2       0x1a map65.o
+ .ARM.attributes
+                0x0000070c       0x1a map67.o
+ .ARM.attributes
+                0x00000726       0x1a map68.o
+ .ARM.attributes
+                0x00000740       0x1a map69.o
+ .ARM.attributes
+                0x0000075a       0x1a map70152.o
+ .ARM.attributes
+                0x00000774       0x1a map72.o
+ .ARM.attributes
+                0x0000078e       0x1a map73.o
+ .ARM.attributes
+                0x000007a8       0x1a map75.o
+ .ARM.attributes
+                0x000007c2       0x1a map76.o
+ .ARM.attributes
+                0x000007dc       0x1a map77.o
+ .ARM.attributes
+                0x000007f6       0x1a map78.o
+ .ARM.attributes
+                0x00000810       0x1a map79.o
+ .ARM.attributes
+                0x0000082a       0x1a map80.o
+ .ARM.attributes
+                0x00000844       0x1a map82.o
+ .ARM.attributes
+                0x0000085e       0x1a map85.o
+ .ARM.attributes
+                0x00000878       0x1a map86.o
+ .ARM.attributes
+                0x00000892       0x1a map87.o
+ .ARM.attributes
+                0x000008ac       0x1a map88.o
+ .ARM.attributes
+                0x000008c6       0x1a map92.o
+ .ARM.attributes
+                0x000008e0       0x1a map93.o
+ .ARM.attributes
+                0x000008fa       0x1a map94.o
+ .ARM.attributes
+                0x00000914       0x1a map97.o
+ .ARM.attributes
+                0x0000092e       0x1a map99.o
+ .ARM.attributes
+                0x00000948       0x1a map9.o
+ .ARM.attributes
+                0x00000962       0x1a gba_crt0_my.o
+ .ARM.attributes
+                0x0000097c       0x2a /opt/devkitpro/libgba/lib/libgba.a(Compression.o)
+ .ARM.attributes
+                0x000009a6       0x2a /opt/devkitpro/libgba/lib/libgba.a(interrupt.o)
+ .ARM.attributes
+                0x000009d0       0x1c /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_thumb1_case_uqi.o)
+ .ARM.attributes
+                0x000009ec       0x1c /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_thumb1_case_shi.o)
+ .ARM.attributes
+                0x00000a08       0x1c /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_udivsi3.o)
+ .ARM.attributes
+                0x00000a24       0x1c /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_divsi3.o)
+ .ARM.attributes
+                0x00000a40       0x1c /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_dvmd_tls.o)
+ .ARM.attributes
+                0x00000a5c       0x1c /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_aeabi_uldivmod.o)
+ .ARM.attributes
+                0x00000a78       0x2a /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_udivmoddi4.o)
+ .ARM.attributes
+                0x00000aa2       0x1c /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_clzdi2.o)
+ .ARM.attributes
+                0x00000abe       0x1c /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_clzsi2.o)
+ .ARM.attributes
+                0x00000ada       0x2a /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libg.a(libc_a-strcat.o)
+ .ARM.attributes
+                0x00000b04       0x2a /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libg.a(libc_a-memcpy-stub.o)
+ .ARM.attributes
+                0x00000b2e       0x2a /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libg.a(libc_a-strlen.o)
+ .ARM.attributes
+                0x00000b58       0x2a /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libg.a(libc_a-memcmp.o)
+ .ARM.attributes
+                0x00000b82       0x2a /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libg.a(libc_a-strcpy.o)
+ .ARM.attributes
+                0x00000bac       0x2a /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libg.a(libc_a-memset.o)
+ .ARM.attributes
+                0x00000bd6       0x2a /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libg.a(libc_a-init.o)
+ .ARM.attributes
+                0x00000c00       0x2a /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libg.a(libc_a-memchr-stub.o)
+ .ARM.attributes
+                0x00000c2a       0x2a /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libg.a(libc_a-memmove.o)
+ .ARM.attributes
+                0x00000c54       0x2a /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/../../../../arm-none-eabi/lib/thumb/libsysbase.a(libsysbase_libsysbase_a-malloc_vars.o)
+
+/DISCARD/
+ *(.note.GNU-stack)
+OUTPUT(/src/pocketnes.elf elf32-littlearm)
+LOAD linker stubs
+
+.debug_loclists
+                0x00000000     0x8240
+ .debug_loclists
+                0x00000000      0x414 cache.o
+ .debug_loclists
+                0x00000414      0xace cheat.o
+ .debug_loclists
+                0x00000ee2      0x224 crash.o
+ .debug_loclists
+                0x00001106       0xe4 interrupt.o
+ .debug_loclists
+                0x000011ea      0xaed loadcart.o
+ .debug_loclists
+                0x00001cd7      0x279 main.o
+ .debug_loclists
+                0x00001f50     0x1d0c minilzo.o
+ .debug_loclists
+                0x00003c5c      0xb99 new_speed_hack.o
+ .debug_loclists
+                0x000047f5      0x4e2 pocketnes_text.o
+ .debug_loclists
+                0x00004cd7      0x316 rommenu.o
+ .debug_loclists
+                0x00004fed      0xab2 savestate2.o
+ .debug_loclists
+                0x00005a9f      0x4d6 spritecache.o
+ .debug_loclists
+                0x00005f75      0xdee sram.o
+ .debug_loclists
+                0x00006d63      0xd0d ui.o
+ .debug_loclists
+                0x00007a70      0x233 /opt/devkitpro/libgba/lib/libgba.a(Compression.o)
+ .debug_loclists
+                0x00007ca3      0x2f4 /opt/devkitpro/libgba/lib/libgba.a(interrupt.o)
+ .debug_loclists
+                0x00007f97      0x2a9 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_udivmoddi4.o)
+
+.debug_rnglists
+                0x00000000      0x527
+ .debug_rnglists
+                0x00000000       0x17 cache.o
+ .debug_rnglists
+                0x00000017       0x3d cheat.o
+ .debug_rnglists
+                0x00000054       0x46 crash.o
+ .debug_rnglists
+                0x0000009a       0xf7 loadcart.o
+ .debug_rnglists
+                0x00000191       0x5a main.o
+ .debug_rnglists
+                0x000001eb       0x9e minilzo.o
+ .debug_rnglists
+                0x00000289       0xd2 new_speed_hack.o
+ .debug_rnglists
+                0x0000035b       0x39 pocketnes_text.o
+ .debug_rnglists
+                0x00000394       0x7e savestate2.o
+ .debug_rnglists
+                0x00000412       0x3c spritecache.o
+ .debug_rnglists
+                0x0000044e       0x4e sram.o
+ .debug_rnglists
+                0x0000049c       0x21 ui.o
+ .debug_rnglists
+                0x000004bd       0x13 /opt/devkitpro/libgba/lib/libgba.a(Compression.o)
+ .debug_rnglists
+                0x000004d0       0x43 /opt/devkitpro/libgba/lib/libgba.a(interrupt.o)
+ .debug_rnglists
+                0x00000513       0x14 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_udivmoddi4.o)
+
+.debug_line_str
+                0x00000000       0xd5
+ .debug_line_str
+                0x00000000       0xd5 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_thumb1_case_uqi.o)
+                                 0xcd (size before relaxing)
+ .debug_line_str
+                0x000000d5        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_thumb1_case_shi.o)
+                                 0xcd (size before relaxing)
+ .debug_line_str
+                0x000000d5        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_udivsi3.o)
+                                 0xcd (size before relaxing)
+ .debug_line_str
+                0x000000d5        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_divsi3.o)
+                                 0xcd (size before relaxing)
+ .debug_line_str
+                0x000000d5        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_dvmd_tls.o)
+                                 0xcd (size before relaxing)
+ .debug_line_str
+                0x000000d5        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_aeabi_uldivmod.o)
+                                 0xc9 (size before relaxing)
+ .debug_line_str
+                0x000000d5        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_clzdi2.o)
+                                 0xcd (size before relaxing)
+ .debug_line_str
+                0x000000d5        0x0 /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/thumb/libgcc.a(_clzsi2.o)
+                                 0xcd (size before relaxing)
