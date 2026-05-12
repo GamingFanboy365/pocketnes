@@ -18,4 +18,9 @@ Additions:
 
 - Wrote a Python builder script to inject the required 48-byte PocketNES metadata header and append .nes ROMs to the compiled pocketnes.gba binary.
 
+
+To compile pocketnes.gba:
+
+sudo docker run --rm -v "$PWD":/src -w /src devkitpro/devkitarm make
+
 Please note I am using AI to help me code this, so I'm not a coder in the traditional sense.
