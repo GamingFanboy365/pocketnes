@@ -670,12 +670,14 @@ _ZZZ4 = (render_recent_tiles-_render_recent_tiles-8)/4
 	
 	ldrne r0,=_ZZZ1
 	ldreq r0,=_ZZZ2
+	orr r0,r0,#0xEA000000
 	ldr r1,=_consume_recent_tiles_entry
-	strh r0,[r1,#_consume_recent_tiles_entry-_consume_recent_tiles_entry]
+	str r0,[r1]
 
 	ldrne r0,=_ZZZ3
 	ldreq r0,=_ZZZ4
-	strh r0,[r1,#_render_recent_tiles-_consume_recent_tiles_entry]
+	orr r0,r0,#0xEA000000
+	str r0,[r1,#_render_recent_tiles-_consume_recent_tiles_entry]
 	
 	.endif	
 	.endif

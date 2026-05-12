@@ -181,7 +181,7 @@ u8 *find_nes_header(u8 *base)
 	//look up to 256 bytes later for an INES header
 	u32 *p=(u32*)base;
 	
-	u32 nes_id=0x1a530000+ne;
+	u32 nes_id=0x1a53454e;
 	
 	int i;
 	for (i=0;i<64;i++)
@@ -204,7 +204,7 @@ u8 *findrom(int n)
 	u8 *p=find_nes_header(textstart);
 	while(p && !pogoshell && n--)
 	{
-		p+=*(u32*)(p+32)+sizeof(romheader);
+		p+=(p[32] | (p[33] << 8) | (p[34] << 16) | (p[35] << 24))+sizeof(romheader);
 		p=find_nes_header(p);
 	}
 	return p;
@@ -249,7 +249,7 @@ int drawmenu(int sel) {
 			ri=(romheader*)p;
 			romflags=(*ri).flags|(*ri).spritefollow<<16;
 		}
-		p+=*(u32*)(p+32)+48;
+		p+=(p[32] | (p[33] << 8) | (p[34] << 16) | (p[35] << 24))+48;
 		p=find_nes_header(p);
 	}
 	return (romflags & ~1) | 2 ;
