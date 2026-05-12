@@ -1,4 +1,4 @@
- .align
+.align
  .pool
  .text
  .align
@@ -52,8 +52,8 @@ mapper180init:
  .pool
 @----------------------------------------------------------------------------
 map71w:
-@	tst addy,#0x1000
-@	moveq pc,lr
+	tst addy,#0x1000
+	moveq pc,lr
 	tst r0,#0x10
 	b_long mirror1_
 @------------------------------
