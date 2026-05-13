@@ -32,7 +32,7 @@ Additions:
 
 - Implemented Mapper 11 (Color Dreams / Wisdom Tree): A single register architecture that spans the entire upper half of the memory map to command 32KB PRG blocks and 8KB CHR blocks simultaneously. Example games: Spiritual Warfare, Crystal Mines, and Bible Adventures
 
-- Implemented Mapper 225 (various multicarts): Menu boots but individual game graphics are currently garbled, so it doesn't fully work yet.
+- Implemented Mapper 225 (various multicarts): Menu boots but some individual game graphics are currently garbled, so it doesn't fully work yet. Tested on: 110-in-1
 
 - Implemented Mapper 28 (various current homebrew titles): Tested on Action 53 Volume 4; menu boots but attempting to load individual games causes a crash dump message to occur.
 
