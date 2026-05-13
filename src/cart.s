@@ -215,6 +215,7 @@ mappertbl:
 	.byte 206
 	.if LESSMAPPERS
 	.else
+	.byte 225
 	.byte 228
 	.endif
 	.byte 232
@@ -312,6 +313,7 @@ mappertbl2:
 	.word mapper206init @206
 	.if LESSMAPPERS
 	.else
+	.word mapper225init	@225
 	.word mapper228init	@228
 	.endif
 	.word mapper232init	@232
