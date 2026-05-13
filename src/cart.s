@@ -160,7 +160,9 @@ mappertbl:
 	.byte 32
 	.byte 33
 	.byte 34
+	.byte 38
 	.byte 40
+    .byte 41
 	.byte 42
 	.byte 64
 	.byte 65
@@ -183,6 +185,7 @@ mappertbl:
 	.byte 86
 	.byte 87
 	.byte 88
+    .byte 89
 	.byte 92
 	.byte 93
 	.byte 94
@@ -192,9 +195,11 @@ mappertbl:
 	.else
 	.byte 105
 	.endif
+    .byte 113
 	.byte 118
 	.byte 119
 	.byte 140
+    .byte 146
 	.byte 151
 	.byte 152
 	.byte 158
@@ -205,6 +210,7 @@ mappertbl:
 	.byte 178
 	.byte 180
 	.byte 184
+    .byte 185
 	.byte 187
 	.byte 206
 	.if LESSMAPPERS
@@ -251,7 +257,9 @@ mappertbl2:
 	.word mapper32init	@32
 	.word mapper33init	@33
 	.word mapper34init	@34
+    .word mapper38init	@38
 	.word mapper40init	@40
+    .word mapper41init	@41
 	.word mapper42init	@42
 	.word mapper64init	@64
 	.word mapper65init	@65
@@ -274,6 +282,7 @@ mappertbl2:
 	.word mapper86init	@86
 	.word mapper87init	@87
 	.word mapper88init	@88
+    .word mapper89init	@89
 	.word mapper92init	@92
 	.word mapper93init	@93
 	.word mapper94init	@94
@@ -283,9 +292,11 @@ mappertbl2:
 	.else
 	.word mapper105init	@105
 	.endif
+    .word mapper113init	@113
 	.word mapper118init	@118
 	.word mapper119init	@119
 	.word mapper66init	@140
+    .word mapper79init	@146
 	.word mapper151init	@151
 	.word mapper152init	@152
 	.word mapper64init	@158
@@ -296,6 +307,7 @@ mappertbl2:
 	.word mapper4init 	@178
 	.word mapper180init	@180
 	.word mapper184init	@184
+    .word mapper3init	@185
 	.word mapper4init 	@187
 	.word mapper206init @206
 	.if LESSMAPPERS
