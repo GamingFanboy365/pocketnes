@@ -1,6 +1,8 @@
 # pocketnes
 An NES emulator for GBA. My repo is a fork of https://github.com/catskull/pocketnes , which in turn is a mirror of the code taken from the [archive.org](https://web.archive.org/web/20160307074955/http://nes.pocketheaven.com/) mirror, last updated on July 1, 2013. The last version released was 9.98.
 
+Credit to all original authors.
+
 Additions:
     
 - Fixed Makefile and linker scripts (.ld) to compile under modern devkitARM using a Docker container (devkitpro/devkitarm).
