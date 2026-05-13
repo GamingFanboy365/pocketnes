@@ -20,7 +20,7 @@ Additions:
 
 - Implemented Mapper 38 (Tengen Custom): A highly specialized, single-register Famicom hardware board that hijacks the $7000 SRAM space. Example game: Crime Busters
 
-- Implemented Mapper 41 (Caltron / Myriad): Implemented Mapper 41 (Caltron / Myriad): A complex multicart architecture. Fully operational including menu and multi-game selection. Example games: Caltron 6-in-1 and Myriad 6-in-1
+- Implemented Mapper 41 (Caltron / Myriad): A complex multicart architecture. Fully operational including menu and multi-game selection. Example games: Caltron 6-in-1 and Myriad 6-in-1
 
 - Implemented Mapper 89 (Sunsoft-2 IC02): A proprietary Sunsoft board utilizing a highly packed single-byte register to simultaneously command PRG banking, CHR banking, and single-screen mirroring. Example game: Tetsuwan Atom (Astro Boy)
 
@@ -32,7 +32,7 @@ Additions:
 
 - Implemented Mapper 11 (Color Dreams / Wisdom Tree): A single register architecture that spans the entire upper half of the memory map to command 32KB PRG blocks and 8KB CHR blocks simultaneously. Example games: Spiritual Warfare, Crystal Mines, and Bible Adventures
 
-- Implemented Mapper 225 (various multicarts): Menu boots but game graphics are currently garbled.
+- Implemented Mapper 225 (various multicarts): Menu boots but individual game graphics are currently garbled, so it doesn't fully work yet.
 
 
 To compile pocketnes.gba:
