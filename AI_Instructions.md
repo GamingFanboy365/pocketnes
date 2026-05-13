@@ -60,9 +60,9 @@ ldmfd sp!,{pc}
 
 ## The "Register Preservation" Rule
 
-In the write_handler, the written data arrives in r0. PocketNES internal macros (like strb_ or bl_long) frequently overwrite r0 for their own calculations.
+In the `write_handler`, the written data arrives in `r0`. PocketNES internal macros (like `strb_` or `bl_long`) frequently overwrite `r0` for their own calculations.
 
-* **The Fix:** Immediately push r4 to the stack and move the written data (r0) into r4. Use r4 for your bit-shifting logic to prevent data corruption.
+* **The Fix:** Immediately push `r4` to the stack and move the written data (`r0`) into `r4`. Use `r4` for your bit-shifting logic to prevent data corruption.
 
 Code snippet
 
