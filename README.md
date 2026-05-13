@@ -14,7 +14,7 @@ Additions:
 
 - Rewrote read_rom_header in loadcart.c to safely parse NES 2.0 headers (bypassing the old DiskDude hack) and extract extended ROM sizes and NTSC/PAL/Dendy timing flags.
 
-- Wrote a Python builder script to inject the required 48-byte PocketNES metadata header and append .nes ROMs to the compiled pocketnes.gba binary.
+- Upgraded the Python builder script to dynamically compile multiple .nes ROMs into a single pocketnes.gba multicart payload, automatically generating the dynamic menu and injecting the required 48-byte metadata header for each game.
 
 - Implemented Mapper 30 (UNROM 512)
 
@@ -29,6 +29,10 @@ Additions:
 - Implemented Mapper 146 (Sachen NINA-06 Alias): It was routed directly into the existing Mapper 79 logic, instantly unlocking compatibility for several specific Asian unlicensed releases. Example games: Galactic Crusader or Silver Eagle
 
 - Implemented Mapper 185 (CNROM Bypass Alias): This board originally featured a physical copy-protection diode that locked out standard emulators. By aliasing it to standard CNROM logic, we completely bypassed the hardware lockout. Example games: Spy vs. Spy, Mighty Bomb Jack, Bird Week, and Seicross
+
+- Implemented Mapper 11 (Color Dreams / Wisdom Tree): A single register architecture that spans the entire upper half of the memory map to command 32KB PRG blocks and 8KB CHR blocks simultaneously. Example games: Spiritual Warfare, Crystal Mines, and Bible Adventures
+
+- Implemented Mapper 71 (Camerica / Codemasters): A custom reverse-engineered UNROM-like board with the banking register shifted to $C000 and a secret single-screen mirroring switch tucked into $9000. Example games: Micro Machines, Fire Hawk, and Big Nose the Caveman
 
 
 To compile pocketnes.gba:
