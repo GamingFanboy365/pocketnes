@@ -539,6 +539,83 @@ _ABS	= 4						@absolute
 	writemem
 .endm
 
+@Unofficial read-modify-write opcodes.  The ALU half works on registers and
+@stores C (and V) in cycles before writemem, which may change the ARM flags.
+.macro opRLA			@ROL mem, then AND
+	readmem
+	movs cycles,cycles,lsr#1		@get C
+	adc r0,r0,r0
+	movs r1,r0,lsl#24			@C = bit 8
+	adc cycles,cycles,cycles		@Set C
+	and m6502_a,m6502_a,r0,lsl#24
+	mov m6502_nz,m6502_a,asr#24		@NZ
+	writemem
+.endm
+
+.macro opSRE			@LSR mem, then EOR
+	readmem
+	movs r0,r0,lsr#1
+	orrcs cycles,cycles,#CYC_C
+	biccc cycles,cycles,#CYC_C
+	eor m6502_a,m6502_a,r0,lsl#24
+	mov m6502_nz,m6502_a,asr#24		@NZ
+	writemem
+.endm
+
+.macro opRRA			@ROR mem, then ADC
+	readmem
+	movs cycles,cycles,lsr#1		@get C
+	orrcs r0,r0,#0x100
+	movs r0,r0,lsr#1
+	adc cycles,cycles,cycles		@Set C
+	mov r2,r0
+	movs r1,cycles,lsr#1			@get C
+	subcs r0,r0,#0x00000100
+	adcs m6502_a,m6502_a,r0,ror#8
+	mov m6502_nz,m6502_a,asr#24		@NZ
+	orrcs cycles,cycles,#CYC_C
+	biccc cycles,cycles,#CYC_C
+	orrvs cycles,cycles,#CYC_V
+	bicvc cycles,cycles,#CYC_V
+	mov r0,r2
+	writemem
+.endm
+
+.macro opDCP			@DEC mem, then CMP
+	readmem
+	sub r0,r0,#1
+	subs m6502_nz,m6502_a,r0,lsl#24
+	mov m6502_nz,m6502_nz,asr#24		@NZ
+	orrcs cycles,cycles,#CYC_C
+	biccc cycles,cycles,#CYC_C
+	writemem
+.endm
+
+.macro opISC			@INC mem, then SBC
+	readmem
+	add r0,r0,#1
+	movs r1,cycles,lsr#1			@get C
+	sbcs m6502_a,m6502_a,r0,lsl#24
+	and m6502_a,m6502_a,#0xff000000
+	mov m6502_nz,m6502_a,asr#24		@NZ
+	orrcs cycles,cycles,#CYC_C
+	biccc cycles,cycles,#CYC_C
+	orrvs cycles,cycles,#CYC_V
+	bicvc cycles,cycles,#CYC_V
+	writemem
+.endm
+
+.macro opSAX
+	and r0,m6502_a,m6502_x
+	mov r0,r0,lsr#24
+	writemem
+.endm
+
+.macro opLAX
+	opLOAD m6502_a
+	mov m6502_x,m6502_a
+.endm
+
 .macro opSTORE x
 	mov r0,\x,lsr#24
 	writemem
