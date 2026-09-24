@@ -14,7 +14,8 @@
 
  mapbyte1 = mapperdata
 @----------------------------------------------------------------------------
-mapper228init:@		Action 52 & Cheetahmen 2. PocketNES only support 256k of CHR, Action52 got 512k.
+mapper228init:@		Action 52 & Cheetahmen 2. nes_chr_map holds 8-bit 1K page numbers, so only
+				@ the first 256K of CHR is reachable; Action 52 has 512K.
 @----------------------------------------------------------------------------
 	.word write0,write0,write0,write0
 
@@ -40,20 +41,17 @@ write0:
 	bl_long mirror2V_
 
 	ldr_ r0,mapbyte1
-	tst r0,#0x1000
+	tst r0,#0x1000		@chip 3 -> chip 2 (1.5MB dumps omit the empty chip 2)
 	bicne r0,r0,#0x800
-	
-	tst r0,#0x40
+	tst r0,#0x20		@A5: 0 = 32K mode, 1 = 16K mode (mirrored)
 	bne swap16k
 	mov r0,r0,lsr#7
+	and r0,r0,#0x3F		@drop A13 (mirroring)
 	mov lr,addy
 	b_long map89ABCDEF_
-
 swap16k:
-	and r1,r0,r0,lsl#1
-	mov r1,r1,lsr#6
-	orr r1,r1,#0xFE
-	and r0,r1,r0,lsr#6
+	mov r0,r0,lsr#6		@16K bank = page*2 + A6
+	and r0,r0,#0x7F		@drop A13 (mirroring)
 	str_ r0,mapbyte1
 	bl_long mapCDEF_
 	ldr_ r0,mapbyte1
