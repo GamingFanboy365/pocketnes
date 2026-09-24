@@ -31,9 +31,11 @@ Additions:
 
 - Implemented Mapper 225 (various multicarts): Menu boots but some individual game graphics are currently garbled, so it doesn't fully work yet. Tested on: 110-in-1
 
-- Implemented Mapper 28 (Action 53, various current homebrew titles): Tested on Action 53 Volume 4; the menu works and nearly every game plays correctly, including the ones that switch CHR-RAM banks. Known exceptions: f-ff (black screen), starevil (returns to the title), the Dungeon game (garbled) and one golf game (wrong background colour).
+- Implemented Mapper 28 (Action 53, various current homebrew titles): Tested on Action 53 Volume 4; the menu works and nearly every game plays correctly, including the ones that switch CHR-RAM banks. Known exception: one golf game shows the wrong background colour.
 
-- Fixed Mapper 228 (Action 52 / Cheetahmen II) 16KB/32KB PRG mode selection. With the CHR ROM support below, the Action 52 intro, title screen and menu display correctly, and 16 of the first 18 games tested match FCEUX (Starevil shows a black screen and Illuminator has wrong colours).
+- Fixed Mapper 228 (Action 52 / Cheetahmen II) 16KB/32KB PRG mode selection. With the CHR ROM support below, the Action 52 intro, title screen and menu display correctly, and 17 of the first 18 games tested match FCEUX (Illuminator has wrong colours and missing sprites).
+
+- Added the stable unofficial 6502 opcodes that were missing (ANC, ALR, ARR, and every addressing mode of LAX, SAX, SLO, RLA, SRE, RRA, DCP and ISC) and fixed the carry flag of AXS. Before, these ran as one-byte NOPs, so the byte after them was executed as an instruction and the game went off the rails. This fixed Star Evil, f-ff and the Dungeon game in Action 53. blargg's instr_test-v5 now passes everything except the unstable opcodes $AB, $9C and $9E.
 
 - Added banked CHR-RAM (up to 32KB, four 8KB banks) for mappers 28 and 30. The live bank stays in the emulator's normal 8KB CHR-RAM, and the other banks are kept in otherwise unused GBA VRAM; switching banks swaps them and re-renders the tiles. Savestates only store the live bank.
 
