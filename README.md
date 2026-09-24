@@ -31,7 +31,9 @@ Additions:
 
 - Implemented Mapper 225 (various multicarts): Menu boots but some individual game graphics are currently garbled, so it doesn't fully work yet. Tested on: 110-in-1
 
-- Implemented Mapper 28 (various current homebrew titles): Tested on Action 53 Volume 4; menu boots but attempting to load individual games causes a crash dump message to occur.
+- Implemented Mapper 28 (Action 53, various current homebrew titles): Tested on Action 53 Volume 4; the menu works and games launch. Most games play correctly, but games that switch between CHR-RAM banks still show garbled graphics, because PocketNES only has 8KB of CHR-RAM so far.
+
+- Fixed Mapper 228 (Action 52 / Cheetahmen II) 16KB/32KB PRG mode selection. The Action 52 menu works and games launch, but screens that use CHR past the first 256KB (such as the Action 52 title screen) are still garbled, because PocketNES tracks CHR pages with 8-bit numbers.
 
 To compile pocketnes.gba:
 
