@@ -300,6 +300,8 @@ line0x:
 	addne r2,r0,#120
 	str_ r2,frame_timestamp_plus_128	  @not used now, but can make Scanline Number checking faster
 
+	bl_long dac_frame	@keep the $4011 timeline moving (dac.s), preserves r0
+
 	ldr_ r1,cyclesperframe @89342/106392
 	add r1,r0,r1
 	str_ r1,next_frame_timestamp

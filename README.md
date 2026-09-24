@@ -43,6 +43,8 @@ Additions:
 
 - Added support for CHR ROM larger than 256KB (up to 2MB), for any mapper. PocketNES stores CHR page numbers in single bytes, so large CHR ROMs now use 8-bit "virtual" page numbers that are assigned on demand and recycled when they run out (src/bigchr.c, src/chrram.s). Savestates for these games may show wrong graphics until the game next switches CHR banks.
 
+- Added playback of direct $4011 writes ("raw PCM"), which games use for digitized voices and drums by writing samples to the DMC's DAC from a timed CPU loop. Before, these were ignored, so the "Lights, camera, Action 52!" intro and similar clips were silent. Each write is queued with its timestamp and played back through the GBA's DirectSound channel at about 21 kHz, about 30ms behind the game (src/dac.s). Playback follows the emulation speed, so when a game's sample loop is more than PocketNES can run at full speed (the Action 52 intro runs at about 90%), the clip plays slightly slower and lower rather than breaking up. Matches Mesen2's output for the Action 52 intro.
+
 To compile pocketnes.gba:
 
 sudo docker run --rm -v "$PWD":/src -w /src devkitpro/devkitarm make

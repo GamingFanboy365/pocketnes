@@ -35,7 +35,6 @@
 	global_func _400Ew
 	global_func _400Fw
 	global_func _4010w
-	global_func _4011w
 	global_func _4012w
 	global_func _4013w
 	global_func _4015w
@@ -63,8 +62,12 @@
  .align
  .pool
 @----------------------------------------------------------------------------
-pcm_mix:
+pcm_mix:	@r2 = sample byte, r0 = level<<24: 8 samples into 2 words at r12
 @----------------------------------------------------------------------------
+	mov r7,#2
+0:
+	mov r6,#4
+1:
 	movs r2,r2,lsr#1
 	addcs r0,r0,#PCMSTEP
 	subcc r0,r0,#PCMSTEP
@@ -72,72 +75,12 @@ pcm_mix:
 	movgt r0,#PCMLIMIT
 	cmp r0,#-PCMLIMIT
 	movlt r0,#-PCMLIMIT
-	mov r5,r0
-
-	movs r2,r2,lsr#1
-	addcs r0,r0,#PCMSTEP
-	subcc r0,r0,#PCMSTEP
-	cmp r0,#PCMLIMIT			@range check volume level
-	movgt r0,#PCMLIMIT
-	cmp r0,#-PCMLIMIT
-	movlt r0,#-PCMLIMIT
-	orr r5,r0,r5,lsr#8
-
-	movs r2,r2,lsr#1
-	addcs r0,r0,#PCMSTEP
-	subcc r0,r0,#PCMSTEP
-	cmp r0,#PCMLIMIT			@range check volume level
-	movgt r0,#PCMLIMIT
-	cmp r0,#-PCMLIMIT
-	movlt r0,#-PCMLIMIT
-	orr r5,r0,r5,lsr#8
-
-	movs r2,r2,lsr#1
-	addcs r0,r0,#PCMSTEP
-	subcc r0,r0,#PCMSTEP
-	cmp r0,#PCMLIMIT			@range check volume level
-	movgt r0,#PCMLIMIT
-	cmp r0,#-PCMLIMIT
-	movlt r0,#-PCMLIMIT
-	orr r5,r0,r5,lsr#8
+	orr r5,r0,r5,lsr#8		@(4 of these shift out whatever r5 held)
+	subs r6,r6,#1
+	bne 1b
 	str r5,[r12],#4
-
-	movs r2,r2,lsr#1
-	addcs r0,r0,#PCMSTEP
-	subcc r0,r0,#PCMSTEP
-	cmp r0,#PCMLIMIT			@range check volume level
-	movgt r0,#PCMLIMIT
-	cmp r0,#-PCMLIMIT
-	movlt r0,#-PCMLIMIT
-	mov r5,r0
-
-	movs r2,r2,lsr#1
-	addcs r0,r0,#PCMSTEP
-	subcc r0,r0,#PCMSTEP
-	cmp r0,#PCMLIMIT			@range check volume level
-	movgt r0,#PCMLIMIT
-	cmp r0,#-PCMLIMIT
-	movlt r0,#-PCMLIMIT
-	orr r5,r0,r5,lsr#8
-
-	movs r2,r2,lsr#1
-	addcs r0,r0,#PCMSTEP
-	subcc r0,r0,#PCMSTEP
-	cmp r0,#PCMLIMIT			@range check volume level
-	movgt r0,#PCMLIMIT
-	cmp r0,#-PCMLIMIT
-	movlt r0,#-PCMLIMIT
-	orr r5,r0,r5,lsr#8
-
-	movs r2,r2,lsr#1
-	addcs r0,r0,#PCMSTEP
-	subcc r0,r0,#PCMSTEP
-	cmp r0,#PCMLIMIT			@range check volume level
-	movgt r0,#PCMLIMIT
-	cmp r0,#-PCMLIMIT
-	movlt r0,#-PCMLIMIT
-	orr r5,r0,r5,lsr#8
-	str r5,[r12],#4
+	subs r7,r7,#1
+	bne 0b
 
 	b_long endmix
 @----------------------------------------------------------------------------
@@ -215,6 +158,17 @@ pcm2:			@PCM data just ran out.  what now?
 	ldrne_ r1,pcmstart			@reload pcmcurrentaddr
 	bne pcm_loop
 pcm1:				@PCM has stopped.  clear remaining sound buffer.
+	ldr r1,=dac_state
+	ldrb r1,[r1,#9]		@dac_on: play the $4011 writes instead (dac.s)
+	movs r1,r1
+	beq pcm1_clear
+	mov r0,r12
+	mov r1,r4
+	mov lr,pc
+	ldr pc,=dac_irq_fill
+	mov r3,#0x80000000
+	b pcmexit
+pcm1_clear:
 	mov r1,#0
 	mov r0,r12
 	subs r2,r12,r4
@@ -1007,19 +961,8 @@ _4010w_entry:
 	@find next DMC event
 	b_long find_next_dmc_event
 @----------------------------------------------------------
-_4011w:	@Delta Counter load register
-@----------------------------------------------------------
-	add r0,r0,r0
-	and r0,r0,#0xfe
-	sub r0,r0,#0x80		@GBA has -128 -> +127
-	str_ r0,pcmlevel		@Start level for PCM
-
-@	orr r0,r0,r0,lsl#8
-@	orr r0,r0,r0,lsl#16
-@	mov r1,#REG_BASE
-@	str r0,[r1,#REG_FIFO_B_L]		@Set DA value... doesn't work  :(
-
-	mov pc,lr
+@_4011w (Delta Counter load register) is in dac.s, which also plays games'
+@direct $4011 writes
 @----------------------------------------------------------
 _4012w:	@DMC start address, returns pcmstart (_4015w calls this)
 @----------------------------------------------------------
@@ -1162,9 +1105,17 @@ _4015w_check_dummy_read_done:
 	str_ r0,pcmcount
 	
 	cmp r0,#50			@if the sample is less then 50 bytes it's not a sound.
-	ldrpl r1,=REG_BASE + REG_TM0CNT_L
-	movpl r2,#0x80
-	strplh r2,[r1,#2]		@timer 0 on
+	bmi 2f
+	ldrb_ r2,pcmctrl
+	and r2,r2,#0x0f
+	adr r1,pcmfreq
+	add r2,r2,r2
+	ldrh r2,[r1,r2]
+	ldr r1,=REG_BASE + REG_TM0CNT_L
+	strh r2,[r1]		@DMC rate (the timer may have been playing $4011 writes)
+	mov r2,#0x80
+	strh r2,[r1,#2]		@timer 0 on
+2:
 	
 	@if no extra byte, buffer is empty, fetch byte now
 	ldrb_ r1,dmc_extra_byte
@@ -1572,6 +1523,7 @@ Sound_hardware_reset:
 
 sound_reset:
 	stmfd sp!,{lr}
+	bl_long dac_reset
 	mov r0,#8
 	strb_ r0,dmc_remaining_bits
 	mov r0,#3  @set to 1 CPU cycle to match Nintendulator
