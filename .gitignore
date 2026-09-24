@@ -1,0 +1,12 @@
+# NES ROMs are never committed to this repo
+*.nes
+*.NES
+*.fds
+*.unf
+*.unif
+*.zip
+*.7z
+roms/
+
+# Multicart output from builder.py (contains ROM data)
+play_me.gba
