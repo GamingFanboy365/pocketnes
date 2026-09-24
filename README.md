@@ -47,6 +47,8 @@ Additions:
 
 - PocketNES now sets the cartridge wait states (WAITCNT) to 3/1 with the prefetch buffer on, the setting commercial games use, instead of leaving the power-on default of 4/2 without prefetch. All of the emulator code that runs from ROM gets faster: the Action 52 intro goes from about 90% to about 98% speed, and startup finishes a few frames sooner. SRAM stays at 8 wait states, and the default is restored before resetting to the BIOS or a flash cart menu. If a very old flash cart can't run at these wait states, this is the change to look at.
 
+- Added the standard save-type ID string (SRAM_V113) to the ROM. Flash carts and emulators look for it to decide which save memory a game gets; without it, some carts give no SRAM (so NES game saves and PocketNES settings are lost) or ask you to pick a save type. PocketNES still checks whether the cart has 32KB or 64KB of SRAM.
+
 To compile pocketnes.gba:
 
 sudo docker run --rm -v "$PWD":/src -w /src devkitpro/devkitarm make
