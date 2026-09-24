@@ -66,8 +66,22 @@ In the `write_handler`, the written data arrives in `r0`. PocketNES internal mac
 
 Code snippet
 
-```write_handler:
+```assembly
+write_handler:
     stmfd sp!,{r4,lr}
     mov r4,r0      @ Protect data in r4
     @ ... logic ...
-    ldmfd sp!,{r4,pc}```
+    ldmfd sp!,{r4,pc}
+```
+
+## The Write Table Rule (`writemem_X`)
+
+The `writemem_X` names are **offsets from `globalptr`** (r10), not memory addresses. Always write them with the `str_` macro, e.g. `str_ r1,writemem_4`. Loading one with `ldr r2,=writemem_6` gives you a small offset, not an address, and storing through it writes to the wrong place.
+
+The table also does not have one slot per 4KB. This build uses `PRG_BANK_SIZE == 8`, so each slot covers 8KB (`writemem_4` = `$4000-$5FFF`, `writemem_6` = `$6000-$7FFF`, and so on). A mapper register at `$5000` therefore shares `writemem_4` with the APU and joypad registers, and the handler must pass `$4000-$4FFF` on to `IO_W` (see `map28.s` or `map225.s`).
+
+## The `addy` Rule (r12)
+
+Mapper write handlers often keep their return address in `addy` (r12) while they call `chr01234567_`, `mirror2V_` and friends (`map228.s` does `mov addy,lr` ... `mov lr,addy`). The core helpers preserve r12, so any new helper a mapper calls must preserve it too. Push and pop `addy` if you use r12, or call C code, which is free to change it.
+
+Registers r3-r11 hold the 6502's state (A, X, Y, flags, PC, cycles). A handler may use r0-r2 freely; anything else must be saved and restored.

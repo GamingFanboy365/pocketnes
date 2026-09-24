@@ -10,6 +10,13 @@ EWRAM_BSS char do_not_reset_all=0;	//when loading an old savestate, do not call 
 
 EWRAM_BSS u32 my_checksum=0;	//set by init_cache, called by loadcart
 
+//Banked CHR-RAM (mappers 28 and 30 with more than 8K): every 8K bank has a home in
+//chr_ram_shadow, and the live bank is copied into NES_VRAM so the PPU and dirty-tile
+//code keep working on a fixed 8K.  NULL when the game's CHR-RAM is not banked.
+EWRAM_BSS u8 *chr_ram_shadow=NULL;
+EWRAM_BSS u8 chr_ram_bank=0;		//bank currently held in NES_VRAM
+EWRAM_BSS u8 chr_ram_bank_mask=0;
+
 void redecompress()
 {
 	u8 *nesheader=rombase-16;
@@ -446,6 +453,33 @@ void init_cache(u8* nes_header, int called_from)
 		}
 	}
 	
+	//Banked CHR-RAM keeps its banks in the VRAM that novrom_bank would otherwise
+	//use for a PRG speed copy (0x06008000-0x0600FFFF, BG char blocks 2-3, which
+	//CHR-RAM games leave unused).  It is cleared above along with the rest of VRAM.
+	chr_ram_shadow=NULL;
+	chr_ram_bank_mask=0;
+	if (vrompages==0 && comptype==0 && (mapper==28 || mapper==30))
+	{
+		int chr_ram_size=32768;
+		if ((nes_header[7]&0x0C)==0x08 && (nes_header[11]&0x0F)!=0)
+		{
+			chr_ram_size=64<<(nes_header[11]&0x0F);	//NES 2.0 CHR-RAM size
+		}
+		if (chr_ram_size>32768)
+		{
+			chr_ram_size=32768;
+		}
+		if (chr_ram_size>8192)
+		{
+			chr_ram_shadow=novrom_bank;
+			chr_ram_bank_mask=chr_ram_size/8192-1;
+		}
+	}
+	if (called_from!=0)
+	{
+		chr_ram_bank=0;
+	}
+	
 	cachebase = dest;
 	cache_end_of_rom=cachebase+192*1024;
 	
@@ -599,6 +633,14 @@ void init_cache(u8* nes_header, int called_from)
 			chr_entries=8;
 		}
 		assign_chr_pages(_vrombase,0,chr_entries);
+		if (comptype==0 && vrompages>0)
+		{
+			bigchr_setup(_vrombase,chr_entries);	//more than 256K of CHR?
+		}
+		else
+		{
+			bigchr_setup(NULL,0);
+		}
 		
 		if (comptype==2)
 		{
@@ -808,8 +850,11 @@ void init_cache(u8* nes_header, int called_from)
 					}
 					
 					
-					memcpy_if_okay(novrom_bank,_rombase+firstpage*16384,pages_to_copy*16384);
-					assign_prg_pages2(novrom_bank,firstpage*PRG_16,pages_to_copy*PRG_16);
+					if (chr_ram_shadow==NULL)	//that VRAM holds the CHR-RAM banks instead
+					{
+						memcpy_if_okay(novrom_bank,_rombase+firstpage*16384,pages_to_copy*16384);
+						assign_prg_pages2(novrom_bank,firstpage*PRG_16,pages_to_copy*PRG_16);
+					}
 					//sprite_vram_in_use=1;
 					if (page_size!=32)
 					{

@@ -83,7 +83,7 @@ w28_chr:	@ reg $00
 	strb_ r2,m28_chr
 	stmfd sp!,{r0,lr}
 	mov r0,r2
-	bl_long chr01234567_
+	bl_long chr_ram_bank8_
 	ldmfd sp!,{r0,lr}
 	b w28_screen
 

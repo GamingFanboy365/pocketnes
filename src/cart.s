@@ -31,6 +31,7 @@
 	.global _vrompages
 	.global _fourscreen
 	.global _nes_chr_map
+	.global _agb_real_bg_map
 	global_func loadcart_asm
 	global_func hardreset
 	global_func map67_

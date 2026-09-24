@@ -23,7 +23,7 @@ write30:
 	@ CHR bank (bits 5-6)
 	and r1,r0,#0x60
 	mov r0,r1,lsr#5
-	bl_long chr01234567_
+	bl_long chr_ram_bank8_
 
 	ldr r0,[sp]
 	@ Mirroring (bit 7)
