@@ -45,6 +45,10 @@ void _init() {}
 
 int main()
 {
+	//Cartridge wait states: 3/1 for ROM with the prefetch buffer on, 8 for SRAM,
+	//the setting commercial games use.  The power-on default (4/2, no prefetch)
+	//makes all the emulator code that runs from ROM much slower.
+	*(volatile u16*)0x4000204=0x4317;	//REG_WAITCNT
 	//set text_start (before moving the rom)
 	extern u8 __rom_end__[];
 	extern u8 __eheap_start[];

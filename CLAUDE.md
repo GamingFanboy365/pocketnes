@@ -9,7 +9,7 @@
 - `writemem_X` / `readmem_X` are offsets from `globalptr` (r10): write them with `str_`, never `ldr rN,=writemem_X`. This build uses `PRG_BANK_SIZE == 8`, so each slot covers 8KB; `$5000` shares `writemem_4` with the APU/joypad, so pass `$4000-$4FFF` on to `IO_W`.
 - Mapper handlers keep their return address in `addy` (r12) across calls to `chr*_`, `map*_`, `mirror*_`. Any helper they call must preserve r12 (push/pop `addy`); C code does not.
 - r3-r11 hold 6502 state. Handlers may use r0-r2 freely; save anything else.
-- IWRAM is nearly full (about 636 bytes of stack left). Put new code in `.text` (ROM), not `.iwram`, unless it runs thousands of times a frame: PocketNES never sets `WAITCNT`, so ARM code in ROM runs at the default 4/2 wait states (several cycles per instruction). The `$4011` handler and DAC sample loop (`dac.s`) are in IWRAM for that reason; the space came from rolling up `pcm_mix`.
+- IWRAM is nearly full (about 636 bytes of stack left). Put new code in `.text` (ROM), not `.iwram`, unless it runs thousands of times a frame: even with the 3/1 wait states `main()` sets in `WAITCNT`, ARM code in ROM takes several cycles per instruction. The `$4011` handler and DAC sample loop (`dac.s`) are in IWRAM for that reason; the space came from rolling up `pcm_mix`.
 - Many files use CRLF line endings (`cart.s`, `ppu.s`, `6502.s`, `loadcart.c` …). Keep them CRLF when editing.
 
 ## Testing
