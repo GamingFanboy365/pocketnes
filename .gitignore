@@ -10,3 +10,7 @@ roms/
 
 # Multicart output from builder.py (contains ROM data)
 play_me.gba
+
+# NESdev wiki exports (internal reference only)
+NESdevWiki*.xml
+reference/

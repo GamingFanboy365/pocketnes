@@ -205,6 +205,7 @@ static const u8 *find_hack(const u8 *start_pc, const u8 *branchpc, const u8 *las
 	
 	const u8 *pc=start_pc;
 	if (start_pc==NULL) return NULL;
+	int reads_ppu_status=0;
 	while (pc<branchpc)
 	{
 		//check if an instruction disqualifies
@@ -255,6 +256,8 @@ static const u8 *find_hack(const u8 *start_pc, const u8 *branchpc, const u8 *las
 		{
 			if (iswrite<2)  //is a read, or "Math on A is okay"
 			{
+				if (addr>=0x2000 && addr<0x4000 && (addr&7)==2) reads_ppu_status=1;
+				if (addr>=0x2000 && addr<0x4000 && (addr&7)==7) return NULL;	//$2007 reads advance the VRAM address
 				last_instruction_was_increment = 0;
 				if (num_reads==MAX_READS) return NULL;
 				reads[num_reads++]=addr;
@@ -282,6 +285,11 @@ static const u8 *find_hack(const u8 *start_pc, const u8 *branchpc, const u8 *las
 	}
 out_loop:
 	if (pc!=branchpc) return NULL;
+	//A loop that only polls $2002 (no writes or increments) is waiting for the
+	//vblank or sprite 0 flag.  Skipping its iterations can make it miss the flag
+	//and hang (110-in-1's menu), so leave it to run normally.  Loops that
+	//also do work (f-ff's timing routine) keep their hack.
+	if (reads_ppu_status && num_writes==0 && num_incs==0) return NULL;
 	
 	if ((*pc & 0x1F)==0x10) //if it's a branch
 	{

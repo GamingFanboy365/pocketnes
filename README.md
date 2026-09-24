@@ -13,7 +13,7 @@ Additions:
 
 - Upgraded the Python builder script to dynamically compile multiple .nes ROMs into a single pocketnes.gba multicart payload, automatically generating the dynamic menu and injecting the required 48-byte metadata header for each game.
 
-- Implemented Mapper 30 (UNROM 512)
+- Implemented Mapper 30 (UNROM 512): PRG and CHR-RAM banking, with nametable mirroring handled as the header specifies (horizontal, vertical, mapper-switched one-screen, four-screen, and submapper 3's switchable H/V). On self-flashable boards the $8000-$BFFF flash command writes are ignored; flash saving itself isn't emulated. Tested on: Mystic Origins
 
 - Implemented Mapper 38 (Tengen Custom): A highly specialized, single-register Famicom hardware board that hijacks the $7000 SRAM space. Example game: Crime Busters
 
@@ -29,13 +29,15 @@ Additions:
 
 - Implemented Mapper 11 (Color Dreams / Wisdom Tree): A single register architecture that spans the entire upper half of the memory map to command 32KB PRG blocks and 8KB CHR blocks simultaneously. Example games: Spiritual Warfare, Crystal Mines, and Bible Adventures
 
-- Implemented Mapper 225 (various multicarts): Menu boots but some individual game graphics are currently garbled, so it doesn't fully work yet. Tested on: 110-in-1
+- Implemented Mapper 225 (various multicarts), including the 4-bit RAM at $5800. Tested on: 110-in-1 (2MB PRG, 1MB CHR); with the CHR ROM support below, the games tested (about 25 menu entries) match Mesen2, apart from one entry that also crashes in Mesen2 and FCEUX.
 
 - Implemented Mapper 28 (Action 53, various current homebrew titles): Tested on Action 53 Volume 4; the menu works and nearly every game plays correctly, including the ones that switch CHR-RAM banks. Known exception: one golf game shows the wrong background colour.
 
-- Fixed Mapper 228 (Action 52 / Cheetahmen II) 16KB/32KB PRG mode selection. With the CHR ROM support below, the Action 52 intro, title screen and menu display correctly, and 17 of the first 18 games tested match FCEUX (Illuminator has wrong colours and missing sprites).
+- Fixed Mapper 228 (Action 52 / Cheetahmen II) 16KB/32KB PRG mode selection. With the CHR ROM support below, the Action 52 intro, title screen and menu display correctly, and 17 of the first 18 games tested match the reference emulators. Illuminator shows the right graphics at first but hangs on a black-and-grey screen after its opening transition; it looks like a CPU/NMI timing race rather than a mapper problem.
 
 - Added the stable unofficial 6502 opcodes that were missing (ANC, ALR, ARR, and every addressing mode of LAX, SAX, SLO, RLA, SRE, RRA, DCP and ISC) and fixed the carry flag of AXS. Before, these ran as one-byte NOPs, so the byte after them was executed as an instruction and the game went off the rails. This fixed Star Evil, f-ff and the Dungeon game in Action 53. blargg's instr_test-v5 now passes everything except the unstable opcodes $AB, $9C and $9E.
+
+- Fixed the automatic speed hacks treating loops that only poll $2002 (waiting for the vblank or sprite 0 flag) as idle loops, and loops that read $2007 (which advances the VRAM address). Skipping their iterations could make a game miss the vblank flag and hang, as the 110-in-1 menu sometimes did.
 
 - Added banked CHR-RAM (up to 32KB, four 8KB banks) for mappers 28 and 30. The live bank stays in the emulator's normal 8KB CHR-RAM, and the other banks are kept in otherwise unused GBA VRAM; switching banks swaps them and re-renders the tiles. Savestates only store the live bank.
 
