@@ -17,6 +17,11 @@ EWRAM_BSS u8 *chr_ram_shadow=NULL;
 EWRAM_BSS u8 chr_ram_bank=0;		//bank currently held in NES_VRAM
 EWRAM_BSS u8 chr_ram_bank_mask=0;
 
+//Mapper 30 nametable/latch configuration, set by read_rom_header and read by map30.s:
+//bits 0-6: 0 = fixed by header, 1 = one-screen chosen by latch bit 7, 2 = H/V chosen by latch bit 7
+//bit 7: the latch only answers at $C000-$FFFF
+EWRAM_BSS u8 mapper30_mode=0;
+
 void redecompress()
 {
 	u8 *nesheader=rombase-16;
@@ -64,6 +69,29 @@ static void read_rom_header(u8 *nesheader)
 		if (mapper==5) fourscreen=true;
 		if (mapper==9) fourscreen=false;
 		if (mapper==99) cartflags|=VS;
+
+		//UNROM 512 (mapper 30), see map30.s
+		mapper30_mode=0;
+		if (mapper==30)
+		{
+			int submapper=is_nes20?(nesheader[8]>>4):0;
+			int battery=(flags1&0x02)!=0;
+			if (submapper==3)
+			{
+				mapper30_mode=2;	//bit 7 of the latch picks H/V
+			}
+			else if ((flags1&0x09)==0x08)
+			{
+				//header %1..0 means one-screen, switchable by the latch, not four-screen
+				mapper30_mode=1;
+				cartflags&=~SCREEN4;
+				fourscreen=false;
+			}
+			if ((submapper==0 && battery) || submapper==1 || submapper==3 || submapper==4)
+			{
+				mapper30_mode|=0x80;	//latch only at $C000-$FFFF ($8000-$BFFF is flash/LEDs)
+			}
+		}
 	}
 
 	//Get rom and vrom bases, sizes, and masks

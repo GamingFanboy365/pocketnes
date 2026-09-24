@@ -13,6 +13,11 @@
 - Many files use CRLF line endings (`cart.s`, `ppu.s`, `6502.s`, `loadcart.c` …). Keep them CRLF when editing.
 
 ## Testing
-- mGBA (libmgba) runs `pocketnes.gba` headlessly; a reference NES emulator runs the same ROM for side-by-side screenshots. FCEUX was used so far, but it does not support every mapper; Mesen2 has wider mapper coverage.
+- mGBA (libmgba) runs `pocketnes.gba` headlessly; Mesen2 is the reference NES emulator for side-by-side screenshots (it supports far more mappers than FCEUX). Running Mesen2 2.1.1 headlessly (`Mesen --testrunner ROM script.lua` under `xvfb-run`) needed:
+  - `~/.config/Mesen2/settings.json` present, or it opens a setup wizard: `{"Debug":{"ScriptWindow":{"AllowIoOsAccess":true}},"Nes":{"Port1":{"Type":"NesController"}}}` (Lua file I/O and a controller on port 1).
+  - On Ubuntu 24.04 the bundled `MesenCore.so` crashes loading (static libstdc++ clash). Build the core from the matching source tag (`make core` after removing `-static-libgcc -static-libstdc++` from the makefile), copy it over `~/.config/Mesen2/MesenCore.so`, and `chattr +i` it so Mesen doesn't re-extract its own copy.
+  - `LANG=C.UTF-8`, and absolute paths (Mesen changes its working directory).
+- Scripted menu navigation must hold each button for about 4 frames with gaps; shorter presses get missed by PocketNES and the cursor lands on a different game.
+- NESdev wiki exports shared for reference (`NESdevWiki*.xml`) are internal only and are git-ignored; never commit them.
 - blargg's `instr_test-v5` (in the public nes-test-roms collection) checks the CPU, including unofficial opcodes. Everything passes except the unstable opcodes `$AB`, `$9C`, `$9E`.
 - When changing core code, compare old and new builds pixel for pixel on a set of CHR-ROM test ROMs to catch regressions.
