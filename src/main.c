@@ -16,6 +16,11 @@ extern romheader mb_header;
 
 //const unsigned __fp_status_arm=0x40070000;
 EWRAM_BSS u8 *textstart;//points to first NES rom (initialized by boot.s)
+//Save type ID.  Flash carts and emulators look for one of these strings to
+//choose the save memory; without it some carts give no SRAM (saves are lost)
+//or ask the user.  SRAM_V is 32KB SRAM; probe_sram_size() also handles 64KB.
+__attribute__((used,aligned(4))) const char save_type_id[]="SRAM_V113";
+
 EWRAM_BSS u8 *ewram_start;
 EWRAM_BSS u8 *end_of_exram;
 EWRAM_BSS u32 max_multiboot_size;
