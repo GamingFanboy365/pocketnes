@@ -31,9 +31,13 @@ Additions:
 
 - Implemented Mapper 225 (various multicarts): Menu boots but some individual game graphics are currently garbled, so it doesn't fully work yet. Tested on: 110-in-1
 
-- Implemented Mapper 28 (Action 53, various current homebrew titles): Tested on Action 53 Volume 4; the menu works and games launch. Most games play correctly, but games that switch between CHR-RAM banks still show garbled graphics, because PocketNES only has 8KB of CHR-RAM so far.
+- Implemented Mapper 28 (Action 53, various current homebrew titles): Tested on Action 53 Volume 4; the menu works and nearly every game plays correctly, including the ones that switch CHR-RAM banks. Known exceptions: f-ff (black screen), starevil (returns to the title), the Dungeon game (garbled) and one golf game (wrong background colour).
 
-- Fixed Mapper 228 (Action 52 / Cheetahmen II) 16KB/32KB PRG mode selection. The Action 52 menu works and games launch, but screens that use CHR past the first 256KB (such as the Action 52 title screen) are still garbled, because PocketNES tracks CHR pages with 8-bit numbers.
+- Fixed Mapper 228 (Action 52 / Cheetahmen II) 16KB/32KB PRG mode selection. With the CHR ROM support below, the Action 52 intro, title screen and menu display correctly, and 16 of the first 18 games tested match FCEUX (Starevil shows a black screen and Illuminator has wrong colours).
+
+- Added banked CHR-RAM (up to 32KB, four 8KB banks) for mappers 28 and 30. The live bank stays in the emulator's normal 8KB CHR-RAM, and the other banks are kept in otherwise unused GBA VRAM; switching banks swaps them and re-renders the tiles. Savestates only store the live bank.
+
+- Added support for CHR ROM larger than 256KB (up to 2MB), for any mapper. PocketNES stores CHR page numbers in single bytes, so large CHR ROMs now use 8-bit "virtual" page numbers that are assigned on demand and recycled when they run out (src/bigchr.c, src/chrram.s). Savestates for these games may show wrong graphics until the game next switches CHR banks.
 
 To compile pocketnes.gba:
 
