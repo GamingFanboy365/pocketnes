@@ -55,22 +55,57 @@ Additions:
 
 - Implemented Mapper 211 (J.Y. Company): the PRG and CHR banking modes, per-nametable mirroring, the multiplier at $5800, and the IRQ counter (PPU A12 mode, run on the MMC3 scanline counter). Tested on: Tiny Toon Adventures 6, whose gameplay and status bar match Mesen2. Known issue: one scene of its intro uses a ROM nametable (nametable data read from CHR ROM), which isn't emulated, so it shows the wrong graphics for a few seconds. Mappers 90 and 209 use the same chip but aren't enabled yet.
 
-To-do: mappers not implemented yet (the ones most likely to come up):
+To-do: mappers not implemented yet. Board names and example games come from each mapper's page on the NESdev wiki.
 
-| Mapper | Board | Example games |
-|---|---|---|
-| 44, 45, 47, 49, 52 | MMC3-based multicarts | Super Spike V'Ball + Nintendo World Cup (47), various pirate multicarts |
-| 48 | Taito TC0690 | Don Doko Don 2, The Flintstones (Japan) |
-| 90, 209 | J.Y. Company (same chip as 211) | pirate Mortal Kombat games, other J.Y. games |
-| 91 | pirate board | Street Fighter III pirate |
-| 95 | Namco 3425 | Dragon Buster |
-| 154 | Namco 108 variant | Devil Man |
-| 155 | MMC1A | Tatakae!! Ramen Man |
-| 153, 157, 159 | Bandai variants | Famicom Jump II, Datach games, a Dragon Ball Z game |
-| 207 | Taito X1-005 variant | Fudou Myouou Den |
-| 210 | Namco 175/340 | Splatterhouse: Wanpaku Graffiti, Famista games |
-| 57, 58, 61, 62, 200-203, 212, 213, 226, 227, 229, 231, 233, 242 | simple discrete-logic multicarts | many "N-in-1" carts |
-| 256 and up | NES 2.0-only boards | most newer pirate and multicart boards, such as COOLBOY (268) |
+| Mapper | Board / chip | Example games | Notes |
+|---|---|---|---|
+| 13 | NES-CPROM | Videomation | the only known game |
+| 31 | homebrew CPLD board (InfiniteNESLives Mapper 31, EverDrive N8) | 2A03 Puritans, Famicompo Pico, RNDM, EZNSF | mostly homebrew music (NSF) carts |
+| 44 | MMC3-based multicart | Super Big 7-in-1 | |
+| 45 | GA23C ASIC (MMC3-based multicart) | Super New Year Cart 15-in-1 (超强年度新卡) | |
+| 46 | Rumble Station (Color Dreams multicart) | Rumblestation 15-in-1 | |
+| 47 | MMC3-based multicart | Super Spike V'Ball + Nintendo World Cup | |
+| 48 | Taito TC0690 | Don Doko Don 2, Bubble Bobble 2 (J), Captain Saver (J), The Jetsons: Cogswell's Caper! (J), Bakushou!! Jinsei Gekijou 3 | many dumps are mislabelled as mapper 33 |
+| 49 | MMC3-based multicart | Super HIK 4-in-1 | |
+| 52 | Realtec 8213 and similar MMC3-based multicarts | Mario Party 7-in-1, Well 8-in-1 (AB-128) | |
+| 57 | NROM/CNROM-style multicart | GK 47-in-1, 6-in-1 (SuperGK) | |
+| 58 | NROM/CNROM-based multicarts | 21-in-1 (AS-5321), 50-in-1 (WQ1806 B), 55-in-1 (WQ2006 B), 68-in-1 (HKX5268) | mapper 213 is a duplicate |
+| 61 | GS-2017, NTDEC 0324, NTDEC BS-N032 | Tetris Family 9-in-1, HQ 15-in-1, 32-in-1 | |
+| 62 | multicart | Super 700-in-1 | |
+| 83 | Cony/Yoko ASIC | Street Fighter II Pro, Fatal Fury 2, World Heroes 2, Mortal Kombat II/V Pro | |
+| 90 | J.Y. Company ASIC (boards without ROM nametables) | Mortal Kombat II Special, Tekken 2, Super Mario World, Aladdin, Final Fight 3 | same chip as mapper 211 |
+| 91 | JY830623C, YY840238C, EJ-006-1 | Street Fighter 3, Mortal Kombat II, Dragon Ball Z 2, Mario & Sonic 2 | |
+| 95 | NAMCOT-3425 | Dragon Buster (J) | |
+| 96 | discrete logic | Oeka Kids: Anpanman no Hiragana Daisuki, Oeka Kids: Anpanman to Oekaki Shiyou!! | needs the Oeka Kids drawing tablet |
+| 114 | MMC3 clone with scrambled registers | Aladdin, The Lion King, Super Donkey Kong, Boogerman (pirates) | mapper 182 is a duplicate |
+| 121 | Kǎshèng A9711/A9713 (protected MMC3 clone) | Sonic & Knuckles 5, Sonic 3D Blast 6, Street Fighter Zero 2 '97, Super Real Bout 97 | |
+| 125 | UNL-LH32 | Monty no Doki Doki Daisassou (Monty on the Run) | a Famicom Disk System game converted to cartridge |
+| 153 | Bandai FCG board, LZ93D50 with 8KB battery WRAM | Famicom Jump II: Saikyou no 7-nin | the only game |
+| 154 | NAMCOT-3453 | Devil Man | mapper 88 plus a nametable control bit |
+| 155 | MMC1A (2ME board) | two games rely on MMC1A behaviour (not named on the wiki) | like mapper 1, but PRG RAM is always enabled |
+| 157 | Bandai Datach Joint ROM System | Battle Rush, Crayon Shin-chan: Ora to Poi Poi, Dragon Ball Z: Gekitou Tenkaichi Budoukai, J-League Super Top Players, SD Gundam Wars | Datach barcode reader games |
+| 159 | Bandai FCG board, LZ93D50 with 128-byte EEPROM | Dragon Ball Z: Kyoushuu! Saiya-jin, Magical Taruruuto-kun: Fantastic World!!, SD Gundam Gaiden: Knight Gundam Monogatari | |
+| 188 | Bandai M60001 | Karaoke Studio | needs the cartridge's microphone |
+| 189 | TXC PT8154/PT8159 MMC3 clones | Thunder Warrior, Street Fighter II: The World Warrior (pirate), Master Fighter II | |
+| 200 | MG109 | 1993 Super 50-in-1 | |
+| 201 | BNROM/CNROM-style multicart | 8-in-1, 21-in-1 (2006-CA) | |
+| 202 | 150-in-1 pirate cart | none named | |
+| 203 | multicart | 35-in-1 (Duck Hunt, Hogan's Alley, Wild Gunman, Battle City) | |
+| 207 | Taito X1-005 variant | Fudou Myouou Den | a modified mapper 80 board |
+| 209 | J.Y. Company ASIC | Mighty Morphin' Power Rangers III, Mike Tyson's Punch-Out!! (pirate), Shin Samurai Spirits 2 | same chip as mapper 211, plus a CHR latch |
+| 210 | Namco 175 / Namco 340 | Famista '91, Famista '92, Family Circuit '91, Chibi Maruko-chan: Uki Uki Shopping, Dream Master | many dumps are set to mapper 19 |
+| 212 | discrete-logic multicart ("BMC Super HiK 300-in-1") | none named | |
+| 213 | multicart | 9999999-in-1, 168-in-1 | duplicate of mapper 58 |
+| 218 | single PRG ROM, nametable RAM used as CHR | Magic Floor, Starfight | |
+| 226 | discrete logic | 76-in-1, Super 42-in-1, 63-in-1 | |
+| 227 | 810449-C-A1, FW-01, N120-72 | 1992 Contra 120-in-1 | |
+| 229 | BMC 31-in-1 | none named | |
+| 231 | multicart | 20-in-1 | |
+| 233 | multicart | an "Unknown Multi Cart 1" (Galaxian, 10 Yard Fight, Balloon Fight, ...) | the wiki says that dump may be bad |
+| 234 | Maxi 15 (CNROM and NINA-03 combination) | Maxi 15 multicart | |
+| 242 | ET-113 variant (UNL-43272) | Waixing's Chinese RPGs (none named) | |
+| 268 | AA6023 ASIC (COOLBOY, MINDKIDS and other boards) | 218-in-1 Real Game, MegaMan 8-in-1, Data East All-Star Collection, PocketGames 150-in-1 | NES 2.0 only; up to 32MB of PRG ROM |
+| 256 and up | other NES 2.0-only boards | most newer pirate and multicart boards | |
 
 The Famicom Disk System (mapper 20) isn't supported either; it's a disk drive add-on rather than a cartridge board.
 
