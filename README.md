@@ -49,6 +49,31 @@ Additions:
 
 - Added the standard save-type ID string (SRAM_V113) to the ROM. Flash carts and emulators look for it to decide which save memory a game gets; without it, some carts give no SRAM (so NES game saves and PocketNES settings are lost) or ask you to pick a save type. PocketNES still checks whether the cart has 32KB or 64KB of SRAM.
 
+- Implemented Mapper 37 (Super Mario Bros. + Tetris + Nintendo World Cup, Europe): an MMC3 with an outer bank register at $6000-$7FFF that picks each game's PRG and CHR area; it only takes writes while the MMC3 enables PRG RAM, as on the real board. All three games boot from the menu and match Mesen2. Some dumps of this cart have mapper 4 in their header; builder.py recognises the common one by checksum and packs it as mapper 37 (the .nes file isn't changed).
+
+- Implemented Mapper 82 (Taito X1-017): PRG and CHR banking (including the CHR A12 inversion), mirroring, and the 5KB battery RAM at $6000-$73FF. The chip's IRQ counter isn't emulated (no known game uses it), and neither are the RAM enable registers. Tested on: SD Keiji: Blader, which matches Mesen2 through the title, save file select, name entry and gameplay. Also fixed PocketNES replacing a mapper's own $6000-$7FFF handler with the battery-save handler when the game has a battery, which broke mappers with registers in that range.
+
+- Implemented Mapper 211 (J.Y. Company): the PRG and CHR banking modes, per-nametable mirroring, the multiplier at $5800, and the IRQ counter (PPU A12 mode, run on the MMC3 scanline counter). Tested on: Tiny Toon Adventures 6, whose gameplay and status bar match Mesen2. Known issue: one scene of its intro uses a ROM nametable (nametable data read from CHR ROM), which isn't emulated, so it shows the wrong graphics for a few seconds. Mappers 90 and 209 use the same chip but aren't enabled yet.
+
+To-do: mappers not implemented yet (the ones most likely to come up):
+
+| Mapper | Board | Example games |
+|---|---|---|
+| 44, 45, 47, 49, 52 | MMC3-based multicarts | Super Spike V'Ball + Nintendo World Cup (47), various pirate multicarts |
+| 48 | Taito TC0690 | Don Doko Don 2, The Flintstones (Japan) |
+| 90, 209 | J.Y. Company (same chip as 211) | pirate Mortal Kombat games, other J.Y. games |
+| 91 | pirate board | Street Fighter III pirate |
+| 95 | Namco 3425 | Dragon Buster |
+| 154 | Namco 108 variant | Devil Man |
+| 155 | MMC1A | Tatakae!! Ramen Man |
+| 153, 157, 159 | Bandai variants | Famicom Jump II, Datach games, a Dragon Ball Z game |
+| 207 | Taito X1-005 variant | Fudou Myouou Den |
+| 210 | Namco 175/340 | Splatterhouse: Wanpaku Graffiti, Famista games |
+| 57, 58, 61, 62, 200-203, 212, 213, 226, 227, 229, 231, 233, 242 | simple discrete-logic multicarts | many "N-in-1" carts |
+| 256 and up | NES 2.0-only boards | most newer pirate and multicart boards, such as COOLBOY (268) |
+
+The Famicom Disk System (mapper 20) isn't supported either; it's a disk drive add-on rather than a cartridge board.
+
 To compile pocketnes.gba:
 
 sudo docker run --rm -v "$PWD":/src -w /src devkitpro/devkitarm make

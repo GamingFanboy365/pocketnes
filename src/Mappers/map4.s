@@ -14,6 +14,11 @@
 	global_func mapper206init
 	global_func mapper245init
 	global_func mapper249init
+	global_func mmc3_init_code
+	global_func mmc3_write0_even
+	global_func mmc3_chr_base_switch
+	global_func mmc3_write2
+	global_func mmc3_write3
 @	global_func MMC3_IRQ_Hook
 	global_func mmc3_ntsc_pal_reset
 	global_func run_mmc3
@@ -54,6 +59,7 @@ mapper119init:
 mapper245init:
 mapper249init:
 	.word write0,write1,write2,write3
+mmc3_init_code:		@(mapper 37 runs this after its own .word table)
 	@note: this code modifies jump tables
 	mov r0,#12
 	strb_ r0,irq_time_add
@@ -176,6 +182,7 @@ write0:		@$8000-8001
 	tst addy,#1
 	bne w8001
 write0_even:
+mmc3_write0_even:
 	ldrb_ r1,cmd
 	eors addy,r0,r1
 	strneb_ r0,cmd
@@ -186,6 +193,7 @@ write0_even:
 	b_long write0_chr_base_switch
 	.pushsection .text, "ax", %progbits
 write0_chr_base_switch:
+mmc3_chr_base_switch:
 
 			@CHR base switch (0000/1000)
 	ldr_ r1,nes_chr_map
@@ -292,6 +300,7 @@ write1:		@$A000-A001
 	b_long mirror2V_
 @----------------------------------------------------------------------------
 write2:		@C000-C001
+mmc3_write2:
 @----------------------------------------------------------------------------
 	tst addy,#1
 	streqb_ r0,irq_latch
@@ -309,6 +318,7 @@ write2:		@C000-C001
 	b_long mmc3_set_next_timeout
 @----------------------------------------------------------------------------
 write3:		@E000-E001
+mmc3_write3:
 @----------------------------------------------------------------------------
 	ands r0,addy,#1
 	strb_ r0,irq_enable
