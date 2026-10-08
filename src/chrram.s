@@ -63,6 +63,7 @@ chr_ram_bank8_:	@r0 = 8K CHR-RAM bank.  Mapper write handlers call this in
 @----------------------------------------------------------------------------
  .pool
 
+	global_func chr_page_number
 	global_func big_chr0_
 	global_func big_chr1_
 	global_func big_chr2_
@@ -160,6 +161,29 @@ big_chr_map:	@r0 = first real 1K page, r1 = first PPU 1K slot, r2 = page count
 	bne 0b
 	ldmfd sp!,{r3-r7,addy,lr}
 	ldr pc,=updateBGCHR_
+
+@----------------------------------------------------------------------------
+chr_page_number:	@r0 = real 1K CHR page -> r0 = the number nes_chr_map would
+	@hold for it (a virtual page for CHR over 256K, assigned if needed).
+	@For page lists kept outside nes_chr_map (MMC5 sprites).  Changes r1, r2.
+@----------------------------------------------------------------------------
+	ldr_ r2,vrommask
+	and r0,r0,r2,lsr#10
+	ldr r1,=bigchr_patched
+	ldrb r1,[r1]
+	cmp r1,#1
+	bxne lr
+	ldr r1,=bigchr_real_to_virtual
+	ldrb r1,[r1,r0]
+	cmp r1,#0xFF
+	movne r0,r1
+	bxne lr
+	stmfd sp!,{r3,addy,lr}
+	ldr r12,=bigchr_page		@(Thumb C)
+	mov lr,pc
+	bx r12
+	ldmfd sp!,{r3,addy,lr}
+	bx lr
 @----------------------------------------------------------------------------
  .pool
 	@.end

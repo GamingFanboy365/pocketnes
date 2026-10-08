@@ -20,7 +20,10 @@ EWRAM_BSS u8 chr_ram_bank_mask=0;
 //Mapper 30 nametable/latch configuration, set by read_rom_header and read by map30.s:
 //bits 0-6: 0 = fixed by header, 1 = one-screen chosen by latch bit 7, 2 = H/V chosen by latch bit 7
 //bit 7: the latch only answers at $C000-$FFFF
+//NES 2.0 submapper number (0 for iNES headers), set by read_rom_header
+EWRAM_BSS u8 nes_submapper=0;
 EWRAM_BSS u8 mapper30_mode=0;
+EWRAM_BSS u8 singlescreen=0;	//one-screen mirroring at boot (see cart.s)
 
 void redecompress()
 {
@@ -69,8 +72,19 @@ static void read_rom_header(u8 *nesheader)
 		if (mapper==5) fourscreen=true;
 		if (mapper==9) fourscreen=false;
 		if (mapper==99) cartflags|=VS;
+		singlescreen=0;
+		if (mapper==218 && fourscreen)
+		{
+			//Magic Floor: the PPU's own nametable RAM is its CHR-RAM, and header
+			//$A8/$A9 mean a one-screen wiring, not four-screen.  It works as
+			//one-screen mirroring plus CHR-RAM (from Dwedit's 2025 PocketNES).
+			cartflags&=~SCREEN4;
+			fourscreen=false;
+			singlescreen=1;
+		}
 
 		//UNROM 512 (mapper 30), see map30.s
+		nes_submapper=is_nes20?(nesheader[8]>>4):0;
 		mapper30_mode=0;
 		if (mapper==30)
 		{

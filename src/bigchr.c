@@ -108,12 +108,15 @@ void bigchr_setup(u8 *chr_base, int chr_1k_pages)
 	set_patches(1);
 }
 
+extern u8 *_sprite_chr_map;
+
 static int page_is_mapped(int v)
 {
 	int i;
 	for (i=0;i<8;i++)
 	{
 		if (nes_chr_map[i]==v) return 1;
+		if (_sprite_chr_map[i]==v) return 1;	//MMC5 sprite pages
 	}
 	return 0;
 }

@@ -1463,7 +1463,7 @@ fine_x_handler:
 
 update_bankbuffer:
 	@destroys r3,r4,r5
-	adrl_ r0,nes_chr_map
+	ldr_ r0,sprite_chr_map	@(MMC5 points this at its sprite banks)
 	adr_ r1,bankbuffer_last
 	ldmia r0,{r2,r3}
 	ldmia r1,{r4,r5}

@@ -16,6 +16,7 @@
 	global_func mapper249init
 	global_func mmc3_init_code
 	global_func mmc3_write0_even
+	global_func mmc3_write0
 	global_func mmc3_chr_base_switch
 	global_func mmc3_write2
 	global_func mmc3_write3
@@ -80,6 +81,13 @@ mmc3_init_code:		@(mapper 37 runs this after its own .word table)
 	ldr_ r2,writemem_8
 	
 	cmp r0,#118
+	@TxSROM sets mirroring through CHR banks: ignore the MMC3 mirroring register
+	@(fix from Dwedit's 2025 PocketNES)
+	ldreq r2,=void
+	streq_ r2,writemem_A
+	.if PRG_BANK_SIZE == 4
+	streq_ r2,writemem_B
+	.endif
 	ldreq r2,=write0_118
 	
 	cmp r0,#245
@@ -178,6 +186,7 @@ write0_206:
 	and r0,r0,#0x3F
 @----------------------------------------------------------------------------
 write0:		@$8000-8001
+mmc3_write0:	@(mapper 114 calls this with addy bit 0 picking select or data)
 @----------------------------------------------------------------------------
 	tst addy,#1
 	bne w8001
