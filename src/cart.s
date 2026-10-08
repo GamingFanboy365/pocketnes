@@ -30,6 +30,8 @@
 	.global _rompages
 	.global _vrompages
 	.global _fourscreen
+	.global _sprite_chr_map
+	global_func mirror2_
 	.global _nes_chr_map
 	.global _agb_real_bg_map
 	global_func loadcart_asm
@@ -200,6 +202,7 @@ mappertbl:
 	.byte 105
 	.endif
     .byte 113
+	.byte 114
 	.byte 118
 	.byte 119
 	.byte 140
@@ -218,6 +221,7 @@ mappertbl:
 	.byte 187
 	.byte 206
 	.byte 211
+	.byte 218
 	.if LESSMAPPERS
 	.else
 	.byte 225
@@ -302,6 +306,7 @@ mappertbl2:
 	.word mapper105init	@105
 	.endif
     .word mapper113init	@113
+	.word mapper114init	@114
 	.word mapper118init	@118
 	.word mapper119init	@119
 	.word mapper66init	@140
@@ -320,6 +325,7 @@ mappertbl2:
 	.word mapper4init 	@187
 	.word mapper206init @206
 	.word mapper211init	@211
+	.word mapper0init	@218 (NROM-like; from Dwedit's 2025 PocketNES)
 	.if LESSMAPPERS
 	.else
 	.word mapper225init	@225
@@ -452,6 +458,8 @@ lc2:
 	bl ntsc_pal_reset
 	bl timeout_reset
 	bl PPU_reset
+	ldr r0,=_nes_chr_map	@sprites use the normal CHR page list (MMC5 changes this)
+	str_ r0,sprite_chr_map
 	bl IO_reset
 	bl Sound_hardware_reset
 	bl sound_reset
@@ -648,6 +656,15 @@ m0011:	.word 0x8C02,NES_VRAM2+0x0000,NES_VRAM2+0x0000,NES_VRAM2+0x0400,NES_VRAM2
 	.word VRAM_name0, VRAM_name0, VRAM_name1, VRAM_name1
 m0123:	.word 0xCC02,NES_VRAM2+0x0000,NES_VRAM2+0x0400,NES_VRAM4+0x0000,NES_VRAM4+0x0400
 	.word VRAM_name0, VRAM_name1, VRAM_name2, VRAM_name3
+m2222:	.word 0x0E02,NES_VRAM4+0x0000,NES_VRAM4+0x0000,NES_VRAM4+0x0000,NES_VRAM4+0x0000	@all nametables on page 2 (MMC5)
+	.word VRAM_name2, VRAM_name2, VRAM_name2, VRAM_name2
+
+	.pushsection .text, "ax", %progbits
+mirror2_:	@all nametables on page 2 (MMC5 $A4/$AA; from Dwedit's 2025 PocketNES)
+	ldr r0,=m2222
+	b_long mirrorchange
+	.pool
+	.popsection
 
 	.if SAVESTATES
 @----------------------------------------------------------------------------
@@ -1979,7 +1996,9 @@ _flicker: .byte 1
 @padding
 	.byte 0,0
 @padding:
-	.word 0,0
+	.word 0
+_sprite_chr_map:	@for MMC5 (sprites use different mapping than backgrounds)
+	.word _nes_chr_map
 
 @----------------------------------------------------------------------------
 	@.end

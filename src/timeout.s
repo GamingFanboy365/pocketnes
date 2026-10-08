@@ -1156,6 +1156,7 @@ HandlersTable:
 	.word map69_handler
 	.word mmc3_screen_on
 	.word Mapper163HalfScreenHandler
+	.word mapper_73_handler	@(new entries go at the end, to keep savestate indexes)
 HandlersTableEnd:
  HandlersTableSize = (HandlersTableEnd  - HandlersTable) / 4
 @ HandlersTableSize = 31

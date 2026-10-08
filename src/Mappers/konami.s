@@ -57,6 +57,7 @@ run_counter_2:
 1:	
 	ldr_ r0,latch	@32 bit number, MSByte is counter, LSByte is latch
 	adds r0,r0,r1,lsl#24
+	movccs addy,r1,lsl#24	@carry if clocked more than 255 times (fix from Dwedit's 2025 PocketNES)
 	addcs r0,r0,r0,lsl#24
 	str_ r0,latch
 	bxcc lr
@@ -116,8 +117,8 @@ find_next_irq_2:
 0:
 	@we have a fraction
 	ldr addy,=341
-	rsb r2,r2,#0
 	umull r2,r0,addy,r2
+	sub r0,addy,r0		@(fix from Dwedit's 2025 PocketNES)
 	add r1,r1,r0
 	ldrb_ r0,counter
 	rsb r0,r0,#0xFF
@@ -168,6 +169,7 @@ KoCounter: @- - - - - - - - - - - - - - -
 	orr r1,r1,r0,lsl#16
 	tst r0,#2
 	orrne r1,r1,#0x00000200
+	biceq r1,r1,#0x00000200	@(fix from Dwedit's 2025 PocketNES)
 	streq_ r1,latch
 	bxeq lr
 	@copy latch to counter
@@ -198,10 +200,10 @@ KoIRQen: @- - - - - - - - - - - - - - -
 	bx lr
 0:
 	tst r0,#0x00010000
-	@if IRQ should be enabled, enable it.
-	mov r0,#0x02
-	strb_ r0,irqen
-	b find_next_irq
+	@if IRQ should be enabled, enable it.  (fix from Dwedit's 2025 PocketNES: only when the bit is set)
+	movne r0,#0x02
+	strneb_ r0,irqen
+	bne find_next_irq
 	bx lr
 
 	@.end

@@ -5,6 +5,7 @@ import sys, struct, os, zlib
 # .nes file itself isn't changed.
 HEADER_FIXES = {
     0xF46EF39A: 37,  # Super Mario Bros. + Tetris + Nintendo World Cup (Europe) (Rev A): header says 4
+    0x848DC2A4: 114, # The Lion King (1995) (Unl): header says 4
 }
 
 def fix_header(nes_data):

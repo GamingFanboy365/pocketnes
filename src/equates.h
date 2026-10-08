@@ -615,7 +615,8 @@ _m_ chrline_previous3,1
 
  _m_ twitch,1
  _m_ flicker,1
-_m_ ,10 @padding
+_m_ ,6 @padding
+_m_ sprite_chr_map,4	@CHR page list sprites use (MMC5 has its own; from Dwedit's 2025 PocketNES)
 
 @############################
 

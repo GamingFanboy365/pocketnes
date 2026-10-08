@@ -20,6 +20,8 @@ EWRAM_BSS u8 chr_ram_bank_mask=0;
 //Mapper 30 nametable/latch configuration, set by read_rom_header and read by map30.s:
 //bits 0-6: 0 = fixed by header, 1 = one-screen chosen by latch bit 7, 2 = H/V chosen by latch bit 7
 //bit 7: the latch only answers at $C000-$FFFF
+//NES 2.0 submapper number (0 for iNES headers), set by read_rom_header
+EWRAM_BSS u8 nes_submapper=0;
 EWRAM_BSS u8 mapper30_mode=0;
 
 void redecompress()
@@ -71,6 +73,7 @@ static void read_rom_header(u8 *nesheader)
 		if (mapper==99) cartflags|=VS;
 
 		//UNROM 512 (mapper 30), see map30.s
+		nes_submapper=is_nes20?(nesheader[8]>>4):0;
 		mapper30_mode=0;
 		if (mapper==30)
 		{

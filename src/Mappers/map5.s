@@ -74,6 +74,9 @@ mapper5init:
 @	adr r0,mapper_5_hook
 @	str_ r0,scanlinehook
 
+	adrl_ r0,chrpage0	@sprites use their own bank list (from Dwedit's 2025 PocketNES)
+	str_ r0,sprite_chr_map
+
 	mov pc,lr
 @-------------------------------------------------------
 write0:
@@ -119,6 +122,9 @@ _05:
 	beq_long mirror5_1
 	cmp r0,#0xE4
 	beq_long mirror4_
+	cmp r0,#0xAA
+	cmpne r0,#0xA4   @castlevania 3 uses this value (from Dwedit's 2025 PocketNES)
+	beq_long mirror2_
 	eor r1,r0,r0,lsr#4
 	ands r1,r1,#0x0C
 	b_long mirror2V_
