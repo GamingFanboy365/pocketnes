@@ -1707,11 +1707,18 @@ CPU_reset:	@called by loadcart (r0-r9 are free to use)
 	.if CARTSAVE
 	ldrb_ r0,cartflags
 	tst r0,#SRAM			@use sram?
-	ldrne r1,=sram_W2			@write to cart sram
-	strne_ r1,writemem_6
+	beq 1f
+	@only replace the default handler: a mapper with registers in $6000-$7FFF
+	@(e.g. mapper 82) installs its own and passes RAM writes on itself
+	ldr_ r2,writemem_6
+	ldr r1,=sram_W
+	cmp r2,r1
+	ldreq r1,=sram_W2			@write to cart sram
+	streq_ r1,writemem_6
 .if PRG_BANK_SIZE == 4	
-	strne_ r1,writemem_7
+	streq_ r1,writemem_7
 .endif
+1:
 	@IMPORT save_start
 	@IMPORT sram_W2_modify
 	ldr r0,=save_start
