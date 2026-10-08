@@ -61,8 +61,6 @@ Additions:
 
 - Implemented Mapper 114 (MMC3 clone with scrambled register addresses, used by SuperGame/Hosenkan pirates): both register layouts (submapper 0 and 1), the scrambled bank-select indexes, the $6000 NROM-style PRG override and the $6001 outer CHR bit, on top of the MMC3 code. Tested on: Super Donkey Kong (Taiwan pirate), which matches Mesen2 from the title through the first level. Not emulated: the MMC3A IRQ quirk Aladdin relies on. Mapper 182, an old duplicate number for the same board, isn't enabled. (The 1995 "Lion King" in the ROM pack is a mapper 4 dump and already worked.)
 
-- Known issue (not new): Crisis Force switches CHR banks partway down the screen, and PocketNES uses one set of sprite banks per frame, so two of its status-bar sprites show the wrong tiles.
-
 To-do: mappers not implemented yet. Board names and example games come from each mapper's page on the NESdev wiki.
 
 | Mapper | Board / chip | Example games | Notes |
