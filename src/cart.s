@@ -510,6 +510,12 @@ lc1:				@call mapper*init
 	ldrb_ r1,cartflags
 	tst r1,#MIRROR		@set default mirror
 	bl_long mirror2H_		@(call after mapperinit to allow mappers to set up cartflags first)
+	ldr r1,=singlescreen
+	ldrb r1,[r1]
+	cmp r1,#0
+	beq 1f
+	bl_long mirror1_		@one-screen at boot if requested (mapper 218)
+1:
 
 	bl CPU_reset		@reset everything else - Call AFTER mapperinit
 	

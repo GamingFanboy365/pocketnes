@@ -40,10 +40,10 @@
  chrpage11 = mapperdata+19
 
  chrbank = mapperdata+20
- mmc5irqr = mapperdata+21
+ m5mirror = mapperdata+21
  mmc5mul1 = mapperdata+22
  mmc5mul2 = mapperdata+23
- m5mirror = mapperdata+24
+ m5_spr = mapperdata+24	@8 bytes: sprite 1K pages when they differ from the background
 @----------------------------------------------------------------------------
 mapper5init:
 @----------------------------------------------------------------------------
@@ -74,8 +74,9 @@ mapper5init:
 @	adr r0,mapper_5_hook
 @	str_ r0,scanlinehook
 
-	adrl_ r0,chrpage0	@sprites use their own bank list (from Dwedit's 2025 PocketNES)
-	str_ r0,sprite_chr_map
+	mov r0,#0
+	strb_ r0,chrbank
+	@(sprite_chr_map starts at nes_chr_map; mmc5chr points it at m5_spr)
 
 	mov pc,lr
 @-------------------------------------------------------
@@ -113,7 +114,7 @@ _00:
 _01:
 	and r0,r0,#0x03
 	strb_ r0,chrsize
-	b mmc5chrb		@ both A and B?
+	b mmc5chr
 _05:
 	strb_ r0,m5mirror
 	cmp r0,#0x55
@@ -179,7 +180,7 @@ not2:
 	ldr lr,[sp],#4
 	b_long mapEF_
 
-_20:				@ For sprites.
+_20:				@$5120-$5127: set A
 _21:
 _22:
 _23:
@@ -187,135 +188,85 @@ _24:
 _25:
 _26:
 _27:
-	mov r1,#0
-	strb_ r1,chrbank
-	adrl_ r1,chrpage0
-	sub r2,r2,#0x20
-	strb r0,[r1,r2]
-mmc5chra:
-@	mov pc,lr		@ get out?
-	ldrb_ r1,chrsize
-	cmp r1,#0x00
-	bne notch0
-	ldrb_ r0,chrpage7
-@	mov r0,r0,lsr#3
-	b_long chr01234567_
-notch0:
-	str lr,[sp,#-4]!
-	cmp r1,#0x01
-	bne notch1
-	ldrb_ r0,chrpage3
-@	mov r0,r0,lsr#2
-	bl_long chr0123_
-	ldr lr,[sp],#4
-	ldrb_ r0,chrpage7
-@	mov r0,r0,lsr#2
-@	b_long chr4567_
-	mov pc,lr		@ get out?
-notch1:
-	cmp r1,#0x02
-	bne notch2
-	ldrb_ r0,chrpage1
-@	mov r0,r0,lsr#1
-	bl_long chr01_
-	ldrb_ r0,chrpage3
-@	mov r0,r0,lsr#1
-	bl_long chr23_
-	ldrb_ r0,chrpage5
-@	mov r0,r0,lsr#1
-@	bl_long chr45_
-	ldr lr,[sp],#4
-	ldrb_ r0,chrpage7
-@	mov r0,r0,lsr#1
-@	b_long chr67_
-	mov pc,lr		@ get out?
-notch2:
-	ldrb_ r0,chrpage0
-	bl_long chr0_
-	ldrb_ r0,chrpage1
-	bl_long chr1_
-	ldrb_ r0,chrpage2
-	bl_long chr2_
-	ldrb_ r0,chrpage3
-	bl_long chr3_
-	ldrb_ r0,chrpage4
-@	bl_long chr4_
-	ldrb_ r0,chrpage5
-@	bl_long chr5_
-	ldrb_ r0,chrpage6
-@	bl_long chr6_
-	ldr lr,[sp],#4
-	ldrb_ r0,chrpage7
-@	b_long chr7_
-	mov pc,lr		@ get out?
-
-_28:				@ For background.
+_28:				@$5128-$512B: set B
 _29:
 _2a:
 _2b:
-	mov r1,#1
-	strb_ r1,chrbank
 	adrl_ r1,chrpage0
 	sub r2,r2,#0x20
 	strb r0,[r1,r2]
-mmc5chrb:
-@	mov pc,lr		@ get out?
-	ldrb_ r1,chrsize
-	cmp r1,#0x00
-	bne notchb0
-	ldrb_ r0,chrpage11
-	mov r0,r0,lsr#3
-	b_long chr01234567_
-notchb0:
-	str lr,[sp,#-4]!
-	cmp r1,#0x01
-	bne notchb1
-	ldrb_ r0,chrpage11
-@	mov r0,r0,lsr#2
-@	bl_long chr0123_
-	ldr lr,[sp],#4
-	ldrb_ r0,chrpage11
-	mov r0,r0,lsr#2
-	b_long chr4567_
+	cmp r2,#8
+	movlo r0,#0
+	movhs r0,#1
+	strb_ r0,chrbank	@last set written
+@-------------------------------------------------------
+mmc5chr:	@remap CHR after a $5101 or $5120-$512B write
+@-------------------------------------------------------
+	@Like Mesen: with 8x16 sprites, sprites use set A and the background
+	@set B; with 8x8 sprites, both use the last set written.  Sprites get
+	@their own page list (m5_spr) when they differ (from Dwedit's 2025
+	@PocketNES, here also for 2K/4K/8K modes and CHR over 256K).
+	@Not emulated: $5130 (CHR bank bits 8-9).
+	stmfd sp!,{r3-r6,lr}
+	ldrb_ r0,chrsize
+	rsb r4,r0,#3		@r4 = page shift: 8K 3, 4K 2, 2K 1, 1K 0
+	mov r5,#1
+	mov r5,r5,lsl r4
+	sub r5,r5,#1		@r5 = 1K pages per bank - 1
+	ldrb_ r0,ppuctrl0
+	tst r0,#0x20
+	adrl_ r0,nes_chr_map
+	ldreqb_ r6,chrbank	@8x8: everything from the last set
+	beq 1f
+	@8x16: sprites from set A
+	mov r3,#0
+0:
+	mov r6,#0
+	bl chr_page
+	bl_long chr_page_number
+	adrl_ r1,m5_spr
+	strb r0,[r1,r3]
+	add r3,r3,#1
+	cmp r3,#8
+	bne 0b
+	adrl_ r0,m5_spr
+	mov r6,#1		@background from set B
+1:
+	str_ r0,sprite_chr_map
+	mov r3,#0
+2:
+	bl chr_page
+	adr r1,writeCHRTBL_5
+	mov lr,pc
+	ldr pc,[r1,r3,lsl#2]
+	add r3,r3,#1
+	cmp r3,#8
+	bne 2b
+	ldmfd sp!,{r3-r6,pc}
+
+chr_page:	@r3 = PPU 1K slot, r6 = set (0 A, 1 B) -> r0 = 1K CHR page.  Changes r1.
+	orr r1,r3,r5
+	cmp r6,#0
+	andne r1,r1,#3		@set B covers 4K, repeated for $1000-$1FFF
+	addne r1,r1,#8
+	adrl_ r0,chrpage0
+	ldrb r0,[r0,r1]
+	and r1,r3,r5
+	add r0,r1,r0,lsl r4
 	mov pc,lr
-notchb1:
-	cmp r1,#0x02
-	bne notchb2
-@@	ldrb_ r0,chrpage9
-@	mov r0,r0,lsr#1
-@	bl_long chr01_
-@@	ldrb_ r0,chrpage11
-@	mov r0,r0,lsr#1
-@	bl_long chr23_
-	ldrb_ r0,chrpage9
-	bl_long chr45_rshift_
-	ldr lr,[sp],#4
-	ldrb_ r0,chrpage11
-	b_long chr67_rshift_
-	mov pc,lr
-notchb2:
-	ldrb_ r0,chrpage8
-@	bl_long chr0_
-	ldrb_ r0,chrpage9
-@	bl_long chr1_
-	ldrb_ r0,chrpage10
-@	bl_long chr2_
-	ldrb_ r0,chrpage11
-@	bl_long chr3_
-	ldrb_ r0,chrpage8
-	bl_long chr4_
-	ldrb_ r0,chrpage9
-	bl_long chr5_
-	ldrb_ r0,chrpage10
-	bl_long chr6_
-	ldr lr,[sp],#4
-	ldrb_ r0,chrpage11
-	b_long chr7_
+
+writeCHRTBL_5:	.word chr0_,chr1_,chr2_,chr3_,chr4_,chr5_,chr6_,chr7_
+
 
 map5Sound:
 	mov pc,lr
 @-------------------------------------------------------
 mmc5_200:
+	cmp addy,#0x5C00
+	bhs exram_w
+	ldr r2,=0x5207		@only $5203-$5206 below are registers
+	cmp addy,r2
+	movhs pc,lr
 	and r2,addy,#0xff
 	cmp r2,#0x03
 	beq setCounter
@@ -345,9 +296,15 @@ setCounter:
 	b find_mmc5_irq
 
 @-------------------------------------------------------
-mmc5_r:		@5204,5205,5206
+mmc5_r:		@5204,5205,5206, ExRAM
 	cmp addy,#0x5200
 	blo_long IO_R
+	cmp addy,#0x5C00
+	bhs exram_r
+	ldr r2,=0x5207
+	cmp addy,r2
+	movhs r0,#0xff
+	movhs pc,lr
 	and r2,addy,#0xff
 	cmp r2,#0x04
 	beq MMC5IRQR
@@ -389,15 +346,28 @@ MMC5IRQR:
 
 MMC5MulA:
 	ldrb_ r1,mmc5mul1
-	ldrb_ r2,mmc5mul1
+	ldrb_ r2,mmc5mul2
 	mul r0,r1,r2
 	and r0,r0,#0xff
 	mov pc,lr
 MMC5MulB:
 	ldrb_ r1,mmc5mul1
-	ldrb_ r2,mmc5mul1
+	ldrb_ r2,mmc5mul2
 	mul r0,r1,r2
 	mov r0,r0,lsr#8
+	mov pc,lr
+
+	@ExRAM ($5C00-$5FFF) as plain RAM: 1K at NES_VRAM4, the page that
+	@mirror2_/mirror4_ show as the ExRAM nametable.  Games that use it as work
+	@RAM (Metal Slader Glory) work; a CPU write doesn't redraw a nametable
+	@shown from it.
+exram_w:
+	ldr r1,=NES_VRAM4-0x5C00
+	strb r0,[r1,addy]
+	mov pc,lr
+exram_r:
+	ldr r1,=NES_VRAM4-0x5C00
+	ldrb r0,[r1,addy]
 	mov pc,lr
 
 mmc5_handler_2: @disable IRQ automatically if it reaches the next scanline after an IRQ
@@ -493,6 +463,7 @@ find_mmc5_irq:
 @	fetch 0
 
 @-------------------------------------------------------
+	.pool
 
 	.endif
 	

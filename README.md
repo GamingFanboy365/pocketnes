@@ -55,6 +55,14 @@ Additions:
 
 - Implemented Mapper 211 (J.Y. Company): the PRG and CHR banking modes, per-nametable mirroring, the multiplier at $5800, and the IRQ counter (PPU A12 mode, run on the MMC3 scanline counter). Tested on: Tiny Toon Adventures 6, whose gameplay and status bar match Mesen2, and Donkey Kong Country 4 (the 2-in-1 with The Jungle Book 2), whose menu, title, world map and first level match Mesen2. Known issue: one scene of its intro uses a ROM nametable (nametable data read from CHR ROM), which isn't emulated, so it shows the wrong graphics for a few seconds. Mappers 90 and 209 use the same chip but aren't enabled yet.
 
+- Ported fixes from Dwedit's 2025 PocketNES (https://github.com/Dwedit/PocketNES): the Konami VRC3 IRQ counter (mapper 73; Salamander's status bar at the bottom of the screen was missing and now shows), four fixes to the VRC4/VRC6 IRQ timing (mappers 21-25; Akumajou Densetsu, Crisis Force and Wai Wai World 2 look the same before and after, and match Mesen2), the mapper 118 (TxSROM) fix that stops the MMC3 mirroring register overriding the board's own nametable control (Goal! Two matches Mesen2), mapper 218 (Magic Floor, which uses the PPU's nametable RAM as CHR-RAM; its one-screen header was read as four-screen, so it showed a blank screen), and two MMC5 changes: the $A4 nametable layout Castlevania III uses, and a separate CHR bank list for sprites.
+
+- Fixed MMC5 (mapper 5) further. Registers at $5200-$5FFF were decoded by their low byte only, so writes to ExRAM ($5C00-$5FFF) also hit the IRQ and multiplier registers, and ExRAM couldn't be read back at all; ExRAM now works as 1KB of RAM. The multiplier at $5205/$5206 returned the first value squared instead of the product. CHR banking now follows the chip (and Mesen2): with 8x16 sprites, sprites use $5120-$5127 and the background $5128-$512B; with 8x8 sprites, both use the set written last. This works in all four CHR bank sizes and with CHR ROM over 256KB. Metal Slader Glory went from a black screen to playable, with correct portraits and menus; Castlevania III is unchanged. Not emulated: ExRAM's extended attribute mode, CPU writes redrawing a nametable shown from ExRAM, the upper CHR bank bits ($5130), split screen and MMC5 sound.
+
+- Implemented Mapper 114 (MMC3 clone with scrambled register addresses, used by SuperGame/Hosenkan pirates): both register layouts (submapper 0 and 1), the scrambled bank-select indexes, the $6000 NROM-style PRG override and the $6001 outer CHR bit, on top of the MMC3 code. Tested on: Super Donkey Kong (Taiwan pirate), which matches Mesen2 from the title through the first level. Not emulated: the MMC3A IRQ quirk Aladdin relies on. Mapper 182, an old duplicate number for the same board, isn't enabled. (The 1995 "Lion King" in the ROM pack is a mapper 4 dump and already worked.)
+
+- Known issue (not new): Crisis Force switches CHR banks partway down the screen, and PocketNES uses one set of sprite banks per frame, so two of its status-bar sprites show the wrong tiles.
+
 To-do: mappers not implemented yet. Board names and example games come from each mapper's page on the NESdev wiki.
 
 | Mapper | Board / chip | Example games | Notes |
@@ -77,7 +85,6 @@ To-do: mappers not implemented yet. Board names and example games come from each
 | 91 | JY830623C, YY840238C, EJ-006-1 | Street Fighter 3, Mortal Kombat II, Dragon Ball Z 2, Mario & Sonic 2 | |
 | 95 | NAMCOT-3425 | Dragon Buster (J) | |
 | 96 | discrete logic | Oeka Kids: Anpanman no Hiragana Daisuki, Oeka Kids: Anpanman to Oekaki Shiyou!! | needs the Oeka Kids drawing tablet |
-| 114 | MMC3 clone with scrambled registers | Aladdin, The Lion King, Super Donkey Kong, Boogerman (pirates) | mapper 182 is a duplicate |
 | 121 | Kǎshèng A9711/A9713 (protected MMC3 clone) | Sonic & Knuckles 5, Sonic 3D Blast 6, Street Fighter Zero 2 '97, Super Real Bout 97 | |
 | 125 | UNL-LH32 | Monty no Doki Doki Daisassou (Monty on the Run) | a Famicom Disk System game converted to cartridge |
 | 153 | Bandai FCG board, LZ93D50 with 8KB battery WRAM | Famicom Jump II: Saikyou no 7-nin | the only game |
@@ -96,7 +103,6 @@ To-do: mappers not implemented yet. Board names and example games come from each
 | 210 | Namco 175 / Namco 340 | Famista '91, Famista '92, Family Circuit '91, Chibi Maruko-chan: Uki Uki Shopping, Dream Master | many dumps are set to mapper 19 |
 | 212 | discrete-logic multicart ("BMC Super HiK 300-in-1") | none named | |
 | 213 | multicart | 9999999-in-1, 168-in-1 | duplicate of mapper 58 |
-| 218 | single PRG ROM, nametable RAM used as CHR | Magic Floor, Starfight | |
 | 226 | discrete logic | 76-in-1, Super 42-in-1, 63-in-1 | |
 | 227 | 810449-C-A1, FW-01, N120-72 | 1992 Contra 120-in-1 | |
 | 229 | BMC 31-in-1 | none named | |
