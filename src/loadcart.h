@@ -26,6 +26,8 @@ void redecompress(void);
 void loadcart(int rom_number, int emu_flags, int called_from);
 void init_cache(u8* nes_header, int called_from);
 void bigchr_setup(u8 *chr_base, int chr_1k_pages);
+extern u8 *mmc5_mem;
+void mmc5_restore(void);
 int bigchr_page(int real);
 void stop_dma_interrupts(void);
 void resume_interrupts(void);

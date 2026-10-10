@@ -24,6 +24,7 @@ EWRAM_BSS u8 chr_ram_bank_mask=0;
 EWRAM_BSS u8 nes_submapper=0;
 EWRAM_BSS u8 mapper30_mode=0;
 EWRAM_BSS u8 singlescreen=0;	//one-screen mirroring at boot (see cart.s)
+EWRAM_BSS u8 *mmc5_mem=NULL;	//MMC5: second PRG-RAM chip (map5.s)
 
 void redecompress()
 {
@@ -566,6 +567,19 @@ void init_cache(u8* nes_header, int called_from)
 		instant_prg_banks=(u8**)((u8*)instant_chr_banks-prg_table_size);
 		//don't overlap
 		end_of_cache=(u8*)instant_prg_banks;
+	}
+	
+	//MMC5: a second PRG-RAM chip goes in the 8KB NES_VRAM, which CHR-ROM
+	//games don't use (see map5.s).  The menu's EWRAM buffers never reach it,
+	//and savestates include it.
+	mmc5_mem=NULL;
+	if (mapper==5 && !has_vram)
+	{
+		mmc5_mem=NES_VRAM;
+		if (called_from!=0)
+		{
+			memset32(mmc5_mem,0,8192);
+		}
 	}
 	
 	//do we have enough memory to store the ROM?
