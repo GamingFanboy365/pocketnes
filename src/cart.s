@@ -32,6 +32,7 @@
 	.global _fourscreen
 	.global _sprite_chr_map
 	global_func mirror2_
+	global_func mirrorchange
 	.global _nes_chr_map
 	.global _agb_real_bg_map
 	global_func loadcart_asm
@@ -460,6 +461,10 @@ lc2:
 	bl PPU_reset
 	ldr r0,=_nes_chr_map	@sprites use the normal CHR page list (MMC5 changes this)
 	str_ r0,sprite_chr_map
+	.if LESSMAPPERS
+	.else
+	bl_long mmc5_unpatch	@(MMC5 extended attributes patch display_bg)
+	.endif
 	bl IO_reset
 	bl Sound_hardware_reset
 	bl sound_reset

@@ -518,7 +518,7 @@ int save_deref(save_ptr *dest, const u8* src, int size, u32 tag)
 }
 int save_vram1(save_ptr *dest, const u8* src, int size, u32 tag)
 {
-	if (has_vram==0)
+	if (has_vram==0 && mmc5_mem==NULL)	//(MMC5 keeps its second PRG-RAM chip here)
 	{
 		return -1;
 	}
@@ -591,7 +591,7 @@ int load_ppustate(u8* dest, load_ptr *src, int actualsize, int expectedsize)
 
 int load_vram1(u8* dest, load_ptr *src, int actualsize, int expectedsize)
 {
-	if (has_vram==0)
+	if (has_vram==0 && mmc5_mem==NULL)
 	{
 		return load_writeonly(dest,src,actualsize,expectedsize);
 	}
@@ -648,6 +648,10 @@ void restore_variables_for_loadstate()
 	#else
 	rebankswitch();
 	#endif
+	if (mapper_number == 5)
+	{
+		mmc5_restore();	//PRG RAM, nametable mapping and extended attributes (map5.s)
+	}
 	
 	lastbank= memmap_tbl[ (((u32)m6502_pc) & PRG_BANK_MASK) / (1024*PRG_BANK_SIZE)];
 	m6502_pc= (u8*)((u32)oldpc+(u32)lastbank);
