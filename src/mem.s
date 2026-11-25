@@ -4,6 +4,7 @@
 
 	.global NES_RAM
 	.global NES_SRAM
+	.global NES_SRAM_GUARD
 	.global CHR_DECODE
 	.global YSCALE_EXRTA
 	.global YSCALE_LOOKUP
@@ -23,6 +24,7 @@
  .pool
 NES_RAM: .skip 0x800
 NES_SRAM: .skip 0x2000
+NES_SRAM_GUARD: .skip SRAM_GUARD_SIZE	@opcode $02 (loadcart.c fills it): see _02 in 6502.s
 
  .align
  .pool

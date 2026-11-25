@@ -1295,6 +1295,26 @@ _xx:@	???					;invalid opcode
 	mov r11,r11
 	fetch 2
 
+@----------------------------------------------------------------------------
+_02:@	KIL (does nothing, like the other invalid opcodes), or the 6502 PC ran
+	@off the end of NES SRAM.  The PC is a pointer into the 8KB bank it is
+	@in, so code at $6000-$7FFF that runs or branches past $7FFF lands in
+	@NES_SRAM_GUARD, which is full of $02: carry on at the real $8000-$801F.
+	@(Programs written for the Disk System's RAM at $6000-$DFFF do this, such
+	@as The Lost Levels in the Super Mario All-Stars NES port, whose jump code
+	@runs on into $8000 and branches from $7FF9 to $800C.)  Not caught: a
+	@branch further than $801F, and operand bytes that cross $8000 (they are
+	@read from the guard).
+@----------------------------------------------------------------------------
+	ldr r1,=NES_SRAM_GUARD+1
+	sub r1,m6502_pc,r1	@how far into the guard
+	cmp r1,#SRAM_GUARD_SIZE
+	bhs _xx
+	add m6502_pc,r1,#0x8000
+	encodePC
+	fetch 0
+	.pool
+
 @illegal SLO instruction
 
 @----------------------------------------------------------------------------
@@ -2005,7 +2025,7 @@ _readmem_0:
 
 GLOBAL_PTR_BASE:
 op_table:
-	.word _00,_01,_xx,_03,_x3,_05,_06,_07,_08,_09,_0A,_0B,_x5,_0D,_0E,_0F
+	.word _00,_01,_02,_03,_x3,_05,_06,_07,_08,_09,_0A,_0B,_x5,_0D,_0E,_0F
 	.word _10,_11,_xx,_13,_x4,_15,_16,_17,_18,_19,_EA,_1B,_xC,_1D,_1E,_1F
 	.word _20,_21,_xx,_23,_24,_25,_26,_27,_28,_29,_2A,_2B,_2C,_2D,_2E,_2F
 	.word _30,_31,_xx,_33,_x4,_35,_36,_37,_38,_39,_EA,_3B,_xC,_3D,_3E,_3F

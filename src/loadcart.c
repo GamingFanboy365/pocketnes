@@ -337,6 +337,7 @@ void loadcart(int rom_number, int emu_flags, int called_from)
 	//Reset RAM, SRAM, etc...
 	memset32(NES_RAM,0,2048);
 	memset32(NES_SRAM,0,8192);
+	memset32(NES_SRAM_GUARD,0x02020202,SRAM_GUARD_SIZE);	//(6502.s _02)
 	memset32(mapperstate,0,32);
 	MMC5_SAVE_COUNTDOWN=0;	//(after mapperdata)
 	
@@ -451,6 +452,7 @@ u8 *get_end_of_cache()
 		u8 *nesheader=rombase-16;
 		if (cartflags&TRAINER) nesheader-=512;
 		if (mmc5_chip0_mask(nesheader)) end_of_cache-=MMC5_RAM_EXTRA;
+		if (mapper==40) end_of_cache-=0x6000;	//(as in init_cache)
 	}
 	
 	return end_of_cache;
@@ -639,6 +641,13 @@ void init_cache(u8* nes_header, int called_from)
 				#endif
 			}
 		}
+	}
+	
+	//Mapper 40: a 24K copy of $8000-$DFFF goes here, so that code can run on
+	//from one bank into the next (map40.s).
+	if (mapper==40)
+	{
+		end_of_cache-=0x6000;
 	}
 	
 	//MMC5: a second PRG-RAM chip goes in the 8KB NES_VRAM, which CHR-ROM
