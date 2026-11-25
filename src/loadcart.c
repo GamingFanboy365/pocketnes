@@ -369,9 +369,51 @@ void loadcart(int rom_number, int emu_flags, int called_from)
 	
 	init_cache(nesheader,1);
 	init_sprite_cache();
+	{
+		//$4000-$5FFF: no code to run there, except MMC5's ExRAM (map5.s points it
+		//there); set it back for the other mappers.
+		int i;
+		for (i=0x4000/(1024*PRG_BANK_SIZE);i<0x6000/(1024*PRG_BANK_SIZE);i++)
+		{
+			memmap_tbl[i]=NES_RAM;
+		}
+	}
 	loadcart_asm();
 }
 	
+//MMC5 PRG RAM chip 0 (banks 0-3, the battery-backed one in Mesen2): bank 0 is
+//NES SRAM.  If an NES 2.0 header asks for more than 8K, banks 1-3 are 24K of
+//EWRAM just below the instant_prg_banks table, kept out of the ROM cache and
+//the menu's buffers (BUFFER1-3 end below it).  Returns the bank mask map5.s
+//uses: 0 = 8K, 1 = 16K, 3 = 32K.
+#define MMC5_RAM_EXTRA 0x6000
+static int mmc5_chip0_mask(const u8 *nes_header)
+{
+	int ram, nvram, size;
+	if (mapper!=5 || (nes_header[7]&0x0C)!=0x08) return 0;
+	ram=nes_header[10]&0x0F;
+	nvram=nes_header[10]>>4;
+	size=nvram ? 64<<nvram : (ram ? 64<<ram : 0);
+	if (size>=0x8000) return 3;
+	if (size>=0x4000) return 1;
+	return 0;
+}
+
+u8 *mmc5_chip0_extra()	//banks 1-3, or NULL (savestates)
+{
+	u8 *nesheader=rombase-16;
+	if (cartflags&TRAINER) nesheader-=512;
+	if (!mmc5_chip0_mask(nesheader)) return NULL;
+	return (u8*)instant_prg_banks-MMC5_RAM_EXTRA;
+}
+
+void mmc5_set_chip0_mask()	//after a savestate loads: from the header, not the state
+{
+	u8 *nesheader=rombase-16;
+	if (cartflags&TRAINER) nesheader-=512;
+	((u8*)mapperstate)[33]=mmc5_chip0_mask(nesheader);
+}
+
 u8 *get_end_of_cache()
 {
 	int chr_table_size;
@@ -404,6 +446,11 @@ u8 *get_end_of_cache()
 	end_of_cache-=chr_table_size;
 	prg_table_size=rompages*PRG_16*4;
 	end_of_cache-=prg_table_size;
+	{
+		u8 *nesheader=rombase-16;
+		if (cartflags&TRAINER) nesheader-=512;
+		if (mmc5_chip0_mask(nesheader)) end_of_cache-=MMC5_RAM_EXTRA;
+	}
 	
 	return end_of_cache;
 }
@@ -572,6 +619,20 @@ void init_cache(u8* nes_header, int called_from)
 		instant_prg_banks=(u8**)((u8*)instant_chr_banks-prg_table_size);
 		//don't overlap
 		end_of_cache=(u8*)instant_prg_banks;
+	}
+	
+	//MMC5: PRG RAM chip 0 over 8K (see mmc5_chip0_mask)
+	{
+		int mask=mmc5_chip0_mask(nes_header);
+		((u8*)mapperstate)[33]=mask;	//m5_chip0mask
+		if (mask)
+		{
+			end_of_cache-=MMC5_RAM_EXTRA;
+			if (called_from!=0)
+			{
+				memset32(end_of_cache,0,MMC5_RAM_EXTRA);
+			}
+		}
 	}
 	
 	//MMC5: a second PRG-RAM chip goes in the 8KB NES_VRAM, which CHR-ROM

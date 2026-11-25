@@ -153,9 +153,13 @@ void C_entry()
 //	PPU_reset();
 	
 #if SAVE
+	//BUFFER1: a copy of GBA SRAM (up to 64K).  BUFFER2: an uncompressed savestate,
+	//the old SRAM copy, or LZO's 64K workspace.  BUFFER3: a compressed state.
+	//Keep them packed: what's above BUFFER3 (MMC5 PRG RAM, see loadcart.c) is
+	//never touched by the SRAM code.
 	BUFFER1 = ewram_start;
 	BUFFER2 = BUFFER1+0x10000;
-	BUFFER3 = BUFFER2+0x20000;
+	BUFFER3 = BUFFER2+0x10000;
 #endif
 
 	if(pogoshell)

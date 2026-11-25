@@ -556,6 +556,7 @@ tags:
 	.ascii "SND0"
 	.ascii "SND1"   @old SND0 no longer loaded
 	.ascii "TIME"
+	.ascii "SRMX"	@MMC5 PRG RAM chip 0 banks 1-3 (24K, when the game has them)
 	.ascii "NOPE"
 
 
