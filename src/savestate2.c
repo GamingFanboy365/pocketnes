@@ -675,6 +675,10 @@ void restore_variables_for_loadstate()
 		mmc5_set_chip0_mask();	//(PRG RAM chip 0 size, which old savestates don't have)
 		mmc5_restore();	//PRG RAM, nametable mapping and extended attributes (map5.s)
 	}
+	if (mapper_number == 40)
+	{
+		mapper40_restore();	//its copies of the PRG ROM (map40.s)
+	}
 	
 	lastbank= memmap_tbl[ (((u32)m6502_pc) & PRG_BANK_MASK) / (1024*PRG_BANK_SIZE)];
 	m6502_pc= (u8*)((u32)oldpc+(u32)lastbank);

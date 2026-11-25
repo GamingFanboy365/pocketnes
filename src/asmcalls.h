@@ -283,6 +283,8 @@ extern u8 _vrompages;
 
 extern u8 NES_RAM[2048];
 extern u8 NES_SRAM[8192];
+extern u8 NES_SRAM_GUARD[];	//opcode $02 after NES_SRAM (6502.s _02)
+#define SRAM_GUARD_SIZE 0x20	//(equates.h)
 extern u8 END_OF_EXRAM;
 extern char SramName[256];
 extern u8 NES_VRAM[8192];
