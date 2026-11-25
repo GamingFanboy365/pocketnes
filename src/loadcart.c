@@ -29,10 +29,14 @@ EWRAM_BSS u32 dma0_buff_ewram[164*2];
 
 void redecompress()
 {
+	extern u8 bg_reload_state[];
 	u8 *nesheader=rombase-16;
 	if (cartflags&TRAINER) nesheader-=512;
 	
 	ewram_owner_is_sram=0;
+	//The SRAM code (menu, quicksave, quickload) used EWRAM that also holds the decoded
+	//BG CHR victim cache (cart.s): have bg_reload_prepare_vblank clear it.
+	bg_reload_state[95]=0;
 	init_cache(nesheader,0);
 }
 
