@@ -32,6 +32,7 @@ typedef enum
 	SAVE_VRAM1,
 	SAVE_VRAM4,
 	SAVE_NONE,
+	SAVE_SRMX,
 	SAVE_INVALID
 } Savefunc_t;
 
@@ -43,6 +44,7 @@ static int save_deref(save_ptr *dest, const u8* src, int size, u32 tag);
 static int save_vram1(save_ptr *dest, const u8* src, int size, u32 tag);
 static int save_vram4(save_ptr *dest, const u8* src, int size, u32 tag);
 static int save_none(save_ptr *dest, const u8* src, int size, u32 tag);
+static int save_srmx(save_ptr *dest, const u8* src, int size, u32 tag);
 static int save_invalid(save_ptr *dest, const u8* src, int size, u32 tag);
 
 static int load_normal(u8* dest, load_ptr *src, int actualsize, int expectedsize);
@@ -52,6 +54,7 @@ static int load_ppustate(u8* dest, load_ptr *src, int actualsize, int expectedsi
 static int load_vram1(u8* dest, load_ptr *src, int actualsize, int expectedsize);
 static int load_vram4(u8* dest, load_ptr *src, int actualsize, int expectedsize);
 static int load_none(u8* dest, load_ptr *src, int actualsize, int expectedsize);
+static int load_srmx(u8* dest, load_ptr *src, int actualsize, int expectedsize);
 static int load_invalid(u8* dest, load_ptr *src, int actualsize, int expectedsize);
 
 extern const char saveversion[];
@@ -97,6 +100,7 @@ const savefunc save_functions[]=
 	save_vram1,
 	save_vram4,
 	save_none,
+	save_srmx,
 	save_invalid
 };
 const loadfunc load_functions[]=
@@ -108,6 +112,7 @@ const loadfunc load_functions[]=
 	load_vram1,
 	load_vram4,
 	load_none,
+	load_srmx,
 	load_invalid
 };
 
@@ -128,6 +133,7 @@ const char save_function_numbers[]=
 	SAVE_NONE,
 	SAVE_NORMAL,
 	SAVE_NORMAL,
+	SAVE_SRMX,
 	SAVE_INVALID
 };
 
@@ -169,7 +175,8 @@ typedef enum
 	BLOCK_SND0 = 1 << 12,
 	BLOCK_SND1 = 1 << 13,
 	BLOCK_TIME = 1 << 14,
-	BLOCK_NOPE = 1 << 15,
+	BLOCK_SRMX = 1 << 15,
+	BLOCK_NOPE = 1 << 16,
 } BlockLoaded_T;
 
 
@@ -190,6 +197,7 @@ void *const addresses[]=
 	(void*)NULL,
 	(void*)sound_state,
 	(void*)TimeoutState,
+	(void*)NULL,	//SRMX: mmc5_chip0_extra()
 	(void*)NULL
 };
 
@@ -216,6 +224,7 @@ const int sizes[]=
 	-1,     //snd0 (invalid)
 	sizeof(sound_state),
 	208,	//TimeoutState
+	0x6000,	//SRMX
 	-1		//invalid
 };
 
@@ -538,6 +547,19 @@ int save_vram4(save_ptr *dest, const u8* src, int size, u32 tag)
 		return save_normal(dest,src,size,tag);
 	}
 }
+//MMC5 PRG RAM chip 0 banks 1-3 (see loadcart.c), only for games that have them
+int save_srmx(save_ptr *dest, const u8* src, int size, u32 tag)
+{
+	u8 *p=mmc5_chip0_extra();
+	if (p==NULL) return -1;
+	return save_normal(dest,p,size,tag);
+}
+int load_srmx(u8* dest, load_ptr *src, int actualsize, int expectedsize)
+{
+	u8 *p=mmc5_chip0_extra();
+	if (p==NULL) return load_writeonly(dest,src,actualsize,expectedsize);
+	return load_normal(p,src,actualsize,expectedsize);
+}
 int save_invalid(save_ptr *dest, const u8* src, int size, u32 tag)
 {
 	return -1;
@@ -650,6 +672,7 @@ void restore_variables_for_loadstate()
 	#endif
 	if (mapper_number == 5)
 	{
+		mmc5_set_chip0_mask();	//(PRG RAM chip 0 size, which old savestates don't have)
 		mmc5_restore();	//PRG RAM, nametable mapping and extended attributes (map5.s)
 	}
 	

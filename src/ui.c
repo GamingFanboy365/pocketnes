@@ -381,6 +381,8 @@ void ui()
 	#if SAVE
 	{
 		int savesuccess;
+		if(MMC5_SAVE_COUNTDOWN)	//MMC5 RAM banks 1-3, if waiting to be saved (map5.s)
+			save_mmc5_ram(1);
 		savesuccess=backup_nes_sram(1);
 		if (!savesuccess)
 		{

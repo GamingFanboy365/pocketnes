@@ -292,7 +292,7 @@ extern u8 NES_VRAM4[4096];
 extern u16 DISPCNTBUFF[240];
 extern u16 DMA1BUFF[164];
 
-extern u8 mapperstate[32];
+extern u8 mapperstate[48];	//mapperdata (32 bytes), 3 spare, bank6-E, nes_chr_map (equates.h)
 
 void loadstate_gfx(void);
 

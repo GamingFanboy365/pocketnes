@@ -19,10 +19,10 @@
 	global_func m5_ntmapping
 
 @ MMC5 (mapper 5).  Emulated: PRG banking including RAM in $6000-$DFFF,
-@ CHR banking (sets A and B), nametable mapping ($5105), ExRAM as RAM,
-@ nametable or extended attributes ($5104), the scanline IRQ and the
-@ multiplier.  Not emulated: split screen, fill mode, sound, and CHR bank
-@ bits 8-9 outside extended attribute mode.
+@ CHR banking (sets A and B, with bits 8-9 from $5130), nametable mapping
+@ ($5105), ExRAM as RAM and to run code from, nametable or extended
+@ attributes ($5104), the scanline IRQ and the multiplier.  Not emulated:
+@ split screen, fill mode and sound.
 
  counter = mapperdata+0
  enable = mapperdata+1
@@ -59,14 +59,25 @@
  m5_prot = mapperdata+28	@bits 0-1 $5102, bits 2-3 $5103 (RAM writable when 2 and 1);
 				@bit 7: writemem_6 is m5_w6x
  m5_ext = mapperdata+29		@1 while extended attributes are drawn
+ m5_chrhi_regs = mapperdata+30	@bits 8-9 of the 12 CHR bank registers, latched from $5130
+				@when each is written: 2 bits per register, 4 per byte (3 bytes,
+				@the last one in mapperstate's padding)
+ m5_chip0mask = mapperdata+33	@PRG RAM chip 0 size: 0 = 8K, 1 = 16K, 3 = 32K (set by init_cache,
+				@from the NES 2.0 header; in mapperstate's padding)
 
 @ PRG RAM: MMC5 boards have up to two RAM chips, banks 0-3 on one and 4-7 on
 @ the other (as in Mesen2, the first is the battery-backed one).  Chip 0 is
 @ NES SRAM, so its battery saves work as before, also when a game maps it
 @ into $8000-$DFFF; chip 1 is mmc5_mem, the 8KB NES_VRAM that CHR-ROM games
-@ don't use (init_cache sets it; savestates include it).  Each chip holds
-@ one 8KB bank (a 32KB chip isn't emulated).  Writes obey the $5102/$5103
-@ write protection.
+@ don't use (init_cache sets it; savestates include it).  Chip 1 holds one 8KB
+@ bank.  Chip 0 holds one too, unless an NES 2.0 header asks for more: then
+@ banks 1-3 are 24KB of EWRAM just below the instant_prg_banks table
+@ (init_cache keeps the cache and the menu's buffers out of it; savestates
+@ save it as "SRMX").  Battery saves keep banks 1-3 as a block of their own
+@ (sram.c): init_cache loads it, and a write that changes them restarts
+@ mmc5_save_countdown, at the end of which timeout.s saves it.  Writes obey
+@ the $5102/$5103 write protection.
+ M5_SAVE_DELAY = 30		@frames without writes to banks 1-3 before they are saved
  EXT_HASH = BG_VRAM		@extended attribute tile cache: 2048 halfwords, slot+1 (0 = free),
  EXT_KEYS = BG_VRAM+0x1000	@and 1024 halfwords, the (4K bank << 8 | tile) in each slot.
 				@In BG CHR group 0, which is unused while the cache is.
@@ -89,6 +100,11 @@ mapper5init:
 	.if PRG_BANK_SIZE == 4
 	str_ r1,readmem_5
 	.endif
+	ldr r1,=NES_VRAM4-0x5C00	@code can run from ExRAM (as m5_exram_code; lr isn't saved here)
+	str_ r1,memmap_4
+	.if PRG_BANK_SIZE == 4
+	str_ r1,memmap_5
+	.endif
 
 	mov r0,#3
 	strb_ r0,prgsize
@@ -106,6 +122,9 @@ mapper5init:
 	strb_ r0,m5_prgram
 	strb_ r0,m5_ntmap
 	strb_ r0,m5_chrhi
+	strb_ r0,m5_chrhi_regs+0
+	strb_ r0,m5_chrhi_regs+1
+	strb_ r0,m5_chrhi_regs+2
 	strb_ r0,m5_ramslots
 	strb_ r0,m5_ext
 	strb_ r0,m5_prot
@@ -184,7 +203,8 @@ _05:
 _13:	@$6000 RAM bank
 	strb_ r0,m5_prgram
 	b m5_map6
-_30:	@CHR bank bits 8-9 (used here by extended attributes only)
+_30:	@CHR bank bits 8-9, latched by each CHR register written after this
+	@(and read directly by extended attributes)
 	and r0,r0,#3
 	strb_ r0,m5_chrhi
 	ldrb_ r1,m5_ext
@@ -317,12 +337,31 @@ ram8k:	@r0 = $5114-$5116 value, r1 = slot (0 $8000, 1 $A000, 2 $C000).  If
 	str_ r0,memmap_A
 	bx lr
 
-m5_ram_ptr:	@r0 = RAM bank number -> r0 = address of that chip's 8KB.  Changes r1.
+m5_exram_code:	@code can run from ExRAM ($5C00-$5FFF): the Super Mario All-Stars
+	@port copies its bank-switch trampolines there.  Changes r1.
+	ldr r1,=NES_VRAM4-0x5C00
+	str_ r1,memmap_4
+	.if PRG_BANK_SIZE == 4
+	str_ r1,memmap_5
+	.endif
+	bx lr
+
+m5_ram_ptr:	@r0 = RAM bank number -> r0 = address of that 8KB bank.  Changes r1.
 	tst r0,#4
-	ldrne r1,=mmc5_mem
-	ldrne r0,[r1]
-	cmpne r0,#0
-	ldreq r0,=NES_RAM+0x800	@chip 0 (or no EWRAM for chip 1): NES SRAM
+	beq 0f
+	ldr r1,=mmc5_mem	@chip 1
+	ldr r0,[r1]
+	cmp r0,#0
+	ldreq r0,=NES_RAM+0x800	@(no EWRAM for chip 1: NES SRAM)
+	bx lr
+0:
+	ldrb_ r1,m5_chip0mask	@chip 0: bank 0 is NES SRAM; banks 1-3 (if the
+	ands r0,r0,r1		@chip is bigger than 8K) are below instant_prg_banks
+	ldreq r0,=NES_RAM+0x800
+	bxeq lr
+	ldr_ r1,instant_prg_banks
+	sub r1,r1,#0x8000
+	add r0,r1,r0,lsl#13
 	bx lr
 
 @-------------------------------------------------------
@@ -379,8 +418,7 @@ m5_w6x:	@$6000-$7FFF write
 	ldreq r1,=m5_w6_orig
 	ldreq pc,[r1]		@chip 0: the SRAM handler
 	ldr_ r1,memmap_6
-	strb r0,[r1,addy]
-	bx lr
+	b m5_wram
 
 	@$8000-$DFFF writes: RAM if $5114-$5116 selects it, else nothing
  .macro m5_wslot bit, memmap
@@ -397,12 +435,26 @@ m5_w6x:	@$6000-$7FFF write
 	tst r1,#\bit<<4
 	bne m5_wsram
 	ldr_ r1,\memmap
-	strb r0,[r1,addy]
-	bx lr
+	b m5_wram
  .endm
 m5_w8:	m5_wslot 1, memmap_8
 m5_wA:	m5_wslot 2, memmap_A
 m5_wC:	m5_wslot 4, memmap_C
+m5_wram:	@write r0 to the RAM byte at r1+addy (any bank but chip 0's first).  A
+	@change to chip 0 banks 1-3, just below instant_prg_banks, restarts the
+	@countdown to saving them.  Changes r0-r2.
+	and r0,r0,#0xFF		@(bits 8-31 can be set)
+	ldrb r2,[r1,addy]!
+	cmp r2,r0
+	bxeq lr			@no change
+	strb r0,[r1]
+	ldr_ r2,instant_prg_banks
+	sub r1,r2,r1
+	sub r1,r1,#1		@under 0x6000 for banks 1-3
+	cmp r1,#0x6000
+	movlo r1,#M5_SAVE_DELAY
+	strlob_ r1,mmc5_save_countdown
+	bx lr
 m5_wsram:	@chip 0 in $8000-$DFFF: write through the $6000 handler (battery saves)
 	mov addy,addy,lsl#19
 	mov addy,addy,lsr#19
@@ -484,6 +536,18 @@ _2b:
 	adrl_ r1,chrpage0
 	sub r2,r2,#0x20
 	strb r0,[r1,r2]
+	adrl_ r1,m5_chrhi_regs	@latch $5130 as bits 8-9 of this register
+	add r1,r1,r2,lsr#2
+	ldrb r0,[r1]
+	stmfd sp!,{r2,r3}
+	and r2,r2,#3
+	mov r2,r2,lsl#1
+	mov r3,#3
+	bic r0,r0,r3,lsl r2
+	ldrb_ r3,m5_chrhi
+	orr r0,r0,r3,lsl r2
+	strb r0,[r1]
+	ldmfd sp!,{r2,r3}
 	cmp r2,#8
 	movlo r0,#0
 	movhs r0,#1
@@ -568,13 +632,21 @@ m5_cpu_chr:	@vram_map, which $2007 and the sprite 0 check read CHR through: the 
 	bne 0b
 	ldmfd sp!,{pc}
 
-chr_page:	@r3 = PPU 1K slot, r6 = set (0 A, 1 B) -> r0 = 1K CHR page.  Changes r1.
+chr_page:	@r3 = PPU 1K slot, r6 = set (0 A, 1 B) -> r0 = 1K CHR page, with
+	@the register's bits 8-9 (CHR over 256K).  Changes r1, r2.
 	orr r1,r3,r5
 	cmp r6,#0
 	andne r1,r1,#3		@set B covers 4K, repeated for $1000-$1FFF
 	addne r1,r1,#8
+	adrl_ r0,m5_chrhi_regs
+	ldrb r0,[r0,r1,lsr#2]
+	and r2,r1,#3
+	mov r2,r2,lsl#1
+	mov r0,r0,lsr r2
+	and r2,r0,#3		@bits 8-9
 	adrl_ r0,chrpage0
 	ldrb r0,[r0,r1]
+	orr r0,r0,r2,lsl#8
 	and r1,r3,r5
 	add r0,r1,r0,lsl r4
 	mov pc,lr
@@ -991,6 +1063,7 @@ mmc5_restore:	@after a savestate loads (from C): redo what the registers set
 @----------------------------------------------------------------------------
 	stmfd sp!,{r3-r11,lr}
 	ldr globalptr,=GLOBAL_PTR_BASE
+	bl m5_exram_code
 	bl mmc5_unpatch
 	mov r0,#0
 	strb_ r0,m5_ext
