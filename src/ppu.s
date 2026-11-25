@@ -1166,10 +1166,19 @@ render_tiles_loop_2:
 	ldr agbptr,[sp,r8,lsl#2]
 	add agbptr,agbptr,tilenum,lsl#5
 	stmia agbptr,{r0,r1,r2,r3, r4,r10,r11,r12}
+	stmfd sp!,{r0,r1}
+	mov r0,agbptr
+	add r1,r0,#32
+	bl_long scale_spr_tiles_range
+	ldmfd sp!,{r0,r1}
 	add r8,r8,#1
 8:	cmp r8,#255  @modify, number of copies of the tile
 	blt 0b
 1:	
+	ldr r0,[sp]
+	add r0,r0,tilenum,lsl#5
+	add r1,r0,#32
+	bl_long scale_spr_tiles_range
 	b render_tiles_loop_2
 
 skip_this_kilobyte:
@@ -1694,12 +1703,14 @@ display_whole_map:
 
 vrom_update_tiles:
 	ldrb_ r0,bankable_vrom
-	ldrb_ r1,frameready
 	movs r0,r0
-	movnes r1,r1
 	bxeq lr
 	
 	stmfd sp!,{lr}
+	bl_long bg_reload_prepare_vblank
+	ldrb_ r1,frameready
+	movs r1,r1
+	beq vut_check_bg
 	
 @	ldr r8,=sprite_cache_size
 @	ldr r8,[r8]
@@ -1720,6 +1731,7 @@ vrom_update_tiles:
 	subs addy,addy,#1
 	bne 0b
 	
+vut_check_bg:
 	@AGB BG is dirty?
 	adrl_ r9,agb_bg_map_requested
 	ldmia r9,{r0-r3}
@@ -1827,9 +1839,9 @@ canary2_fail:
 
 scale75:
 	stmfd sp!,{r10,lr}
-	@r0 = ?, r1 = ?, r2 = LTS/?, r3 = skipflags, r11 = S, r12 = S-D
 	@r7 = src_xy, r8 = src_dispcnt, r9 = src_bg0cnt
-	@r4 = dest_xy, r5 = dest_dispcnt, r6 = dest_bg0cnt
+	@r4 = dest_xy (8B/line), r5 = dest_dispcnt (2B/line), r6 = dest_bg0cnt (4B/line)
+	@r11 = S (NES scanline), r12 = S-D
 	ldrb_ r11,windowtop_scaled6_8
 	
 	ldr_ r7,dmascrollbuff
@@ -1841,30 +1853,11 @@ scale75:
 	ldr_ r6,dma3buff
 	
 	mov r12,r11
-	
-	@self modifying code
-	ldrb_ r0,adjustblend
-	add r0,r0,#1
-	and r0,r0,#3
-	ldr r1,=_twitchline_mod1
-	strb r0,[r1,#_twitchline_mod1-_twitchline_mod1]
-	add r0,r0,#1
-	strb r0,[r1,#_twitchline_mod3-_twitchline_mod1]
-	and r0,r0,#3
-	strb r0,[r1,#_twitchline_mod2-_twitchline_mod1]
-	
-	ldrb_ r0,twitch
-	eor r0,r0,#1
-	ldrb_ r1,flicker
-	ands r1,r0,r1
-	strb_ r0,twitch
-	
-	add r10,r4,#160*4  @dma0buff + 160 * 4
+	add r10,r4,#160*8  @dma0buff + 160 * 8
 	
 	add r8,r8,r11,lsl#1
 	add r9,r9,r11,lsl#1
 
-	bne_long scale75_odd
 	b_long scale75_even
 
 ppu2003_W:
@@ -2272,7 +2265,7 @@ sprite_zero_handler_3:
 	bic cycles,cycles,#BRANCH
 	.endif
 	mov r0,#1
-	bl call_quickhackfinder
+	bl sprite_zero_quickhackfinder
 @	bl set_cpu_hack
 
 	ldr r0,=ppustat_
@@ -2690,119 +2683,98 @@ newframe_set0:
 @scale75 moved to ROM code
 scale75_even:
 scale75_even_loop:
-	bl scale75_findscanline
-	@r2 = line_to_skip+1
-	
-	rsb r2,r2,#5
-	mov r3,#4
-0:
-	cmp r2,r3
-	bleq scale75_skip
-	
+	@Determine which GBA scanline in {0,1,2} (r3 in {2,1,0}) merges two adjacent NES scanlines
 	ldr r0,[r7,r11,lsl#2]
-	add r0,r0,r12,lsl#16
-	str r0,[r4],#4
+	ldrb_ r1,adjustblend
+	add r1,r1,r11
+	add r1,r1,r0,lsr#16
+	and r1,r1,#3
+	cmp r1,#1
+	moveq r2,#2				@f0 == 1 -> merge at d=0 (r3=2, merges fy 1 & 2)
+	movlo r2,#1				@f0 == 0 -> merge at d=1 (r3=1, merges fy 1 & 2)
+	movhi r2,#0				@f0 == 2,3 -> merge at d=2 (r3=0, merges fy 0 & 1 or 1 & 2)
+
+	mov r3,#2
+0:
+	ldr r0,[r7,r11,lsl#2]
+	add r0,r0,r12,lsl#16	@r0 = BG0 scroll (HOFS0 | VOFS0<<16)
+	ldrh lr,[r9]			@lr = BG0CNT for BG0
+
+	cmp r3,r2
+	addeq r11,r11,#1
+	addeq r12,r12,#1
+	addeq r8,r8,#2
+	addeq r9,r9,#2
+
+	ldr r1,[r7,r11,lsl#2]
+	add r1,r1,r12,lsl#16	@r1 = BG1 scroll (HOFS1 | VOFS1<<16)
+	sub r1,r1,r0
+	cmp r1,#0x00010000
+	addeq r1,r0,#0x00010000	@normal consecutive scanlines: blend BG0 (S+k) and BG1 (S+k+1)
+	addne r0,r0,r1			@scroll split or unmerged scanline: BG0 = BG1 = current scanline
+	movne r1,r0
+	stmia r4!,{r0,r1}
+
+	ldrh r0,[r9],#2			@r0 = BG1CNT
+	movne lr,r0				@if scroll split or unmerged, BG0CNT = BG1CNT
+	orr r0,lr,r0,lsl#16		@BG0CNT | (BG1CNT << 16)
+	str r0,[r6],#4
+
 	ldrh r0,[r8],#2
+	tst r0,#0x0100
+	orrne r0,r0,#0x0200		@enable BG1 whenever BG0 is enabled
 	strh r0,[r5],#2
-	ldrh r0,[r9],#2
-	strh r0,[r6],#2
+
 	add r11,r11,#1
-	
 	subs r3,r3,#1
-	bne 0b
-	
+	bpl 0b
+
 	cmp r4,r10
 	blt scale75_even_loop
 scale75_exit:
 	ldmfd sp!,{r10,pc}
 
-scale75_odd:
-	mov r3,#-2
-scale75_odd_loop:
-	bl scale75_findscanline
-	
-	rsb r2,r2,#4
-	add r3,r3,#8
+check_spr_scale_mode:
+	ldr r0,=_scaling
+	ldrb r0,[r0]
+	and r0,r0,#3
+	cmp r0,#SCALED_SPRITES
+	bne 0f
+	ldrb_ r1,ppuctrl0frame
+	tst r1,#0x20
+	orrne r0,r0,#4
 0:
-	tst r3,#1
-	blne scale75_skip2
-
-	ldr r0,[r7,r11,lsl#2]
-	add r0,r0,r12,lsl#16
-	str r0,[r4],#4
-	ldrh r0,[r8],#2
-	strh r0,[r5],#2
-	ldrh r0,[r9],#2
-	strh r0,[r6],#2
-	add r11,r11,#1
-
-	cmp r2,r3,asr#1
-	@if true, skip next
-	orreq r3,r3,#1
-	subs r3,r3,#2
-	bpl 0b
-	
-	cmp r4,r10
-	blt scale75_odd_loop
-
-@	mov r0,#(((DMA0BUFF+160*4)/4)&0xFF)<<24
-@	cmp r0,r4,lsl#22
-@	bne scale75_odd_loop
-	b scale75_exit
-
-	
-scale75_findscanline:
-	@find scanline to skip
-	mov r2,#0
-0:
-	@r1 = Y
-	add r1,r2,r11
-	add r2,r2,#1 @inc Y1 now...
-	@read Y scroll value (most significant 16 bits of table at r7)
-	ldr r0,[r7,r1,lsl#2]
-	add r1,r1,r0,lsr#16
-	and r1,r1,#3
-	@compare against twitch line
-_twitchline_mod1:
-	cmp r1,#255
-	bne 1f
-	@compare against next value
-	add r1,r2,r11
-	ldr r0,[r7,r1,lsl#2]
-	add r1,r1,r0,lsr#16
-	and r1,r1,#3
-_twitchline_mod2:
-	cmp r1,#255
-	@match
+	ldr r1,=last_spr_scale_mode
+	ldrb r2,[r1]
+	cmp r0,r2
 	bxeq lr
-1:
-	cmp r2,#4
-	blt 0b
-_twitchline_mod3:
-	mov r2,#255	@if it can't find a good line to jitter, jitter 'twitchline'
-	bx lr
-
-scale75_skip2:
-	bic r3,r3,#1
-scale75_skip:
-	add r12,r12,#1
-	add r8,r8,#2
-	add r9,r9,#2
-@	add r11,r11,#1
-	add pc,lr,#7*4
-@scale75_copy
-@	@copy a line
-@	@XY data
-@	ldr r0,[r7,r11,lsl#2]
-@	add r0,r0,r12,lsl#16
-@	str r0,[r4],#4
-@	mov r1,r11,lsl#1
-@	ldrh r0,[r8,r1]
-@	strh r0,[r5],#2
-@	ldrh r0,[r9,r1]
-@	strh r0,[r6],#2
-@	add r11,r11,#1
-@	bx lr
+	strb r0,[r1]
+	mvn r0,#0
+	ldr r1,=spr_cache_disp
+	str r0,[r1,#0]
+	str r0,[r1,#4]
+	str r0,[r1,#8]
+	str r0,[r1,#12]
+	ldr r1,=_agb_real_bg_map
+	str r0,[r1,#0]
+	str r0,[r1,#4]
+	str r0,[r1,#8]
+	str r0,[r1,#12]
+	ldr r1,=bg_reload_state
+	mov r2,#0
+	strb r2,[r1,#95]
+	nop
+	ldrb_ r1,has_vram
+	cmp r1,#0
+	bxeq lr
+	stmfd sp!,{lr}
+	ldr r0,=dirty_tiles
+	mvn r1,#0
+	mov r2,#512+32
+	bl_long memset32
+	mov r0,#1
+	strb_ r0,okay_to_run_nes_chr_update_this_frame
+	ldmfd sp!,{pc}
 
 
 
@@ -2903,6 +2875,31 @@ vbl6:
 	b 1f
 vblscaled:					@(scaled)
 	bl_long scale75
+	mov r5,#REG_BASE
+	add r4,r5,#REG_DMA0SAD
+	
+	ldr_ r0,dma0buff				@setup HBLANK DMA for BG0 + BG1 scroll:
+	ldmia r0!,{r1,r3}
+	add r2,r5,#REG_BG0HOFS
+	stmia r2,{r1,r3}
+	ldr r3,=0xA6600002				@noIRQ hblank 32bit repeat incsrc inc_reloaddst, 2 words transfer
+	stmia r4!,{r0,r2,r3}
+	
+	ldr_ r0,dma1buff
+	ldrh r1,[r0],#2
+	add r2,r5,#REG_DISPCNT
+	strh r1,[r2]
+	ldr r3,=0xA2400001				@noIRQ hblank 16bit repeat incsrc fixeddst, 1 halfword transfer
+	stmia r4!,{r0,r2,r3}
+	
+	add r4,r4,#12
+	ldr_ r0,dma3buff
+	ldr r1,[r0],#4
+	add r2,r5,#REG_BG0CNT
+	str r1,[r2]
+	ldr r3,=0xA6400001				@noIRQ hblank 32bit repeat incsrc fixeddst, 1 word transfer (BG0CNT+BG1CNT)
+	stmia r4!,{r0,r2,r3}
+	b skipdma
 1:
 vbl5:
 	mov r5,#REG_BASE
@@ -2940,6 +2937,7 @@ skipdma:
 	beq 0f
 	
 	bl update_sprites
+	bl_long check_spr_scale_mode
 	bl_long vrom_update_tiles
 	.if DIRTYTILES
 	bl_long consume_recent_tiles
@@ -3109,7 +3107,8 @@ run_palette_unscaled:
 	subs r7,r7,#1
 	bge 1b
 2:
-	ldmfd sp!,{pc}
+	ldmfd sp!,{lr}
+	b_long bg_reload_arm_vcount
 	
 copy_four_colors_2:
 	add r0,r0,#32-8
@@ -3140,6 +3139,10 @@ copy_four_colors:
 
 vcountinterrupt:
 	@r0 = REG_BASE
+	ldr r2,=bg_reload_state
+	ldrb r2,[r2,#99]
+	cmp r2,#0
+	bne_long bg_vcount_handler
 	@increment displayed_palette_pointer
 	ldr r12,=GLOBAL_PTR_BASE
 vcountinterrupt_again:
@@ -3396,10 +3399,7 @@ newframe_nes_vblank: 	@called at line 242
 	str_ r1,current_palette
 	
 	@advance agb_bg_map to agb_bg_map_requested
-	adrl_ r0,agb_bg_map
-	adrl_ r1,agb_bg_map_requested
-	ldmia r0,{r3,r4,r5,r6}
-	stmia r1,{r3,r4,r5,r6}
+	bl_long bg_reload_commit_frame
 	
 	@NES OAM unchanged?
 	ldrb_ r0,nesoamdirty
@@ -3667,9 +3667,9 @@ update_sprites_enter:
 
 	ldr_ r1,emuflags
 	and r5,r1,#0x300
-	cmp r5,#SCALED_SPRITES*256
-	moveq r6,#0x300			@r6=rot/scale flag + double
-	movne r6,#0
+	cmp r5,#SCALED*256
+	movlo r6,#0x0400		@unscaled: behind-BG uses Attr0 bit 10 (Semi-Transparent OBJ)
+	movhs r6,#0x0000		@scaled: behind-BG uses Attr2 priority 3 (bit 10 of Attr2)
 
 	cmp r5,#UNSCALED_AUTO*256	@do autoscroll
 	bne dm0
@@ -3738,10 +3738,7 @@ dm11:
 
 	ldrb r0,[r5,r0]			@y = scaled y
 
-	ands r1,r6,#0x100		@If we are using sprite scaling, we will subtract 4 from the position of the sprite later
-	add r1,r1,#SCREEN_LEFT << 6		@add screen left, shifted value corrected later
-	tstne r3,#0x00400000	@NES horizontal flip
-	addne r1,r1,#0x40		@If scaling sprites, add one pixel to X coordinate when flipping if scaling
+	mov r1,#SCREEN_LEFT << 6		@add screen left, shifted value corrected later
 
 	subs r1,r3,r1,lsl#18	@Subtract X coordinate (ignoring rest of bits)
 @#0x0c000000	@x-8
@@ -3750,9 +3747,10 @@ dm11:
 	orrcc r0,r0,#0x01000000	@Adjustment?
 	and r1,r3,#0x00c00000	@flip
 	orr r0,r0,r1,lsl#6		@set GBA bit position
-	and r1,r3,#0x00200000	@priority
-	orr r0,r0,r1,lsr#11		@Set Transp OBJ.
-	orr r0,r0,r6			@set rot/scale bits
+	tst r3,#0x00200000		@behind-BG priority?
+	orrne r0,r0,r6			@unscaled: set Transp OBJ (0x0400)
+	eornes r1,r6,#0x0400
+	orrne r4,r4,r1			@scaled: set Attr2 priority 3 (0x0400)
 	str r0,[r2],#4			@store OBJ Atr 0,1
 	@GBA OAM attributes:
 	@SS p M mm d s yyyyyyyy    shape, 256 color palettes, mosaic, transparency mode, double size, scale, Y coordinate
@@ -3798,18 +3796,13 @@ dm12:
 	add r4,r4,r1,lsr#8
 	@end new code
 
-
-
-
-	tst r6,#0x300
-	subne r0,r0,#5
-	andne r0,r0,#0xff
 	ldrb r0,[r5,r0]			@y
+	ldrb_ r1,emuflags+1
+	cmp r1,#SCALED_SPRITES
+	subeq r0,r0,#1
+	andeq r0,r0,#0xff
 
-	ands r1,r6,#0x100
-	add r1,r1,#SCREEN_LEFT << 6
-	tstne r3,#0x00400000
-	addne r1,r1,#0x40
+	mov r1,#SCREEN_LEFT << 6
 
 	subs r1,r3,r1,lsl#18
 @#0x0c000000	@x-8
@@ -3818,9 +3811,13 @@ dm12:
 	orrcc r0,r0,#0x01000000
 	and r1,r3,#0x00c00000	@flip
 	orr r0,r0,r1,lsl#6
-	and r1,r3,#0x00200000	@priority
-	orr r0,r0,r1,lsr#11		@Set Transp OBJ.
-	orr r0,r0,r6			@8x16+rot/scale
+	and r1,r6,#0x0400
+	tst r3,#0x00200000		@behind-BG priority?
+	orrne r0,r0,r1			@unscaled: set Transp OBJ (0x0400)
+	eornes r1,r1,#0x0400
+	orrne r4,r4,r1			@scaled: set Attr2 priority 3 (0x0400)
+	bic r1,r6,#0x0400
+	orr r0,r0,r1			@8x16 shape flag (0x8000)
 	str r0,[r2],#4			@store OBJ Atr 0,1
 	
 	and r0,r3,#0x00030000

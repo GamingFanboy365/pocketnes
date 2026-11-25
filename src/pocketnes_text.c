@@ -238,7 +238,7 @@ void drawtext(int row,const char *str,int hilite)
 }
 
 void setdarknessgs(int dark) {
-	REG_BLDCNT=0x01f1;				//darken game screen
+	REG_BLDCNT=0x01f3;				//darken game screen (BG0, BG1, BG3, OBJ, BD)
 	REG_BLDY=dark;					//Darken screen
 	REG_BLDALPHA=(0x10-dark)<<8;	//set blending for OBJ affected BG0
 }

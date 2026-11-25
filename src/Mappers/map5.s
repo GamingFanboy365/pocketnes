@@ -16,6 +16,7 @@
 	global_func mmc5_handler_2
 	global_func mmc5_unpatch
 	global_func mmc5_restore
+	global_func m5_ntmapping
 
 @ MMC5 (mapper 5).  Emulated: PRG banking including RAM in $6000-$DFFF,
 @ CHR banking (sets A and B), nametable mapping ($5105), ExRAM as RAM,

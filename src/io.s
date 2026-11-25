@@ -128,7 +128,6 @@ si3:	strb r0,[r3],#1
 si1:
 	mov   r0,#0x00c00000		@0.75
 	mov   r1,#0xf3000000		@-16*0.75
-	movhi r1,#0xef000000		@-16*0.75 was 0xf5000000
 @	ldrhi r1,=0xeec00000		@-16*0.75 was 0xf5000000  ;FIXME: find good value for this
 si4:	mov r2,r1,lsr#24
 	strb r2,[r3],#1

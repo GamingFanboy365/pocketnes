@@ -382,6 +382,7 @@ loadcart_asm: @called from C
 	strb_ r0,chrline
 	ldr r1,=0x03020100
 	str_ r1,chrold
+	bl_long bg_reload_reset
 @	bl_long chr01234567_
 
 	ldr_ r4,nes_chr_map
@@ -690,20 +691,7 @@ resetBGCHR:
 	ldreq_ r0,nes_chr_map
 	ldrne_ r0,nes_chr_map+4
 	str_ r0,chrold
-	
-@	ldrb_ r0,bankable_vrom
-@	movs r0,r0
-@	bxeq lr
-@	
-@	ldr r0,=0x0004080c
-@	str_ r0,bg_recent
-@	
-@	mov r1,#-1			@reset all CHR
-@	adrl_ r0,agb_bg_map
-@	mov r2,#6*4			@agb_bg_map,agb_obj_map
-@	b memset32_
-
-	bx lr
+	b_long bg_reload_reset
 	.endif
 
 @----------------------------------------------------------------------------
@@ -1381,9 +1369,9 @@ updateBGCHR_:	@see if BG CHR needs to change, setup BGxCNTBUFF
 
 	subs r1,r2,r1
 	bxeq lr
-	cmp r1,#3		@if(scanline-lastline<3)
+	cmp r1,#4		@if(scanline-lastline<4)
 	bpl ubg2_
-	@We are less than 3 scanlines from the beginning of the background change
+	@We are less than 4 scanlines from the beginning of the background change
 	@but let's allow background changes to a cached page at any time.
 	@check if it's in the cache, if it is, keep going.  Otherwise, return.
 	stmfd sp!,{r2,lr}
@@ -1399,45 +1387,27 @@ updateBGCHR_:	@see if BG CHR needs to change, setup BGxCNTBUFF
 	ldmnefd sp!,{r2,pc}
 	ldmeqfd sp!,{r2,lr}
 ubg2_:			@now setup BG for last request: (chrfinish,mirror* jumps here)
-	@r1 = scanline
-	stmfd sp!,{r2-r7,addy,lr}
-	bl chr_req_
-	ldmfd sp!,{r2-r6}
-	
-	@r2 = scanline end
-	ldrb_ r1,bg_recent
-	ldr_ r0,BGmirror
-	orr r1,r1,r0
-	ldrb_ r0,chrline
+	@r2 = scanline end, r0 = chrold
+	stmfd sp!,{r3-r7,addy,lr}
+	ldrb_ r1,chrline
 	strb_ r2,chrline
-	
-	@r2 = scanline end
-	@r0 = scanline start
-
-	@sl == 0 >> exit
-	@sl < prev  >> prev = 0
-	@sl == prev >> exit
 	cmp r2,#0
 	beq ubg2_exit
-	subs r2,r2,r0
+	subs r2,r2,r1
 	beq ubg2_exit
-	addlt r2,r2,r0  @could this happen?
-	movlt r0,#0
-	
+	addlt r2,r2,r1
+	movlt r1,#0
+	stmfd sp!,{r1,r2}
+	bl chr_req_
+	ldmfd sp!,{r0,r2}
+	ldrb_ r1,bg_recent
+	ldr_ r3,BGmirror
+	orr r1,r1,r3
 	ldr_ r7,bg0cntbuff
-	@fill forwards
 	add r0,r7,r0,lsl#1
-@@
-@	mov addy,r2
 	bl memset16
-@@
-@ubg1
-@	strh r0,[r1],#2	@fill forwards from lastline to scanline-1
-@	subs r2,r2,#1
-@	bgt ubg1
-
 ubg2_exit:
-	ldmfd sp!,{r7,addy,pc}
+	ldmfd sp!,{r3-r7,addy,pc}
 
 @chrold:	.word 0 @last write
 @chrline:	.word 0 @when?
@@ -1492,25 +1462,34 @@ chrfinish2:
 @	b im_lazy
 
 @----------------------------------------------------------------------------
-chr_req_:		@request BG CHR group in r0
+chr_req_:		@request BG CHR group in r0, r1=scanline start, r2=scanline count
 @		r0=chr group (4 1k CHR pages)
 @----------------------------------------------------------------------------
 	adrl_ r6,agb_bg_map
+	add r5,r1,r2
 
-	mov r2,r6
-	ldr r1,[r2]
-	cmp r0,r1		@check for existing group
-	ldrne r1,[r2,#4]!
-	cmpne r0,r1
-	ldrne r1,[r2,#4]!
-	cmpne r0,r1
-	ldrne r1,[r2,#4]!
-	cmpne r0,r1
-	bne notcached	@(r2-agb_bg_map)=matching group#
+	mov r3,r6
+	ldr r4,[r3]
+	cmp r0,r4		@check for existing group
+	ldrne r4,[r3,#4]!
+	cmpne r0,r4
+	ldrne r4,[r3,#4]!
+	cmpne r0,r4
+	ldrne r4,[r3,#4]!
+	cmpne r0,r4
+	bne_long notcached_vram1	@(r3-agb_bg_map)=matching group#
 
 cached:@--------------move to the top of the list:
 	adrl_ r4,bg_recent
-	sub r7,r2,r6	@r7=group#*4
+	sub r7,r3,r6	@r7=group#*4
+	ldr r3,=bg_reload_state
+	mov r1,r7,lsr#2
+	ldrb r2,[r3]
+	mov r6,#1
+	orr r2,r2,r6,lsl r1
+	strb r2,[r3]
+	add r3,r3,#4
+	strb r5,[r3,r1]
 	mov r2,r7	@r2=new xx_recent
 	ldrb r0,[r4]
 	cmp r7,r0
@@ -1528,70 +1507,12 @@ cached:@--------------move to the top of the list:
 	str r2,[r4]
 	bx lr
 
-notcached:  @maybe move this to ROM
-	ldr_ r2,bg_recent		@move oldest group to front of the list
-	mov r7,r2,lsr#24		@r7=oldest group#*4
-	ldr r1,[r6,r7]			@r1=old group
-	str r0,[r6,r7]!			@save new group, r6=new chr map ptr
-	mov r2,r2,ror#24
-	str_ r2,bg_recent
-	bx lr
-	
-	
-@	eor r1,r1,r0
-@
  decodeptr	.req r2 @mem_chr_decode
  tilecount	.req r3
  nesptr		.req r4 @chr src
  agbptr		.req r5 @chr dst
  bankptr		.req r6 @vrom bank lookup ptr
 
-@	mov agbptr,#AGB_VRAM
-@	add agbptr,agbptr,r7,lsl#12	@0000/4000/8000/C000
-
-
-bank_search:
-	@r3 = address of area to search, r6 = our address (r2 is 16 bytes ahead of the r6 area)
-	mov r7,#16
-bank_search_loop:
-	ldrb r4,[r3],#1
-	cmp r4,r0
-	beq found_matching_bank
-	subs r7,r7,#1
-	bne bank_search_loop
-	bx lr
-
-found_sprite_bank:
-	@does it really match?
-	ldr r3,=spr_cache_disp - SPR_CACHE_START
-	ldrb r7,[r3]
-	cmp r4,r7
-	bxne lr
-	
-	@generate memory address
-	stmfd sp!,{r1,r2}
-	ldr r1,=SPR_VRAM
-	add r1,r1,r4,lsl#11
-	b 0f
-found_matching_bank:
-	stmfd sp!,{r1,r2}
-	@generate memory address
-	mov r1,#BG_VRAM
-	rsb r7,r7,#16
-	and r2,r7,#0x0C
-	and r7,r7,#0x03
-	add r1,r1,r7,lsl#11
-	add r1,r1,r2,lsl#12
-0:
-	@store that we found the bank
-	strb r0,[bankptr,#15]
-	mov r0,agbptr
-	mov r2,#2048
-	bl memcpy32
-	add agbptr,agbptr,#0x800
-	
-	ldmfd sp!,{r1,r2}
-	b bg2	
 im_lazy:		@----------r1=old^new
 	stmfd sp!,{lr}
 	ldr decodeptr,=CHR_DECODE
@@ -1601,17 +1522,8 @@ bg0:	 tst r1,#0xff
 	 addeq agbptr,agbptr,#0x800
 	 beq bg2
 	 
-	@search spr_cache_disp and agb_real_bg_map for a matching byte
-	@r0 = byte to find
-	@r3,r4,r7 free
-	@FIXME: code looks really wrong here
-@	ldr r3,=spr_cache_map
-@	ldrb r4,[r3,r0]
-@	cmp r4,#0xFF
-@	blne found_sprite_bank
-	
 	ldr r3,=_agb_real_bg_map
-	bl bank_search
+	bl_long bank_search_vram1
 	
 	mov tilecount,#64
 	 
@@ -1626,6 +1538,414 @@ bg0:	 tst r1,#0xff
 bg2:	tst bankptr,#3
 	bne bg0
 	ldmfd sp!,{pc}
+
+	.pushsection .text, "ax", %progbits
+notcached_vram1:
+	ldr_ r2,bg_recent		@r2 = pre-rotation bg_recent
+	mov r7,r2,lsr#24		@r7 = oldest group#*4
+	mov r3,r2,ror#24
+	str_ r3,bg_recent
+	ldr r4,=bg_reload_state
+	mov r3,r7,lsr#2			@r3 = slot (0..3)
+	ldrb r12,[r4]			@bg_frame_used
+	mov r2,#1
+	tst r12,r2,lsl r3
+	bne 0f
+	str r0,[r6,r7]			@save new group
+	orr r12,r12,r2,lsl r3
+	strb r12,[r4]
+	add r4,r4,#4
+	strb r5,[r4,r3]			@bg_slot_end_line[slot] = scanline_end
+	bx lr
+0:
+	stmfd sp!,{r5,lr}
+	ldrb r12,[r4,#1]		@bg_reload_count
+	cmp r12,#0
+	bne 1f
+	ldr_ r2,bg_recent
+	mov r2,r2,ror#8			@restore pre-rotation bg_recent
+	str r2,[r4,#24]			@bg_recent_init
+	ldmia r6,{r2,r5,r12,lr}
+	add r4,r4,#8
+	stmia r4,{r2,r5,r12,lr}		@agb_bg_map_init[0..3]
+	sub r4,r4,#8
+	mov r12,#0
+1:
+	str r0,[r6,r7]			@save new group
+	cmp r12,#16
+	bhs 2f
+	add r6,r4,#0x27000
+	add r6,r6,r12,lsl#3		@&bg_reload_queue[bg_reload_count]
+	add r2,r4,#4
+	ldrb r2,[r2,r3]			@prev_end = bg_slot_end_line[slot]
+	strb r3,[r6,#0]			@slot
+	strb r2,[r6,#1]			@prev_end
+	strb r1,[r6,#2]			@start_line
+	str r0,[r6,#4]			@new_group
+	add r12,r12,#1
+	strb r12,[r4,#1]		@bg_reload_count++
+2:
+	ldmfd sp!,{r5,lr}
+	ldrb r12,[r4]
+	mov r2,#1
+	orr r12,r12,r2,lsl r3
+	strb r12,[r4]
+	add r4,r4,#4
+	strb r5,[r4,r3]			@bg_slot_end_line[slot] = scanline_end
+	bx lr
+	.pool
+	.popsection
+
+	.pushsection .text, "ax", %progbits
+bank_search_vram1:
+	@Save evicted BG bank into victim cache if eligible
+	ldr r4,=bg_reload_state
+	ldrb r7,[r4,#96]		@bg_victim_enabled
+	cmp r7,#0
+	beq 3f
+	tst agbptr,#0x10000
+	bne 3f
+	ldrb r4,[bankptr,#15]		@old_bank
+	cmp r4,#0xFF
+	beq 3f
+	mov r7,#0xFF
+	strb r7,[bankptr,#15]		@temporarily clear current slot so active search skips it
+	@Is old_bank duplicated in another active BG slot?
+	mov r7,#16
+0:
+	ldrb r12,[r3],#1
+	cmp r12,r4
+	beq 3f
+	subs r7,r7,#1
+	bne 0b
+	@Is old_bank already in bg_victim_map[0..31]?
+	ldr r3,=0x02028220
+	mov r7,#32
+1:
+	ldrb r12,[r3],#1
+	cmp r12,r4
+	beq 3f
+	subs r7,r7,#1
+	bne 1b
+	@Store old_bank into victim slot bg_victim_cursor
+	ldr r3,=0x02028220
+	ldrb r7,[r3,#32]		@bg_victim_cursor (0..31)
+	strb r4,[r3,r7]
+	add r12,r7,#1
+	cmp r12,#32
+	movhs r12,#0
+	strb r12,[r3,#32]
+	stmfd sp!,{r0-r2,lr}
+	cmp r7,#4
+	ldrlo r0,=0x0600A000
+	addlo r0,r0,r7,lsl#11
+	subhs r7,r7,#4
+	ldrhs r0,=0x02028800
+	addhs r0,r0,r7,lsl#11
+	mov r1,agbptr
+	mov r2,#2048
+	bl_long memcpy32
+	ldmfd sp!,{r0-r2,lr}
+3:
+	tst agbptr,#0x10000
+	bxne lr
+	ldr r3,=_agb_real_bg_map
+	mov r7,#16
+bank_search_loop_vram1:
+	ldrb r4,[r3],#1
+	cmp r4,r0
+	beq found_matching_bank_vram1
+	subs r7,r7,#1
+	bne bank_search_loop_vram1
+	@Also search victim cache if enabled and updating BG VRAM
+	ldr r4,=bg_reload_state
+	ldrb r7,[r4,#96]
+	cmp r7,#0
+	bxeq lr
+	ldr r3,=0x02028220
+	mov r7,#32
+victim_search_loop_vram1:
+	ldrb r4,[r3],#1
+	cmp r4,r0
+	beq found_victim_bank_vram1
+	subs r7,r7,#1
+	bne victim_search_loop_vram1
+	bx lr
+
+found_victim_bank_vram1:
+	stmfd sp!,{r1,r2}
+	rsb r7,r7,#32
+	cmp r7,#4
+	ldrlo r1,=0x0600A000
+	addlo r1,r1,r7,lsl#11
+	subhs r7,r7,#4
+	ldrhs r1,=0x02028800
+	addhs r1,r1,r7,lsl#11
+	b 0f
+found_matching_bank_vram1:
+	stmfd sp!,{r1,r2}
+	mov r1,#BG_VRAM
+	rsb r7,r7,#16
+	and r2,r7,#0x0C
+	and r7,r7,#0x03
+	add r1,r1,r7,lsl#11
+	add r1,r1,r2,lsl#12
+0:
+	strb r0,[bankptr,#15]
+	mov r0,agbptr
+	mov r2,#2048
+	bl_long memcpy32
+	add agbptr,agbptr,#0x800
+	ldmfd sp!,{r1,r2}
+	b_long bg2
+	.pool
+	.popsection
+
+	.pushsection .text, "ax", %progbits
+	global_func bg_reload_reset
+bg_reload_reset:
+	ldr r0,=bg_reload_state
+	mov r1,#0
+	mov r2,#100
+0:
+	str r1,[r0],#4
+	subs r2,r2,#4
+	bne 0b
+	mvn r1,#0
+	strb r1,[r0,#0x38]		@last_spr_scale_mode = 0xFF
+bg_victim_reset:
+	ldr r0,=bg_reload_state
+	mvn r1,#0
+	strb r1,[r0,#95]		@bg_reload_state[95] = 0xFF (initialized magic)
+	ldr r0,=0x02028220
+	mov r2,#32
+1:
+	str r1,[r0],#4
+	subs r2,r2,#4
+	bne 1b
+	strb r2,[r0]			@bg_victim_cursor = 0
+	bx lr
+
+	global_func bg_reload_commit_frame
+bg_reload_commit_frame:
+	@Called in newframe_nes_vblank with GBA VBlank IRQ disabled
+	@Preserves r2 and addy (r12)!
+	stmfd sp!,{r2,r4-r9,r12,lr}
+	ldr r4,=bg_reload_state
+	ldrb r5,[r4,#1]			@bg_reload_count
+	strb r5,[r4,#2]			@dma_bg_reload_count = bg_reload_count
+	adrl_ r0,agb_bg_map
+	adrl_ r1,agb_bg_map_requested
+	ldr r8,=agb_bg_map_req_init
+	cmp r5,#0
+	beq 0f
+	add r6,r4,#8			@agb_bg_map_init
+	ldmia r6,{r2,r3,r7,r9}
+	stmia r1,{r2,r3,r7,r9}
+	stmia r8,{r2,r3,r7,r9}
+	stmia r0,{r2,r3,r7,r9}		@restore agb_bg_map to frame-start state
+	ldr r2,[r4,#24]			@bg_recent_init
+	str_ r2,bg_recent
+	@copy bg_reload_queue to dma_bg_reload_queue (2 entries per iteration)
+	add r6,r4,#0x27000
+	add r8,r6,#0x80
+2:
+	ldmia r6!,{r0,r1,r2,r3}
+	stmia r8!,{r0,r1,r2,r3}
+	subs r5,r5,#2
+	bgt 2b
+	b 1f
+0:
+	ldmia r0,{r2,r3,r7,r9}
+	stmia r1,{r2,r3,r7,r9}
+	stmia r8,{r2,r3,r7,r9}
+1:
+	mov r0,#0
+	strh r0,[r4,#0]			@bg_frame_used = 0, bg_reload_count = 0
+	str r0,[r4,#4]			@bg_slot_end_line = 0
+	ldmfd sp!,{r2,r4-r9,r12,pc}
+
+	global_func bg_reload_prepare_vblank
+bg_reload_prepare_vblank:
+	stmfd sp!,{r4-r9,lr}
+	ldr r4,=bg_reload_state
+	ldrb r0,[r4,#95]
+	cmp r0,#0
+	bleq bg_victim_reset
+	@Update bg_victim_enabled
+	mov r0,#0
+	ldrb_ r1,bankable_vrom
+	ldrb_ r2,has_vram
+	bics r1,r1,r2
+	ldrneb_ r1,mapper_number
+	cmpne r1,#5
+	beq 0f
+	ldr r1,=rom_is_compressed
+	ldr r1,[r1]
+	cmp r1,#0
+	moveq r0,#1
+0:
+	strb r0,[r4,#96]		@bg_victim_enabled
+	mov r0,#0
+	strb r0,[r4,#98]		@active_bg_reload_idx = 0
+	strb r0,[r4,#99]		@bg_vcount_mode = 0
+	ldrb r5,[r4,#2]			@dma_bg_reload_count
+	strb r5,[r4,#97]		@active_bg_reload_count = dma_bg_reload_count
+	cmp r5,#0
+	beq 9f
+	ldr r6,=agb_bg_map_req_init
+	adrl_ r7,agb_bg_map_requested
+	ldmia r6,{r0,r1,r2,r3}
+	stmia r7,{r0,r1,r2,r3}
+	ldr r7,=0x02028194		@active_bg_reloads_ext
+	sub r6,r7,#0x80			@dma_bg_reload_queue_ext
+	ldrb_ r8,emuflags+1
+	ldrb_ r9,windowtop
+1:
+	ldrb r0,[r6,#0]			@slot
+	ldrb r1,[r6,#1]			@prev_end (NES scanline)
+	ldrb r2,[r6,#2]			@start_line (NES scanline)
+	ldr r3,[r6,#4]			@new_group
+	@Convert r1 (prev_end) and r2 (start_line) to GBA scanline
+	cmp r8,#SCALED
+	bcc 2f
+	@Scaled: gba = (nes * 3) >> 2 - 12
+	add r1,r1,r1,lsl#1
+	mov r1,r1,lsr#2
+	subs r1,r1,#12
+	movlt r1,#0
+	add r2,r2,r2,lsl#1
+	mov r2,r2,lsr#2
+	subs r2,r2,#12
+	movlt r2,#0
+	b 3f
+2:
+	@Unscaled: gba = nes - windowtop
+	subs r1,r1,r9
+	movlt r1,#0
+	subs r2,r2,r9
+	movlt r2,#0
+3:
+	@Choose trigger scanline in [r1, r2-1], preferring r2 - 12
+	subs r2,r2,#12
+	movlt r2,#0
+	cmp r2,r1
+	movlt r2,r1
+	cmp r2,#SCREEN_HEIGHT-2
+	movgt r2,#SCREEN_HEIGHT-2
+	strb r0,[r7,#0]			@slot
+	strb r2,[r7,#1]			@trigger_gba
+	str r3,[r7,#4]			@new_group
+	add r6,r6,#8
+	add r7,r7,#8
+	subs r5,r5,#1
+	bne 1b
+9:
+	ldmfd sp!,{r4-r9,pc}
+
+	global_func bg_reload_arm_vcount
+bg_reload_arm_vcount:
+	ldr r4,=bg_reload_state
+	ldrb r5,[r4,#97]
+	cmp r5,#0
+	bxeq lr
+	ldr r3,=REG_BASE + REG_DISPSTAT
+	ldrb r5,[r3]
+	tst r5,#0x20
+	bxne lr
+	mov r6,#1
+	strb r6,[r4,#99]
+	ldr r6,=0x02028194
+	ldrb r2,[r6,#1]
+	orr r5,r5,#0x20
+	strb r5,[r3]
+	strb r2,[r3,#1]
+	bx lr
+	.pool
+	.popsection
+
+	.pushsection .text, "ax", %progbits
+	global_func bg_vcount_handler
+bg_vcount_handler:
+	@Called from vcountinterrupt when bg_vcount_mode != 0
+	@Switch to System mode (0x9F) with IRQs disabled so we use sp_usr
+	mrs r3,cpsr
+	bic r1,r3,#0x1F
+	orr r1,r1,#0x9F
+	msr cpsr_cf,r1
+	stmfd sp!,{r3-r11,lr}
+	ldr globalptr,=GLOBAL_PTR_BASE
+	ldr r4,=bg_reload_state
+	ldr r7,=0x02028194
+0:
+	ldrb r8,[r4,#98]		@active_bg_reload_idx
+	ldrb r9,[r4,#97]		@active_bg_reload_count
+	cmp r8,r9
+	bhs 2f
+	add r11,r7,r8,lsl#3
+	ldrb r0,[r11,#0]		@slot (0..3)
+	ldrb r2,[r11,#1]		@trigger_gba
+	ldr r3,[r11,#4]			@new_group
+	add r8,r8,#1
+	strb r8,[r4,#98]
+	adrl_ r6,agb_bg_map_requested
+	add r6,r6,r0,lsl#2
+	str r3,[r6]
+	ldr r1,[r6,#16]			@agb_real_bg_map[slot]
+	eors r1,r1,r3
+	beq 1f
+	mov r5,#BG_VRAM
+	add r5,r5,r0,lsl#14		@0x06000000 + slot * 0x4000
+	bl_long im_lazy
+	ldr r4,=bg_reload_state
+	ldr r7,=0x02028194
+1:
+	ldrb r8,[r4,#98]
+	ldrb r9,[r4,#97]
+	cmp r8,r9
+	bhs 2f
+	add r11,r7,r8,lsl#3
+	ldrb r2,[r11,#1]		@next trigger_gba
+	ldr r0,=REG_BASE
+	ldrb r1,[r0,#REG_VCOUNT]
+	cmp r1,r2
+	bge 0b
+	strb r2,[r0,#REG_DISPSTAT+1]
+	b 3f
+2:
+	ldr r0,=REG_BASE
+	ldrb r1,[r0,#REG_DISPSTAT]
+	bic r1,r1,#0x20
+	strb r1,[r0,#REG_DISPSTAT]
+	mov r2,#0xFF
+	strb r2,[r0,#REG_DISPSTAT+1]
+	mov r1,#0
+	strb r1,[r4,#99]		@bg_vcount_mode = 0
+3:
+	ldmfd sp!,{r3-r11,lr}
+	msr cpsr_cf,r3
+	bx lr
+	.pool
+	.popsection
+
+	.pushsection .sbss
+	.align 2
+	.global bg_reload_state
+	.global agb_bg_map_req_init
+	.global active_bg_reloads
+	.global bg_victim_map
+	.global last_spr_scale_mode
+bg_reload_state:
+	.skip 100
+agb_bg_map_req_init:
+	.skip 16
+active_bg_reloads:
+	.skip 32
+bg_victim_map:
+	.skip 8
+last_spr_scale_mode:
+	.skip 4
+	.popsection
 @	mov pc,lr
 
 
@@ -1662,6 +1982,7 @@ render_tiles:
 	@destroys: r0,r2,r6,r7,r8,r9,r11
 	@out: encodes NES character data as GBA character data, r3 = 0, r4+=r3*16, r5+=r3*32
 	stmfd sp!,{r1,r6,r10,r12,lr}
+	stmfd sp!,{r5}
 	mov mask,#0xFF
 bg1:
 	ldmia nesptr!,{nesword0,nesword1,nesword2,nesword3}
@@ -1709,6 +2030,9 @@ bg1:
 	stmia agbptr!,{dest0,dest1,dest2,pixels0}
 	subs tilecount,tilecount,#1
 	bne bg1
+	ldmfd sp!,{r0}
+	mov r1,agbptr
+	bl_long scale_spr_tiles_range
 	ldmfd sp!,{r1,r6,r10,r12,pc}
 
 	.unreq agbptr	@r4
@@ -1725,6 +2049,7 @@ render_tiles_2:
 	@destroys: r0,r1,r6,r7,r8,r9,r11
 	@out: encodes NES character data as GBA character data, r3 = 0, r4+=r3*16, r5+=r3*32
 	stmfd sp!,{r6,r9,lr}
+	stmfd sp!,{r7,r8}
 	mov mask,#0xFF
 render_tiles_2_loop:
 	ldmia nesptr!,{nesword0,nesword1,nesword2}
@@ -1775,7 +2100,240 @@ render_tiles_2_loop:
 	stmia agbptr2!,{dest0,dest1,dest2,pixels1}
 	subs tilecount,tilecount,#1
 	bne render_tiles_2_loop
+	ldmfd sp!,{r0}
+	mov r1,agbptr
+	bl_long scale_spr_tiles_range
+	ldmfd sp!,{r0}
+	mov r1,agbptr2
+	bl_long scale_spr_tiles_range
 	ldmfd sp!,{r6,r9,pc}
+
+	.pushsection .text, "ax", %progbits
+	global_func scale_spr_tiles_range
+scale_spr_tiles_range:
+	@in: r0 = start_ptr in BG_VRAM or SPR_VRAM, r1 = end_ptr
+	@preserves all registers r0-r12, lr
+	stmfd sp!,{r0-r12,lr}
+	ldr r2,=_scaling
+	ldrb r2,[r2]
+	and r2,r2,#3
+	tst r0,#0x10000
+	beq scale_bg_tiles_entry
+	cmp r2,#SCALED_SPRITES
+	bne scale_spr_tiles_done
+
+	ldr r2,=GLOBAL_PTR_BASE
+	ldrb r12,[r2,#ppuctrl0frame]
+	and r12,r12,#0x20			@r12 = 0 (8x8) or 0x20 (8x16)
+	ldr r11,=0x11111111
+	b scale_spr_tile_loop
+
+scale_bg_tiles_entry:
+	cmp r2,#SCALED
+	blo scale_spr_tiles_done
+	ldr r11,=0x11111111
+scale_bg_tile_loop:
+	cmp r0,r1
+	bhs scale_spr_tiles_done
+	ldmia r0,{r2-r9}			@r2..r9 = w0..w7
+	cmp r3,r4
+	beq 1f
+	eor r10,r3,r2				@w1 ^ w0
+	orr r10,r10,r10,lsr#2
+	orr r10,r10,r10,lsr#1
+	bic r10,r11,r10				@m10: bit 0 of each nibble is 1 iff p1 == p0
+	eor r12,r4,r5				@w2 ^ w3
+	orr r12,r12,r12,lsr#2
+	orr r12,r12,r12,lsr#1
+	bic r12,r11,r12				@m23: bit 0 of each nibble is 1 iff p2 == p3
+	bic lr,r10,r12				@a = m10 & ~m23 (copy p2 -> p1)
+	bic r12,r12,r10				@b = m23 & ~m10 (copy p1 -> p2)
+	orr lr,lr,lr,lsl#1
+	orr lr,lr,lr,lsl#2			@ma
+	orr r12,r12,r12,lsl#1
+	orr r12,r12,r12,lsl#2		@mb
+	mov r10,r3
+	bic r3,r3,lr
+	and lr,r4,lr
+	orr r3,r3,lr
+	bic r4,r4,r12
+	and r12,r10,r12
+	orr r4,r4,r12
+	str r3,[r0,#4]
+	str r4,[r0,#8]
+1:
+	cmp r7,r8
+	beq 2f
+	eor r10,r7,r6				@w5 ^ w4
+	orr r10,r10,r10,lsr#2
+	orr r10,r10,r10,lsr#1
+	bic r10,r11,r10				@m54
+	eor r12,r8,r9				@w6 ^ w7
+	orr r12,r12,r12,lsr#2
+	orr r12,r12,r12,lsr#1
+	bic r12,r11,r12				@m67
+	bic lr,r10,r12				@a = m54 & ~m67
+	bic r12,r12,r10				@b = m67 & ~m54
+	orr lr,lr,lr,lsl#1
+	orr lr,lr,lr,lsl#2			@ma
+	orr r12,r12,r12,lsl#1
+	orr r12,r12,r12,lsl#2		@mb
+	mov r10,r7
+	bic r7,r7,lr
+	and lr,r8,lr
+	orr r7,r7,lr
+	bic r8,r8,r12
+	and r12,r10,r12
+	orr r8,r8,r12
+	str r7,[r0,#20]
+	str r8,[r0,#24]
+2:
+	add r0,r0,#32
+	b scale_bg_tile_loop
+
+scale_spr_tile_loop:
+	cmp r0,r1
+	bhs scale_spr_tiles_done
+	ldmia r0,{r2-r9}			@r2..r9 = w0..w7
+	orr r10,r2,r3
+	orr r10,r10,r4
+	orr r10,r10,r5
+	orr r10,r10,r6
+	orr r10,r10,r7
+	orr r10,r10,r8
+	orrs r10,r10,r9
+	addeq r0,r0,#32
+	beq scale_spr_tile_loop
+
+	@Step 1: Outer Empty-Row Trimming
+	orrs r10,r2,r3				@w0 == 0 && w1 == 0?
+	bne 1f
+	mov r2,r4
+	mov r3,r5
+	mov r4,r6
+	mov r5,r7
+	mov r6,r8
+	mov r7,r9
+	b scale_spr_store
+1:
+	orrs r10,r8,r9				@w6 == 0 && w7 == 0?
+	beq scale_spr_store			@r2..r7 already hold w0..w5
+	orrs r10,r2,r9				@w0 == 0 && w7 == 0?
+	bne 2f
+	mov r2,r3
+	mov r3,r4
+	mov r4,r5
+	mov r5,r6
+	mov r6,r7
+	mov r7,r8
+	b scale_spr_store
+2:
+	@Step 2a: Top half (w0..w3 in r2..r5) -> (s0..s2 in r2..r4)
+	cmp r2,#0					@w0 == 0?
+	moveq r2,r3
+	moveq r3,r4
+	moveq r4,r5
+	beq 3f
+	cmp r5,#0					@w3 == 0?
+	beq 3f						@r2,r3,r4 stay w0,w1,w2
+	cmp r3,#0					@w1 == 0?
+	cmpne r3,r2					@w1 == w0?
+	cmpne r3,r4					@w1 == w2?
+	moveq r3,r4
+	moveq r4,r5
+	beq 3f
+	cmp r4,#0					@w2 == 0?
+	cmpne r4,r5					@w2 == w3?
+	moveq r4,r5
+	beq 3f
+	@Compare pixel diff d(w0,w1) vs d(w2,w3)
+	eor r10,r2,r3
+	orr r10,r10,r10,lsr#1
+	and r10,r10,r11
+	add r10,r10,r10,lsr#4
+	add r10,r10,r10,lsr#8
+	add r10,r10,r10,lsr#16
+	and r10,r10,#0xF
+	eor lr,r4,r5
+	orr lr,lr,lr,lsr#1
+	and lr,lr,r11
+	add lr,lr,lr,lsr#4
+	add lr,lr,lr,lsr#8
+	add lr,lr,lr,lsr#16
+	and lr,lr,#0xF
+	cmp r10,lr
+	movle r3,r4
+	mov r4,r5
+3:
+	@Step 2b: Bottom half (w4..w7 in r6..r9) -> (s3..s5 in r5..r7)
+	cmp r9,#0					@w7 == 0?
+	moveq r5,r6
+	moveq r6,r7
+	moveq r7,r8
+	beq scale_spr_store
+	cmp r6,#0					@w4 == 0?
+	moveq r5,r7
+	moveq r6,r8
+	moveq r7,r9
+	beq scale_spr_store
+	cmp r8,#0					@w6 == 0?
+	cmpne r8,r9					@w6 == w7?
+	cmpne r8,r7					@w6 == w5?
+	moveq r5,r6
+	moveq r6,r7
+	moveq r7,r9
+	beq scale_spr_store
+	cmp r7,#0					@w5 == 0?
+	cmpne r7,r6					@w5 == w4?
+	moveq r5,r6
+	moveq r6,r8
+	moveq r7,r9
+	beq scale_spr_store
+	@Compare pixel diff d(w6,w7) vs d(w4,w5)
+	eor r10,r8,r9
+	orr r10,r10,r10,lsr#1
+	and r10,r10,r11
+	add r10,r10,r10,lsr#4
+	add r10,r10,r10,lsr#8
+	add r10,r10,r10,lsr#16
+	and r10,r10,#0xF
+	eor lr,r6,r7
+	orr lr,lr,lr,lsr#1
+	and lr,lr,r11
+	add lr,lr,lr,lsr#4
+	add lr,lr,lr,lsr#8
+	add lr,lr,lr,lsr#16
+	and lr,lr,#0xF
+	mov r5,r6
+	cmp r10,lr
+	movle r6,r7
+	movgt r6,r8
+	mov r7,r9
+
+scale_spr_store:
+	mov r8,#0
+	cmp r12,#0
+	bne 4f
+	@8x8 mode: [0, s0, s1, s2, s3, s4, s5, 0]
+	str r8,[r0],#4
+	stmia r0!,{r2-r8}
+	b scale_spr_tile_loop
+4:
+	@8x16 mode: even tile -> [0, 0, s0..s5], odd tile -> [s0..s5, 0, 0]
+	mov r9,#0
+	tst r0,#0x20
+	bne 5f
+	stmia r0!,{r8,r9}
+	stmia r0!,{r2-r7}
+	b scale_spr_tile_loop
+5:
+	stmia r0!,{r2-r9}
+	b scale_spr_tile_loop
+
+scale_spr_tiles_done:
+	ldmfd sp!,{r0-r12,pc}
+	.pool
+	.popsection
 
 
 
