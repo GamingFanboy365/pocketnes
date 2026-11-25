@@ -69,6 +69,9 @@ Additions:
   - Mapper 19: fixed the 15-bit CPU cycle IRQ counter and timeout scheduling on $5000/$5800 writes, added arbitrary per-nametable CIRAM mapping on $C000-$DFFF (sharing MMC5's m5_ntmapping table), skipped redundant $C000-$DFFF mirroring rebuilds, and fast-forwarded pre-render sprite-0-clear and frame-end busy-wait loops so the strategy map runs at a locked 60 FPS without audio slowdown or single-frame flicker.
   - Mid-frame BG CHR cache reloads and victim cache (src/cart.s): PocketNES only has four 4KB GBA background tile slots, so games that switch more than four BG CHR bank sets in a single frame previously overwrote in-flight slots and drew corrupted tiles. Added a VCOUNT-driven mid-frame reload queue that swaps BG CHR slots after the GBA finishes drawing earlier scanline splits, backed by a 7-page decoded CHR victim cache in unused GBA VRAM to avoid re-decoding 1KB CHR pages from ROM every frame.
   - Scaled display modes (src/cart.s, src/ppu.s, src/loadcart.c, src/timeout.s): added 50/50 hardware alpha-blended BG0/BG1 anti-aliasing, content-aware 8-to-6 row sprite tile scaling for SCALED_SPRITES, and fixed behind-background sprite priority and sprite positioning when scaled.
+  - Fixed garbage tiles in Sangokushi II's map after using the PocketNES menu, quicksave (R+Select) or quickload (R+Start). Those use EWRAM that also holds the decoded-tile victim cache above, and the cache wasn't cleared afterwards; now it is, at the point where PocketNES takes that EWRAM back (src/loadcart.c, redecompress).
+
+- The menu now shows this fork's release date ("PocketNES 2026-11-25 on GBA") instead of the 2013 one, so builds can be told apart (suggested on the forum). Change VERSION_NUMBER in src/config.h for each release; the menu line fits 29 characters. Older savestates still load: the loader skips the version text.
 
 To-do: mappers not implemented yet. Board names and example games come from each mapper's page on the NESdev wiki.
 
