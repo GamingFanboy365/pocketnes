@@ -143,9 +143,13 @@ waitformulti:
 	@----anything from here til line0x won't get executed while rom menu is active---
 
 	mov r2,#REG_BASE
-	mov r3,#0x0110
-	strh r3,[r2,#REG_BLDCNT]	@stop darkened screen,OBJ blend to BG0
-	mov r3,#0x1000				@BG0=16, OBJ=0
+	ldrb_ r3,emuflags+1
+	cmp r3,#SCALED
+	movlo r3,#0x0110
+	ldrhs r3,=0x2243
+	strh r3,[r2,#REG_BLDCNT]	@stop darkened screen; unscaled: OBJ->BG0, scaled: BG0+BG1 AA blend
+	movlo r3,#0x1000			@unscaled: BG0=16, OBJ=0
+	ldrhs r3,=0x0808			@scaled: BG0=8, BG1=8 (50/50 hardware anti-alias)
 	strh r3,[r2,#REG_BLDALPHA]	@Alpha values
 
 	adr lr,line0x				@return here after doing L/R + SEL/START

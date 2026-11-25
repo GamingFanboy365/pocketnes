@@ -25,6 +25,7 @@ EWRAM_BSS u8 nes_submapper=0;
 EWRAM_BSS u8 mapper30_mode=0;
 EWRAM_BSS u8 singlescreen=0;	//one-screen mirroring at boot (see cart.s)
 EWRAM_BSS u8 *mmc5_mem=NULL;	//MMC5: second PRG-RAM chip (map5.s)
+EWRAM_BSS u32 dma0_buff_ewram[164*2];
 
 void redecompress()
 {
@@ -608,11 +609,10 @@ void init_cache(u8* nes_header, int called_from)
 		{
 			//place scanline buffers into ram otherwise occupied by other 2 nametables
 			u8 * p= extra_nametables + 0x1000;
-			p -= 164*4;
-			_dma0buff = (u32*)p;
+			_dma0buff = dma0_buff_ewram;
 			p -= 164*2;
 			_dma1buff = (u16*)p;
-			p -= 164*2;
+			p -= 164*4;
 			_dma3buff = (u16*)p;
 
 			p -= 240*4;
@@ -625,17 +625,15 @@ void init_cache(u8* nes_header, int called_from)
 			_dmadispcntbuff = DISPCNTBUFF2;
 
 			reset_buffers();
-			//880 bytes free in that vram block
 		}
 		else
 		{
 			//place scanline buffers into EWRAM, or if there is VRAM available, put them there?
 			u8 * p = end_of_cache;
-			p -= 164*4;
-			_dma0buff = (u32*)p;
+			_dma0buff = dma0_buff_ewram;
 			p -= 164*2;
 			_dma1buff = (u16*)p;
-			p -= 164*2;
+			p -= 164*4;
 			_dma3buff = (u16*)p;
 
 			p -= 240*4;
@@ -1113,7 +1111,7 @@ void stop_dma_interrupts()
 	REG_DM3CNT_H=0;
 	//REG_IME=0;
 	
-	REG_DISPCNT&=~0x0100; //disable BG 0
+	REG_DISPCNT&=~0x0300; //disable BG 0 and BG 1
 	REG_DISPCNT&=~(7 | FORCE_BLANK); //force mode 0, and turn off force blank
 	REG_DISPCNT|=BG2_EN; //text on BG2
 

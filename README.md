@@ -65,6 +65,11 @@ Additions:
 
 - Implemented Mapper 114 (MMC3 clone with scrambled register addresses, used by SuperGame/Hosenkan pirates): both register layouts (submapper 0 and 1), the scrambled bank-select indexes, the $6000 NROM-style PRG override and the $6001 outer CHR bit, on top of the MMC3 code. Tested on: Super Donkey Kong (Taiwan pirate), which matches Mesen2 from the title through the first level. Not emulated: the MMC3A IRQ quirk Aladdin relies on. Mapper 182, an old duplicate number for the same board, isn't enabled. (The 1995 "Lion King" in the ROM pack is a mapper 4 dump and already worked.)
 
+- Fixed Mapper 19 (Namco 129 / 163) and mid-frame background CHR bank switching, plus scaled-display rendering improvements, for Sangokushi II: Haou no Tairiku (霸王的大陆) and its large-CHR hacks:
+  - Mapper 19: fixed the 15-bit CPU cycle IRQ counter and timeout scheduling on $5000/$5800 writes, added arbitrary per-nametable CIRAM mapping on $C000-$DFFF (sharing MMC5's m5_ntmapping table), skipped redundant $C000-$DFFF mirroring rebuilds, and fast-forwarded pre-render sprite-0-clear and frame-end busy-wait loops so the strategy map runs at a locked 60 FPS without audio slowdown or single-frame flicker.
+  - Mid-frame BG CHR cache reloads and victim cache (src/cart.s): PocketNES only has four 4KB GBA background tile slots, so games that switch more than four BG CHR bank sets in a single frame previously overwrote in-flight slots and drew corrupted tiles. Added a VCOUNT-driven mid-frame reload queue that swaps BG CHR slots after the GBA finishes drawing earlier scanline splits, backed by a 7-page decoded CHR victim cache in unused GBA VRAM to avoid re-decoding 1KB CHR pages from ROM every frame.
+  - Scaled display modes (src/cart.s, src/ppu.s, src/loadcart.c, src/timeout.s): added 50/50 hardware alpha-blended BG0/BG1 anti-aliasing, content-aware 8-to-6 row sprite tile scaling for SCALED_SPRITES, and fixed behind-background sprite priority and sprite positioning when scaled.
+
 To-do: mappers not implemented yet. Board names and example games come from each mapper's page on the NESdev wiki.
 
 | Mapper | Board / chip | Example games | Notes |

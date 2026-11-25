@@ -20,6 +20,7 @@
 #define SAVED_MAGIC 0x42474348
 
 extern u8 _agb_real_bg_map[16];
+extern u8 bg_victim_map[8];
 
 extern void big_chr0_(void), big_chr1_(void), big_chr2_(void), big_chr3_(void);
 extern void big_chr4_(void), big_chr5_(void), big_chr6_(void), big_chr7_(void);
@@ -143,6 +144,10 @@ int bigchr_page(int real)
 	{
 		if (_agb_real_bg_map[i]==v) _agb_real_bg_map[i]=0xFF;
 		if (spr_cache_disp[i]==v) spr_cache_disp[i]=0xFF;
+	}
+	for (i=0;i<7;i++)
+	{
+		if (bg_victim_map[i]==v) bg_victim_map[i]=0xFF;
 	}
 	return v;
 }
