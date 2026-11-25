@@ -12,24 +12,43 @@
 @ So before switching, read part of the ROM at the current setting (whatever
 @ the BIOS or the cart's menu left), then twice at 3/1, and keep 3/1 only if
 @ all three reads agree.  A cart that is too slow returns wrong or stale data
-@ when read too fast.  This code runs from EWRAM, because instruction fetches
-@ from ROM would go wrong too.
+@ when read too fast.  The check can't run from ROM, as its own instruction
+@ fetches would go wrong too, so it is copied onto the stack (IWRAM) and run
+@ there.  That way it takes no IWRAM or EWRAM of its own.
 
  FAST_WAITCNT = 0x4317
  PROBE_SIZE = 0x8000		@bytes of ROM read in bursts
 
- .section .ewram, "ax", %progbits
+ .text
  .align 2
  .arm
 @----------------------------------------------------------------------------
 set_fast_waitstates:	@int set_fast_waitstates(void): 1 if 3/1 is now set
 @----------------------------------------------------------------------------
 	stmfd sp!,{r4-r11,lr}
+	adr r0,probe
+	adr r1,probe_end
+	sub r10,r1,r0		@size of the probe code
+	sub sp,sp,r10
+	mov r2,sp
+0:
+	ldr r3,[r0],#4		@copy it onto the stack
+	str r3,[r2],#4
+	cmp r0,r1
+	blo 0b
+	mov lr,pc
+	mov pc,sp		@run the copy
+	add sp,sp,r10
+	ldmfd sp!,{r4-r11,lr}
+	bx lr
+
+probe:	@position independent: runs from its copy on the stack.  Changes r1-r9,
+	@r11, r12 (not r10); returns r0 = 1 if 3/1 is now set.
 	ldr r12,=REG_BASE+REG_IME
 	ldrh r11,[r12]
 	mov r0,#0
 	strh r0,[r12]		@no interrupts while the ROM may misread
-	stmfd sp!,{r11,r12}
+	stmfd sp!,{r11,r12,lr}
 
 	ldr r12,=REG_WAITCNT
 	ldrh r11,[r12]		@the current setting
@@ -47,9 +66,8 @@ set_fast_waitstates:	@int set_fast_waitstates(void): 1 if 3/1 is now set
 	moveq r0,#1
 	movne r0,#0
 
-	ldmfd sp!,{r11,r12}
+	ldmfd sp!,{r11,r12,lr}
 	strh r11,[r12]		@interrupts as they were
-	ldmfd sp!,{r4-r11,lr}
 	bx lr
 
 rom_checksum:	@r0 = checksum of ROM reads: bursts, then scattered halfwords.
@@ -74,3 +92,5 @@ rom_checksum:	@r0 = checksum of ROM reads: bursts, then scattered halfwords.
 	bne 2b
 	bx lr
 	.pool
+	.align 2
+probe_end:
