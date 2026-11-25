@@ -48,7 +48,7 @@ int strstr_(const char *str1, const char *str2);
 
 void _init() {}
 
-extern int set_fast_waitstates(void) __attribute__((long_call));	//waitcnt.s, in EWRAM
+extern int set_fast_waitstates(void) __attribute__((long_call));	//waitcnt.s
 
 int main()
 {
