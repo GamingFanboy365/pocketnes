@@ -338,6 +338,7 @@ void loadcart(int rom_number, int emu_flags, int called_from)
 	memset32(NES_RAM,0,2048);
 	memset32(NES_SRAM,0,8192);
 	memset32(mapperstate,0,32);
+	MMC5_SAVE_COUNTDOWN=0;	//(after mapperdata)
 	
 	if (cartflags&TRAINER)
 	{
@@ -384,9 +385,9 @@ void loadcart(int rom_number, int emu_flags, int called_from)
 //MMC5 PRG RAM chip 0 (banks 0-3, the battery-backed one in Mesen2): bank 0 is
 //NES SRAM.  If an NES 2.0 header asks for more than 8K, banks 1-3 are 24K of
 //EWRAM just below the instant_prg_banks table, kept out of the ROM cache and
-//the menu's buffers (BUFFER1-3 end below it).  Returns the bank mask map5.s
-//uses: 0 = 8K, 1 = 16K, 3 = 32K.
-#define MMC5_RAM_EXTRA 0x6000
+//the menu's buffers (BUFFER1-3 end below it).  Battery saves keep them as a
+//block of their own (sram.c).  Returns the bank mask map5.s uses: 0 = 8K,
+//1 = 16K, 3 = 32K.
 static int mmc5_chip0_mask(const u8 *nes_header)
 {
 	int ram, nvram, size;
@@ -411,7 +412,7 @@ void mmc5_set_chip0_mask()	//after a savestate loads: from the header, not the s
 {
 	u8 *nesheader=rombase-16;
 	if (cartflags&TRAINER) nesheader-=512;
-	((u8*)mapperstate)[33]=mmc5_chip0_mask(nesheader);
+	MMC5_CHIP0_MASK=mmc5_chip0_mask(nesheader);
 }
 
 u8 *get_end_of_cache()
@@ -624,13 +625,18 @@ void init_cache(u8* nes_header, int called_from)
 	//MMC5: PRG RAM chip 0 over 8K (see mmc5_chip0_mask)
 	{
 		int mask=mmc5_chip0_mask(nes_header);
-		((u8*)mapperstate)[33]=mask;	//m5_chip0mask
+		MMC5_CHIP0_MASK=mask;
 		if (mask)
 		{
 			end_of_cache-=MMC5_RAM_EXTRA;
 			if (called_from!=0)
 			{
 				memset32(end_of_cache,0,MMC5_RAM_EXTRA);
+				#if SAVE
+				//its battery save, now that its place is known and before the
+				//cache is filled (the SRAM code overwrites the cache's EWRAM)
+				get_saved_mmc5_ram(end_of_cache);
+				#endif
 			}
 		}
 	}

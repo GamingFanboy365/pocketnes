@@ -571,7 +571,8 @@ DISPCNTBUFF1	= 0
 			@cart.s (wram_globals2)
 @###begin mapperstate
  _m_ mapperdata,32
- _m_ ,3
+ _m_ ,2			@(MMC5: m5_chrhi_regs+2 and m5_chip0mask)
+ _m_ mmc5_save_countdown,1	@frames until timeout.s saves MMC5 PRG RAM banks 1-3 (map5.s); 0 = nothing to save
  _m_ bank6,1
  _m_ bank8,1
  _m_ bankA,1

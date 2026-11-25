@@ -28,6 +28,11 @@ void init_cache(u8* nes_header, int called_from);
 void bigchr_setup(u8 *chr_base, int chr_1k_pages);
 extern u8 *mmc5_mem;
 void mmc5_restore(void);
+#define MMC5_RAM_EXTRA 0x6000	//MMC5 PRG RAM chip 0 banks 1-3 (loadcart.c)
+#define MMC5_CHIP0_MASK mapperstate[33]	//(m5_chip0mask in map5.s)
+#define MMC5_SAVE_COUNTDOWN mapperstate[34]	//(mmc5_save_countdown in equates.h)
+u8 *mmc5_chip0_extra(void);
+void mmc5_set_chip0_mask(void);
 int bigchr_page(int real);
 void stop_dma_interrupts(void);
 void resume_interrupts(void);

@@ -192,6 +192,20 @@ waitformulti:
 	bxne r1
 	.endif
 line0x:
+	.if CARTSAVE
+	@MMC5 battery RAM banks 1-3 (map5.s): save them once the game has stopped
+	@writing to them for a moment.  (Before the redecompress check: saving
+	@uses the menu's buffers, which overwrite the cache.)
+	ldrb_ r2,mmc5_save_countdown
+	sub r2,r2,#1
+	cmp r2,#0xFE		@(was 0: nothing to save; 0xFF: saving failed, the menu retries)
+	strlob_ r2,mmc5_save_countdown
+	cmp r2,#0
+	moveq r0,#0		@(no prompt)
+	ldreq r1,=save_mmc5_ram
+	moveq lr,pc
+	bxeq r1
+	.endif
 	ldr r2,=ewram_owner_is_sram
 	ldrb r2,[r2]
 	movs r2,r2

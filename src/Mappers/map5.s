@@ -19,10 +19,10 @@
 	global_func m5_ntmapping
 
 @ MMC5 (mapper 5).  Emulated: PRG banking including RAM in $6000-$DFFF,
-@ CHR banking (sets A and B), nametable mapping ($5105), ExRAM as RAM,
-@ nametable or extended attributes ($5104), the scanline IRQ and the
-@ multiplier.  Not emulated: split screen, fill mode, sound, and CHR bank
-@ bits 8-9 outside extended attribute mode.
+@ CHR banking (sets A and B, with bits 8-9 from $5130), nametable mapping
+@ ($5105), ExRAM as RAM and to run code from, nametable or extended
+@ attributes ($5104), the scanline IRQ and the multiplier.  Not emulated:
+@ split screen, fill mode and sound.
 
  counter = mapperdata+0
  enable = mapperdata+1
@@ -73,7 +73,11 @@
 @ bank.  Chip 0 holds one too, unless an NES 2.0 header asks for more: then
 @ banks 1-3 are 24KB of EWRAM just below the instant_prg_banks table
 @ (init_cache keeps the cache and the menu's buffers out of it; savestates
-@ save it as "SRMX").  Writes obey the $5102/$5103 write protection.
+@ save it as "SRMX").  Battery saves keep banks 1-3 as a block of their own
+@ (sram.c): init_cache loads it, and a write that changes them restarts
+@ mmc5_save_countdown, at the end of which timeout.s saves it.  Writes obey
+@ the $5102/$5103 write protection.
+ M5_SAVE_DELAY = 30		@frames without writes to banks 1-3 before they are saved
  EXT_HASH = BG_VRAM		@extended attribute tile cache: 2048 halfwords, slot+1 (0 = free),
  EXT_KEYS = BG_VRAM+0x1000	@and 1024 halfwords, the (4K bank << 8 | tile) in each slot.
 				@In BG CHR group 0, which is unused while the cache is.
@@ -414,8 +418,7 @@ m5_w6x:	@$6000-$7FFF write
 	ldreq r1,=m5_w6_orig
 	ldreq pc,[r1]		@chip 0: the SRAM handler
 	ldr_ r1,memmap_6
-	strb r0,[r1,addy]
-	bx lr
+	b m5_wram
 
 	@$8000-$DFFF writes: RAM if $5114-$5116 selects it, else nothing
  .macro m5_wslot bit, memmap
@@ -432,12 +435,26 @@ m5_w6x:	@$6000-$7FFF write
 	tst r1,#\bit<<4
 	bne m5_wsram
 	ldr_ r1,\memmap
-	strb r0,[r1,addy]
-	bx lr
+	b m5_wram
  .endm
 m5_w8:	m5_wslot 1, memmap_8
 m5_wA:	m5_wslot 2, memmap_A
 m5_wC:	m5_wslot 4, memmap_C
+m5_wram:	@write r0 to the RAM byte at r1+addy (any bank but chip 0's first).  A
+	@change to chip 0 banks 1-3, just below instant_prg_banks, restarts the
+	@countdown to saving them.  Changes r0-r2.
+	and r0,r0,#0xFF		@(bits 8-31 can be set)
+	ldrb r2,[r1,addy]!
+	cmp r2,r0
+	bxeq lr			@no change
+	strb r0,[r1]
+	ldr_ r2,instant_prg_banks
+	sub r1,r2,r1
+	sub r1,r1,#1		@under 0x6000 for banks 1-3
+	cmp r1,#0x6000
+	movlo r1,#M5_SAVE_DELAY
+	strlob_ r1,mmc5_save_countdown
+	bx lr
 m5_wsram:	@chip 0 in $8000-$DFFF: write through the $6000 handler (battery saves)
 	mov addy,addy,lsl#19
 	mov addy,addy,lsr#19

@@ -550,14 +550,12 @@ int save_vram4(save_ptr *dest, const u8* src, int size, u32 tag)
 //MMC5 PRG RAM chip 0 banks 1-3 (see loadcart.c), only for games that have them
 int save_srmx(save_ptr *dest, const u8* src, int size, u32 tag)
 {
-	extern u8 *mmc5_chip0_extra(void);
 	u8 *p=mmc5_chip0_extra();
 	if (p==NULL) return -1;
 	return save_normal(dest,p,size,tag);
 }
 int load_srmx(u8* dest, load_ptr *src, int actualsize, int expectedsize)
 {
-	extern u8 *mmc5_chip0_extra(void);
 	u8 *p=mmc5_chip0_extra();
 	if (p==NULL) return load_writeonly(dest,src,actualsize,expectedsize);
 	return load_normal(p,src,actualsize,expectedsize);
@@ -674,7 +672,6 @@ void restore_variables_for_loadstate()
 	#endif
 	if (mapper_number == 5)
 	{
-		extern void mmc5_set_chip0_mask(void);
 		mmc5_set_chip0_mask();	//(PRG RAM chip 0 size, which old savestates don't have)
 		mmc5_restore();	//PRG RAM, nametable mapping and extended attributes (map5.s)
 	}

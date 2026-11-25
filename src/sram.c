@@ -47,6 +47,7 @@ EWRAM_DATA u32 save_start = SAVE_START;
 #define STATESAVE 0
 #define SRAMSAVE 1
 #define CONFIGSAVE 2
+#define SRAMEXTRA 4	//MMC5 PRG RAM banks 1-3 (save_mmc5_ram)
 
 #if CHEATFINDER
 	#define CHEATLIST 3
@@ -487,6 +488,7 @@ void compressstate(lzo_uint size,u16 type,u8 *src,void *workspace) {
 	//setup header:
 	sh=(stateheader*)BUFFER3;
 	sh->size=(compressedsize+sizeof(stateheader)+3)&~3;	//size of compressed state+header, word aligned
+	memset(BUFFER3+sizeof(stateheader)+compressedsize,0,sh->size-sizeof(stateheader)-compressedsize);	//(padding: save_mmc5_ram compares)
 	sh->type=type;
 	sh->uncompressed_size=size;	//size of compressed state
 	sh->framecount=frametotal;
@@ -503,14 +505,16 @@ void compressstate(lzo_uint size,u16 type,u8 *src,void *workspace) {
 }
 
 void managesram() {
-	int i;
+	int i,j;
 	int menuitems;
 	int offset=0;
+	stateheader *sh;
+	u32 sum;
 
 	getsram();
 
 	selected=0;
-	drawstates(SRAMMENU,&menuitems,&offset,0);
+	sh=drawstates(SRAMMENU,&menuitems,&offset,0);
 	if(!menuitems)
 		return;		//nothing to do!
 
@@ -518,11 +522,15 @@ void managesram() {
 	do {
 		i=getmenuinput(menuitems);
 		if(i&SELECT) {
+			sum=sh->checksum;
 			updatestates(selected,1,SRAMSAVE);
+			j=findstate(sum,SRAMEXTRA,NULL);	//and the game's MMC5 RAM banks 1-3
+			if(j>=0)
+				updatestates(j,1,SRAMEXTRA);
 			if(selected==menuitems-1) selected--;	//deleted last entry.. move up one
 		}
 		if(i&(SELECT+UP+DOWN+LEFT+RIGHT))
-			drawstates(SRAMMENU,&menuitems,&offset,0);
+			sh=drawstates(SRAMMENU,&menuitems,&offset,0);
 	} while(menuitems && !(i&(L_BTN+R_BTN+B_BTN)));
 	scrollr();
 }
@@ -916,6 +924,9 @@ void setup_sram_after_loadstate() {
 		get_saved_sram();
 
 	}
+	//MMC5 RAM banks 1-3: the savestate's become the saved ones too.  (Without
+	//them in the savestate, they are still the saved ones init_cache loaded.)
+	save_mmc5_ram(1);
 /*	int i;
 	u32 chk;
 	configdata *cfg;
@@ -933,6 +944,106 @@ void setup_sram_after_loadstate() {
 		register_sram_owner();//register new sram owner
 	}
 */
+}
+
+//MMC5 games whose NES 2.0 header asks for more than 8K of battery RAM, such as
+//the Super Mario All-Stars port: bank 0 is NES SRAM, saved like any other game's.
+//Banks 1-3 (24K, see loadcart.c) are saved as a block of their own (SRAMEXTRA),
+//which init_cache loads.  A write that changes them restarts a countdown
+//(map5.s); when it runs out (timeout.s), when the menu opens while it runs and
+//after a savestate loads, this saves them, so that a save made in the game
+//survives switching off.  The block keeps some room to grow, so that saving
+//usually just rewrites it in place: re-reading and rewriting all of GBA SRAM, as
+//updatestates does, would stop the game for a quarter of a second or more.
+#define SRAMEXTRA_ROOM 128
+
+static vu8 *find_sram_block(u32 sum,int type)	//(in GBA SRAM itself, read a byte at a time)
+{
+	vu8 *p=MEM_SRAM;
+	vu8 *end=MEM_SRAM+save_start;
+	vu8 *found=NULL;
+	int size;
+
+	if((p[0]|(p[1]<<8)|(p[2]<<16)|(p[3]<<24))!=STATEID)
+		return NULL;
+	for(p+=4; p+sizeof(stateheader)<=end; p+=size)
+	{
+		size=p[0]|(p[1]<<8);
+		if(size<(int)sizeof(stateheader))
+			break;		//end of the list
+		if((p[2]|(p[3]<<8))==type && (p[12]|(p[13]<<8)|(p[14]<<16)|(p[15]<<24))==sum)
+			found=p;	//(the last one, as findstate)
+	}
+	return found;
+}
+
+int save_mmc5_ram(int prompt_delete_menu)
+{
+	u8 *ram=mmc5_chip0_extra();
+	stateheader *newsh=(stateheader*)BUFFER3;
+	vu8 *p;
+	int i,size;
+
+	MMC5_SAVE_COUNTDOWN=0;
+	if(!using_flashcart() || !(cartflags&SRAM_) || ram==NULL)
+		return 1;
+	compressstate(MMC5_RAM_EXTRA,SRAMEXTRA,ram,BUFFER2);
+	ewram_owner_is_sram=1;		//(BUFFER2-3 hold part of the cache: rebuild it)
+	p=find_sram_block(newsh->checksum,SRAMEXTRA);
+	if(p!=NULL)
+	{
+		size=p[0]|(p[1]<<8);
+		if(newsh->size<=size)
+		{
+			//fits: unchanged, or rewrite it where it is
+			memset((u8*)newsh+newsh->size,0,size-newsh->size);
+			newsh->size=size;
+			for(i=sizeof(stateheader);i<size;i++)
+			{
+				if(p[i]!=((u8*)newsh)[i])
+				{
+					bytecopy((u8*)p,(u8*)newsh,size);
+					break;
+				}
+			}
+			return 1;
+		}
+	}
+	//new, or it has grown: room to grow, then into the list
+	memset((u8*)newsh+newsh->size,0,SRAMEXTRA_ROOM);
+	newsh->size+=SRAMEXTRA_ROOM;
+	i=findstate(newsh->checksum,SRAMEXTRA,NULL);
+	if(i<0)
+		i=65536;	//new
+	if(!updatestates(i,0,SRAMEXTRA))
+	{
+		writeerror();
+		if(prompt_delete_menu)
+		{
+			deletemenu(newsh->size);
+			return save_mmc5_ram(0);
+		}
+		MMC5_SAVE_COUNTDOWN=0xFF;	//try again when the menu opens
+		return 0;
+	}
+	return 1;
+}
+
+void get_saved_mmc5_ram(u8 *ram)	//(the game's banks 1-3, already cleared)
+{
+	stateheader *sh;
+	lzo_uint size=MMC5_RAM_EXTRA;
+	int r;
+
+	if(!using_flashcart() || !(cartflags&SRAM_))
+		return;
+	if(findstate(checksum(romstart),SRAMEXTRA,&sh)>=0 && sh->uncompressed_size==MMC5_RAM_EXTRA)
+	{
+		//(the room to grow after the data is left over)
+		r=lzo1x_decompress_safe((u8*)(sh+1),sh->size-sizeof(stateheader),ram,&size,NULL);
+		if((r!=LZO_E_OK && r!=LZO_E_INPUT_NOT_CONSUMED) || size!=MMC5_RAM_EXTRA)
+			memset32(ram,0,MMC5_RAM_EXTRA);	//damaged
+	}
 }
 
 //returns a rom number, or -1

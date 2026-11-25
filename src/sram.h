@@ -24,6 +24,8 @@ bool quickload(void);
 bool quicksave(void);
 int backup_nes_sram(int prompt_delete_menu);
 void get_saved_sram(void);
+int save_mmc5_ram(int prompt_delete_menu);
+void get_saved_mmc5_ram(u8 *ram);
 u32 get_sram_owner(void);
 void deletemenu(int statesize);
 
