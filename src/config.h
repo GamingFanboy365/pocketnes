@@ -8,7 +8,7 @@
 #define DEBUG 0				//Set to 1 to have code called at the end of each instruction (such as logging)
 
 //#define VERSION_NUMBER "X alpha 3"
-#define VERSION_NUMBER "2026-11-25"	//the menu shows "PocketNES " VERSION_NUMBER " on GBA": 29 characters at most
+#define VERSION_NUMBER "2026-11-26"	//the menu shows "PocketNES " VERSION_NUMBER " on GBA": 29 characters at most
 //#define VERSION_NUMBER "DO NOT RELEASE"
 
 //default options

@@ -398,6 +398,9 @@ m5_install6:	@writemem_6 = m5_w6x, keeping the original.  Changes r1, r2.
 	orr r1,r1,#0x80
 	strb_ r1,m5_prot
 	ldr_ r1,writemem_6	@sram_W, or sram_W2 for battery saves
+	ldr r2,=m5_w6x
+	cmp r1,r2
+	bxeq lr			@already in place (mmc5_restore): m5_w6_orig holds the original
 	ldr r2,=m5_w6_orig
 	str r1,[r2]
 	ldr r1,=m5_w6x
@@ -1067,9 +1070,18 @@ mmc5_restore:	@after a savestate loads (from C): redo what the registers set
 	bl mmc5_unpatch
 	mov r0,#0
 	strb_ r0,m5_ext
+	@$6000-$7FFF: back to chip 0 (NES SRAM), then m5_map6 below maps what
+	@$5113 says.  This also runs after a savestate is saved, and when one is
+	@loaded while m5_w6x is in place (get_rom_map then leaves $6000 alone): the
+	@handlers are not the defaults then, so set them, and let m5_install6
+	@keep the original write handler it already has.
 	ldrb_ r0,m5_ramslots
-	bic r0,r0,#0x80		@$6000 handlers are the defaults again
+	bic r0,r0,#0x80
 	strb_ r0,m5_ramslots
+	ldr r0,=NES_RAM-0x5800
+	str_ r0,memmap_6
+	ldr r0,=sram_R
+	str_ r0,readmem_6
 	ldrb_ r0,m5_prot
 	bic r0,r0,#0x80
 	strb_ r0,m5_prot
