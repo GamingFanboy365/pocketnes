@@ -147,7 +147,9 @@ $(BUILD):
 	@[ -d $@ ] || mkdir -p $@
 	@# SuperCard/SuperFW: the cart can't run at 3/1 wait states, so only set_fast_waitstates
 	@# (src/waitcnt.s) may set WAITCNT, after checking the cart can take it. See CLAUDE.md.
-	@if grep -rnE 'REG_WAITCNT|0x0?4000204|0x4317' $(CURDIR)/src --include='*.[chsS]' | grep -vE '/src/(waitcnt\.s|equates\.h|io\.s):'; then \
+	@# Any mention of WAITCNT, its address (also as an offset from REG_BASE, #0x204) or the
+	@# fast setting stops the build, except in waitcnt.s and on lines marked waitcnt-ok.
+	@if grep -rnE 'WAITCNT|0x0?4000204|0x4317|#(0x204|516)\]' $(CURDIR)/src --include='*.[chsS]' | grep -v '/src/waitcnt\.s:' | grep -v 'waitcnt-ok'; then \
 		echo "error: WAITCNT set outside src/waitcnt.s (breaks SuperCard/SuperFW, see CLAUDE.md)"; exit 1; fi
 	@make --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
 
