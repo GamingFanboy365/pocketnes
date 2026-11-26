@@ -249,8 +249,8 @@ dac_fill_loop:	@from dac_irq_fill.  r0 = PCMWAV write position, r1 = DC level,
 	mov r2,#0x80000000
 0:
 	bic r7,r4,#0xFF
-	subs r7,r7,r3
-	ble 2f			@next write is due
+	subs r7,r3,r7		@(by the sign of the difference: times wrap around, and
+	bpl 2f			@a compare would overflow)  next write is due
 1:
 	movs r2,r2,lsr#8
 	orr r2,r2,lr,lsl#24

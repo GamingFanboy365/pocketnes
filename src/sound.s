@@ -107,9 +107,11 @@ timer1interrupt:
 	orr r1,r1,#0x0040		@noINTR fifo 32bit repeat incsrc fixeddst
 	strh r1,[r0,#REG_DMA2CNT_H] @DMA go	
 	
-	@disable vblank interrupts
+	@disable vblank interrupts, and this one: other interrupts may come in
+	@(raster effects), but a refill that runs long must not start another
+	@one on top of itself, which takes stack each time
 	ldrb r1,[r0,#REG_IE]
-	bic r1,r1,#1
+	bic r1,r1,#0x11
 	strb r1,[r0,#REG_IE]
 	mov r1,#1
 	strb r1,[r0,#REG_IME]	@enable other interrupts
@@ -187,10 +189,10 @@ pcm1_clear:
 pcmexit:
 	str_ r3,pcmcount
 	
-	@re-enable vblank interrupts
+	@re-enable vblank and timer 1 interrupts
 	mov r0,#REG_BASE
 	ldrb r1,[r0,#REG_IE]
-	orr r1,r1,#1
+	orr r1,r1,#0x11
 	strb r1,[r0,#REG_IE]
 	
 	ldmfd sp!,{r4-r8,globalptr,pc}
