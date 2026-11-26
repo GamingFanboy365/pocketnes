@@ -242,7 +242,7 @@ doReset:
 	strh r0,[r1,#REG_DM3CNT_H]
 	add r1,r1,#0x200
 	str r0,[r1,#8]		@interrupts off
-	strh r0,[r1,#4]		@default wait states (REG_WAITCNT) for whatever runs next
+	strh r0,[r1,#4]		@default wait states (REG_WAITCNT) for whatever runs next (waitcnt-ok: the safe default)
 
 	.if VISOLY
 
